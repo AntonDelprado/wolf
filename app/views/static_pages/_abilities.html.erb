@@ -1,0 +1,22 @@
+<h2>Abilities</h2>
+
+<p>Abilities represent training or a natural trait. Unlike skills, abilities do not have levels and so a character either has an ability or not.</p>
+
+<h2>Abilities List</h2>
+
+<% ApplicationHelper::Ability.all.each do |ability| %>
+	<%= "<div class=\"well\" style=\"background-color:#{ability.synergy_colour};\">".html_safe %>
+		<div class="row">
+			<div class="offset2 span5 center">
+				<%= "<h3>#{ability.name}</h3>".html_safe %>
+				<%= "Requires: #{ability.requires}<br/> ".html_safe if ability.requires %>
+			</div>
+		</div>
+
+		<%= ability.full_text.html_safe %>
+
+		<div>
+			<span style="float:right"><%= "Synergy: #{ability.synergy_name}" if ability.synergy_name %></span>
+		</div>
+	</div>
+<% end %>

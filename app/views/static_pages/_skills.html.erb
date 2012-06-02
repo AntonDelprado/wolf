@@ -1,0 +1,42 @@
+<h2>Skills</h2>
+
+<p>Skills are a measure of what a character can do. Levels of a skill are purchased by paying the skill cost in <span class="label">XP</span> for each level purchased. Most skills require other skills. A skill must have fewer levels than any skill it requires.</p>
+<p>...</p>
+
+<h2>Skill List</h2>
+
+<% ApplicationHelper::Skill.all.each do |skill| %>
+	<%= "<div class=\"well\" style=\"background-color:#{skill.synergy_colour};\">".html_safe %>
+		<div class="row">
+			<div class="span2">
+				<%= "<img src=\"assets/attack.png\" alt=\"Attack\"/>".html_safe if skill.attack? %>
+				<%= "<img src=\"assets/defend.png\" alt=\"Defend\"/>".html_safe if skill.defend? %>
+				<%= "<img src=\"assets/invertible.png\" alt=\"Invertible\"/>".html_safe if skill.invertible? %>
+				<%= "<img src=\"assets/dividible.png\" alt=\"Dividible\"/>".html_safe if skill.dividible? %>
+				<%= "<img src=\"assets/str.png\" alt=\"Strength\"/>".html_safe if skill.stat == "Str" %>
+				<%= "<img src=\"assets/dex.png\" alt=\"Dexterity\"/>".html_safe if skill.stat == "Dex" %>
+				<%= "<img src=\"assets/int.png\" alt=\"Intelligence\"/>".html_safe if skill.stat == "Int" %>
+				<%= "<img src=\"assets/fai.png\" alt=\"Faith\"/>".html_safe if skill.stat == "Fai" %>
+				<br/>
+			</div>
+			<div class="span5 center">
+				<%= skill.full_name %>
+				<%= "Requires: #{skill skill.requires}<br/> ".html_safe if skill.requires %>
+			</div>
+			<div class="" style="float:right">
+				<%= "<img src=\"assets/arthur.png\" alt=\"Arthur\"/>".html_safe if skill.spell == :arthur %>
+				<%= "<img src=\"assets/innodi.png\" alt=\"Innodi\"/>".html_safe if skill.spell == :innodi %>
+				<%= "<img src=\"assets/irdken.png\" alt=\"Ird'ken\"/>".html_safe if skill.spell == :irdken %>
+				<%= "<img src=\"assets/loreanna.png\" alt=\"Loreanna\"/>".html_safe if skill.spell == :loreanna %>
+				<%= "<img src=\"assets/oxdoro.png\" alt=\"Oxdoro\"/>".html_safe if skill.spell == :oxdoro %>
+			</div>
+		</div>
+
+		<%= skill.full_text %>
+
+		<div>
+			<span style="float:left">Cost: <span class="badge badge-inverse"><%= skill.cost %></span></span>
+			<span style="float:right"><%= "Synergy: #{skill.synergy_name}" if skill.synergy_name %></span>
+		</div>
+	</div>
+<% end %>

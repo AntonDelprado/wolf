@@ -1,4 +1,19 @@
 Wolf::Application.routes.draw do
+
+  root to: 'static_pages#home'
+
+  # Rules pages
+
+  match '/rules', to: 'static_pages#rules'
+  match '/rules/core', to: 'static_pages#core'
+  match '/rules/combat', to: 'static_pages#combat'
+  match '/rules/race', to: 'static_pages#race'
+  match '/rules/skills', to: 'static_pages#skills'
+  match '/rules/abilities', to: 'static_pages#abilities'
+  match '/rules/synergy', to: 'static_pages#synergy'
+  match '/rules/item', to: 'static_pages#item'
+  match '/rules/monster', to: 'static_pages#monster'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -47,7 +62,7 @@ Wolf::Application.routes.draw do
   #   end
 
   # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
+  # just remember to delete public/index.
   # root :to => 'welcome#index'
 
   # See how all your routes lay out with "rake routes"

@@ -1,0 +1,76 @@
+<h2>Initiative and Movement Speed</h2>
+
+<p>When combat starts each character makes a <%= check('Initiative+1','int') %> and turn order is from highest to lowest. If multiple characters have the same initiative then they reroll to separate themselves. No matter what they roll they do not change order with characters who did not make the same original roll.</p>
+
+<p>At the start of combat each character also makes a <%= check('Sprint','dex') %> and their movement speed is two plus the result of this check metres per turn. This check determines the movement speed for the entire combat.</p>
+
+<h2>Attack and Defense</h2>
+
+<p>Each turn a character may use their <%= major_action %> to use an attack skill. If so then the following happens.</p>
+
+<ol>
+	<li>The attacker chooses an attack skill and the target[s] of the attack. </li>
+	<li>The attacker rolls the appropriate attack check and informs the defender of the result.</li>
+	<li>The defender chooses a defensive skill and makes the appropriate check or chooses not to defend.</li>
+	<li>The attack is resolved with the appropriate damage dealt and effects performed.</li>
+</ol>
+
+<p>Each character may defend once for free. However each defensive skill use beyond the first will require a <%= minor_action %>.</p>
+
+<h2>Consciousness</h2>
+
+<p>A character falls unconscious when are on <%= hp 0 %> or less. They die once they reach -<%= hp 'max' %>. When a unconscious character has <%= hp %> above <%= hp 0 %> they do not immediately regain consciousness. However each turn they may make a <%= str %> check with their current <%= hp %> in dice. If they roll at least equal to the minimum <%= hp %> they reached then they regain consciousness.</p>
+
+<h2>Defensive Stance</h2>
+
+<p>Any character use a <%= major_action %> to adopt a defensive stance until their next turn. They gain <em>+2</em> to all defensive skills and may defend as many times during their turn as they wish.</p>
+
+<h2>Unaware Opponent</h2>
+
+<p>Any character made against an unaware opponent gains <em>+3</em>.</p>
+
+<h2>Damage Reduction</h2>
+
+<p>Some items, such as armour, provide damage reduction. If the defender has any damage reduction then the power of an attack is reduced before any defensive skill is used.</p>
+
+<h2>Deep Wounds</h2>
+
+<p>Deep Wounds are wounds that are particularly hard to heal. Most skills, such as <%= skill 'Heal' %> and <%= skill 'Regenerate' %>, that recover <%= hp %> do not recover Deep Wounds.</p>
+
+<p>A character may have sufficient Deep Wounds to keep them under <%= hp 0 %>. Such a character is considered comatose and will not recover unless the Deep Wounds are healed.</p>
+
+<h2>Damage Types</h2>
+
+<p>Each weapon and attacks have a different damage type. Damage types are alike unless specified otherwise. For example Skeleton Warriors are resistant to slashing attacks and gain Damage Reduction of 1 against such attacks.</p>
+
+<p>Some common damage types are listed below.</p>
+
+<ul>
+	<li>Piercing</li>
+	<li>Slashing</li>
+	<li>Fire</li>
+	<li>Poison</li>
+	<li>Magic</li>
+</ul>
+
+<h3>Poison</h3>
+
+<p>Poisoned characters gain Deep Wounds over time. At the start of their turn any poisoned character gains one Deep Wound and the poison reduces in strength by one. When the power of the poison is zero or less the poison wears off. If a character reaches <%= hp 0 %> due to poison they fall unconscious immediately and do not have their turn.</p>
+
+<h3>On Fire</h3>
+
+<p>A character who is on fire loses <%= hp 2 %> at the start of their turn and the fire reduces in strength by three. When the power of the fire is zero or less the fire goes out. If the fire is magical in source and the character has the ability <%= skill'Atheist' %> then they only lose <%= hp 1 %> per turn.</p>
+
+<p>A character may use a <%= major_action %> to attempt to put themselves out. If the power of the check is at least the power of the fire then the fire goes out.</p>
+
+<h2>Controlled Characters</h2>
+
+<p>Controlled characters take their turn immediately before the character that controls them. This turn order is maintained if a character is no longer controlled. However if a character becomes controlled then they adopt this turn order.</p>
+
+<p>Controlled characters take their turn in the same way that any other character would. If a controlling character loses consciousness then they lose control of any controlled characters. They do not regain control if they regain consciousness.</p>
+
+<h2>Grappling</h2>
+
+<p>A group of characters can declare that they are going to attempt to grapple a character. Each character forgoes their <%= major_action %>. On the final grappling character's turn each of the attackers makes <%= check('Attack', 'str') %> and the results are added together. The defender may use a defensive skill. If the attack was successful then the character is considered grappled.</p>
+
+<p>Any character who is grappled may use a <%= major_action %> to make a <%= check('Endurance', 'str') %> to attempt to escape. All characters holding them may make <%= check('Endurance','str') %> and the results are added together. If the check of the escaping character exceeds that of the restraining character[s] then they escape.</p>

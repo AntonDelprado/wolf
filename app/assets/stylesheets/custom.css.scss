@@ -1,0 +1,64 @@
+@import "bootstrap";
+
+$lightgrey: #eee;
+
+@mixin box_sizing {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+html {
+	overflow-y: scroll;
+}
+
+body {
+	padding-top: 60px;
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.center {
+	text-align: center;
+}
+
+.right {
+	text-align: right;
+}
+
+footer {
+	margin-top: 45px;
+	padding-top: 5px;
+	border-top: 1px solid $lightgrey;
+	color: #999;
+}
+
+footer small {
+	float: left;
+}
+
+footer ul {
+	float: right;
+	list-style: none;
+	margin-right: 5px;
+}
+
+footer ul li {
+	float: left;
+	margin-left: 10px;
+}
+
+.debug_dump {
+	clear: both;
+	float: left;
+	width: 100%;
+	margin-top: 45px;
+	@include box_sizing;
+}
+
+.well {
+	padding-bottom: 25px;
+}
