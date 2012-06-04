@@ -5,8 +5,24 @@
 
 <h2>Skill List</h2>
 
+<p>
+	Show:&nbsp;
+	<select id="skill-filter">
+		<option>All</option>
+		<option>Warrior</option>
+		<option>Rogue</option>
+		<option>Channeller</option>
+		<option>Mechanist</option>
+		<option>Trickster</option>
+		<option>Battle Mage</option>
+		<option>Necromancer</option>
+		<option>Lore</option>
+		<option>None</option>
+	</select>
+</p>
+
 <% ApplicationHelper::Skill.all.each do |skill| %>
-	<%= "<div class=\"well\" style=\"background-color:#{skill.synergy_colour};\">".html_safe %>
+	<%= "<div class=\"well skill #{skill.synergy_css}\">".html_safe %>
 		<div class="row">
 			<div class="span2">
 				<%= "<img src=\"assets/attack.png\" alt=\"Attack\"/>".html_safe if skill.attack? %>
@@ -34,9 +50,16 @@
 
 		<%= skill.full_text %>
 
-		<div>
-			<span style="float:left">Cost: <span class="badge badge-inverse"><%= skill.cost %></span></span>
-			<span style="float:right"><%= "Synergy: #{skill.synergy_name}" if skill.synergy_name %></span>
+		<div class="row">
+			<div class="span2">
+				<span style="float:left">Cost: <span class="badge badge-inverse"><%= skill.cost %></span></span>
+			</div>
+			<div class="span5 center">
+				<button class="btn btn-mini">Add Skill</button>
+			</div>
+			<div style="float:right">
+				<%= "Synergy: #{skill.synergy.name}" if skill.synergy %>
+			</div>
 		</div>
 	</div>
 <% end %>

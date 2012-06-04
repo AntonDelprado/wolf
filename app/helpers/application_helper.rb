@@ -2,15 +2,9 @@ require 'xml'
 
 module ApplicationHelper
 
-	def full_title(page_title, rules_title)
+	def full_title(page_title = nil)
 		base_title = "Wolf RPG"
-		if rules_title
-			return "#{base_title} | #{rules_title} Rules"
-		elsif page_title
-			return "#{base_title} |  #{page_title}"
-		else
-			return base_title
-		end
+		return "#{base_title} | #{page_title}" if page_title
 	end
 
 	def str
@@ -54,7 +48,8 @@ module ApplicationHelper
 	end
 
 	def skill(skill_name)
-		"<span class=\"label\">#{skill_name}</span>".html_safe
+		return "<span class=\"label\">#{skill_name}</span>".html_safe if skill_name.class == String
+		return "<span class=\"label\">#{skill_name.name}</span>".html_safe
 	end
 
 	def check(skill_name, stat_name)
@@ -67,17 +62,56 @@ module ApplicationHelper
 		"<span class=\"label label-warning\">#{skill_name.capitalize}:#{stat_name.capitalize}</span>".html_safe
 	end
 
-	def synergy_colours
-		return {
-			warrior:		'#fdd',
-			rogue:			'#ddf',
-			channeller:		'#ffd',
-			mechanist:		'#eee',
-			trickster:		'#fff1d8',
-			battle_mage:	'#fdf',
-			necromancer:	'#dfd',
-			none:			'#ddd',
-		}
+	class Synergy
+		def initialize(name = nil)
+			@class = case name
+			when 'Warrior' then :warrior
+			when 'Rogue' then :rogue
+			when 'Channeller' then :channeller
+			when 'Mechanist' then :mechanist
+			when 'Trickster' then :trickster
+			when 'Battle Mage' then :battle_mage
+			when 'Necromancer' then :necromancer
+			when 'Lore' then :lore
+			else :none
+			end
+		end
+
+		def colour
+			return '#fdd' if @class == :warrior
+			return '#ddf' if @class == :rogue
+			return '#ffd' if @class == :channeller
+			return '#eee' if @class == :mechanist
+			return '#fff1d8' if @class == :trickster
+			return '#fdf' if @class == :battle_mage
+			return '#dfd' if @class == :necromancer
+			return '#cdc' if @class == :lore
+			return '#ddd'
+		end
+
+		def name
+			return 'Warrior' if @class == :warrior
+			return 'Rogue' if @class == :rogue
+			return 'Channeller' if @class == :channeller
+			return 'Mechanist' if @class == :mechanist
+			return 'Trickster' if @class == :trickster
+			return 'Battle Mage' if @class == :battle_mage
+			return 'Necromancer' if @class == :necromancer
+			return 'Lore' if @class == :lore
+			return 'None'
+		end
+
+		def css_class
+			return 'warrior' if @class == :warrior
+			return 'rogue' if @class == :rogue
+			return 'channeller' if @class == :channeller
+			return 'mechanist' if @class == :mechanist
+			return 'trickster' if @class == :trickster
+			return 'battle-mage' if @class == :battle_mage
+			return 'necromancer' if @class == :necromancer
+			return 'lore' if @class == :lore
+			return 'no-synergy'
+		end
 	end
 
 	class Effect
@@ -116,18 +150,53 @@ module ApplicationHelper
 	end
 
 	class Skill
-		attr_accessor :name, :name_inv, :stat, :cost, :full_text, :effects, :synergy, :spell, :requires
+		attr_accessor :name, :name_inv, :stat, :cost, :full_text, :effects, :synergy, :spell, :requires, :required_by
 
 		@@skills = nil
+		@@statless = nil
 
 		def self.all
 			if @@skills == nil
 				@@skills = []
-				XML::Parser.file('public/skills.xml').parse.root.find('Skill').each do |skill|
+				XML::Parser.file('app/data/skills.xml').parse.root.find('Skill').each do |skill|
 					@@skills << Skill.new(skill)
+				end
+
+				@@statless = Skill.new(XML::Document.string('<Skill><Name>Statless</Name><Cost></Cost><Text></Text></Skill>'))
+
+				# Base skills names
+				endurance = Skill.find_by_name('Endurance')
+				sprint = Skill.find_by_name('Sprint')
+				observation = Skill.find_by_name('Observation')
+				sense = Skill.find_by_name('Sense')
+
+				# Stat based skills require some skill
+				@@skills.each do |skill|
+					if skill.requires == nil
+						case skill.stat
+						when 'Str' then skill.requires = endurance if skill != endurance
+						when 'Dex' then skill.requires = sprint if skill != sprint
+						when 'Int' then skill.requires = observation if skill != observation
+						when 'Fai' then skill.requires = sense if skill != sense
+						end
+					else
+						required_skill = Skill.find_by_name(skill.requires)
+						skill.requires = required_skill if required_skill
+					end
+
+					skill.requires.required_by << skill if skill.requires && skill.requires.class == Skill
+					@@statless.required_by << skill if skill.requires == nil && skill.stat == nil
 				end
 			end
 			return @@skills
+		end
+
+		def self.statless
+			return @@statless
+		end
+
+		def self.find_by_name(name)
+			Skill.all.detect { |skill| skill.name == name || skill.name_inv == name}
 		end
 
 		def self.parse_text(xml_text)
@@ -207,6 +276,7 @@ module ApplicationHelper
 			@stat = xml_node.find_first('Stat').content if xml_node.find_first('Stat')
 			@cost = xml_node.find_first('Cost').content
 			@requires = xml_node.find_first('Require').content if xml_node.find_first('Require')
+			@required_by = [] # empty for now. will be filled as part of Skill.all
 
 			# Find the effects
 			@effects = []
@@ -215,17 +285,7 @@ module ApplicationHelper
 			end
 
 			# Find the synergy group
-			if xml_node.find_first('Synergy')
-				@synergy = case xml_node.find_first('Synergy').content
-				when 'Warrior' then :warrior
-				when 'Rogue' then :rogue
-				when 'Channeller' then :channeller
-				when 'Mechanist' then :mechanist
-				when 'Trickster' then :trickster
-				when 'Battle Mage' then :battle_mage
-				when 'Necromancer' then :necromancer
-				end
-			end
+			@synergy = Synergy.new(xml_node.find_first('Synergy').content) if xml_node.find_first('Synergy')
 
 			if xml_node.find_first('Spell')
 				@spell = case xml_node.find_first('Spell').content
@@ -234,6 +294,7 @@ module ApplicationHelper
 				when "Ird'ken" then :irdken
 				when 'Oxdoro' then :oxdoro
 				when 'Loreanna' then :loreanna
+				when 'Travaer' then :travaer
 				end
 			end
 
@@ -258,29 +319,81 @@ module ApplicationHelper
 			return "<h3 id=\"#{@name}\"> #{name} </h3>".html_safe
 		end
 
-		def synergy_name
-			return 'Warrior' if @synergy == :warrior
-			return 'Rogue' if @synergy == :rogue
-			return 'Channeller' if @synergy == :channeller
-			return 'Mechanist' if @synergy == :mechanist
-			return 'Trickster' if @synergy == :trickster
-			return 'Battle Mage' if @synergy == :battle_mage
-			return 'Necromancer' if @synergy == :necromancer
+		def synergy_css
+			return @synergy.css_class if @synergy
+			return "no-synergy"
 		end
 
-		def synergy_colour
-			return {
-				warrior:		'#fdd',
-				rogue:			'#ddf',
-				channeller:		'#ffd',
-				mechanist:		'#eee',
-				trickster:		'#fff1d8',
-				battle_mage:	'#fdf',
-				necromancer:	'#dfd',
-				none:			'#ddd',
-				}[@synergy] if @synergy
-			return '#ddd'
+		# def required_size
+		# 	return 1 if required_by.length == 0
+
+		# 	# Sum up the length of the sub-elems. Add 1 iff two adjacent sub-elems both have sub-elems
+		# 	length = required_by[0].required_size
+		# 	(1..required_by.length-1).each do |i|
+		# 		length += required_by[i].required_size
+		# 		length += 1 if required_by[i].required_by.length && required_by[i-1].required_by.length
+		# 	end
+		# 	return length
+		# end
+
+		# def required_row(row_num)
+		# 	if row_num == 0
+		# 		return [self] if @required_by.length == 0
+		# 		return [self].concat(@required_by[0].required_row(0))
+		# 	else
+		# 		child_num = 0
+		# 		while @required_by[child_num].required_size+1 <= row_num
+		# 			row_num -= @required_by[child_num].required_size+1
+		# 			child_num += 1
+		# 		end
+		# 		return [] if @required_by[child_num].required_size == row_num
+		# 		return @required_by[child_num].required_row(row_num)
+		# 	end
+		# end
+
+		def required_size
+			return 1 if required_by.length == 0
+			length = -1
+			required_by.each { |required| length += 1 + required.required_size }
+			return length
 		end
+
+		def required_row(row_num)
+			if row_num == 0
+				return [self] if @required_by.length == 0
+				return [self].concat(@required_by[0].required_row(0))
+			else
+				child_num = 0
+				while @required_by[child_num].required_size+1 <= row_num
+					row_num -= @required_by[child_num].required_size+1
+					child_num += 1
+				end
+				return [] if @required_by[child_num].required_size == row_num
+				return @required_by[child_num].required_row(row_num)
+			end
+		end
+
+		# def required_size
+		# 	return 1 if required_by.length == 0
+		# 	length = 0
+		# 	required_by.each { |required| length += required.required_size }
+		# 	return length
+		# end
+
+		# def required_row(row_num)
+		# 	# If first row
+		# 	if row_num == 0
+		# 		return [self] if @required_by.length == 0
+		# 		return [self].concat(@required_by[0].required_row(0))
+		# 	else
+		# 		child_num = 0
+		# 		while @required_by[child_num].required_size <= row_num
+		# 			row_num -= @required_by[child_num].required_size
+		# 			child_num += 1
+		# 		end
+		# 		return @required_by[child_num].required_row(row_num)
+		# 	end
+		# end
 
 		def invertible?
 			@invertible
@@ -300,14 +413,14 @@ module ApplicationHelper
 	end
 
 	class Ability
-		attr_accessor :name, :full_text, :quick
+		attr_accessor :name, :full_text, :quick, :synergy
 
 		@@abilities = nil
 
 		def self.all
 			if @@abilities == nil
 				@@abilities = []
-				XML::Parser.file('public/skills.xml').parse.root.find('Ability').each do |ability|
+				XML::Parser.file('app/data/skills.xml').parse.root.find('Ability').each do |ability|
 					@@abilities << Ability.new(ability)
 				end
 			end
@@ -319,41 +432,7 @@ module ApplicationHelper
 			@requires = xml_node.find_first('Require')
 			@full_text = Skill.parse_text(xml_node.find_first('Text'))
 			@quick = xml_node.find_first('Quick')
-			if xml_node.find_first('Synergy')
-				@synergy = case xml_node.find_first('Synergy').content
-				when 'Warrior' then :warrior
-				when 'Rogue' then :rogue
-				when 'Channeller' then :channeller
-				when 'Mechanist' then :mechanist
-				when 'Trickster' then :trickster
-				when 'Battle Mage' then :battle_mage
-				when 'Necromancer' then :necromancer
-				end
-			end
-		end
-
-		def synergy_colour
-			return {
-				warrior:		'#fdd',
-				rogue:			'#ddf',
-				channeller:		'#ffd',
-				mechanist:		'#eee',
-				trickster:		'#fff1d8',
-				battle_mage:	'#fdf',
-				necromancer:	'#dfd',
-				none:			'#ddd',
-				}[@synergy] if @synergy
-			return '#ddd'
-		end
-
-		def synergy_name
-			return 'Warrior' if @synergy == :warrior
-			return 'Rogue' if @synergy == :rogue
-			return 'Channeller' if @synergy == :channeller
-			return 'Mechanist' if @synergy == :mechanist
-			return 'Trickster' if @synergy == :trickster
-			return 'Battle Mage' if @synergy == :battle_mage
-			return 'Necromancer' if @synergy == :necromancer
+			@synergy = Synergy.new(xml_node.find_first('Synergy').content) if xml_node.find_first('Synergy')
 		end
 
 		def requires

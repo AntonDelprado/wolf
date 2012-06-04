@@ -14,3 +14,37 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require_tree .
+
+$(document).ready(function() {
+	$('#skill-filter').change(skill_filter_change)
+	synergy_classes = ["warrior", "rogue", "channeller", "mechanist", "trickster", "battle-mage", "necromancer", "lore", "no-synergy"]
+});
+
+function skill_filter_change()
+{
+	if ($(this).val() == "All")
+	{
+		for (var i=0; i<synergy_classes.length; i+=1)
+			$('.' + synergy_classes[i]).css('display', 'block');
+		// $('.warrior').css('display', 'block');
+	}
+	else
+	{
+		for (var i=0; i<synergy_classes.length; i+=1)
+			$('.' + synergy_classes[i]).css('display', 'none');
+
+		switch ($(this).val())
+		{
+			case "Warrior": $('.warrior').css('display', 'block'); break;
+			case "Rogue": $('.rogue').css('display', 'block'); break;
+			case "Channeller": $('.channeller').css('display', 'block'); break;
+			case "Mechanist": $('.mechanist').css('display', 'block'); break;
+			case "Trickster": $('.trickster').css('display', 'block'); break;
+			case "Battle Mage": $('.battle-mage').css('display', 'block'); break;
+			case "Necromancer": $('.necromancer').css('display', 'block'); break;
+			case "Lore": $('.lore').css('display', 'block'); break;
+			case "None": $('.no-synergy').css('display', 'block'); break;
+		}
+	}
+
+}

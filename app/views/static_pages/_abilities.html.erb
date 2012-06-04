@@ -5,7 +5,7 @@
 <h2>Abilities List</h2>
 
 <% ApplicationHelper::Ability.all.each do |ability| %>
-	<%= "<div class=\"well\" style=\"background-color:#{ability.synergy_colour};\">".html_safe %>
+	<%= "<div class=\"well ability\" style=\"background-color:#{ability.synergy ? ability.synergy.colour : '#ddd'};\">".html_safe %>
 		<div class="row">
 			<div class="offset2 span5 center">
 				<%= "<h3>#{ability.name}</h3>".html_safe %>
@@ -16,7 +16,7 @@
 		<%= ability.full_text.html_safe %>
 
 		<div>
-			<span style="float:right"><%= "Synergy: #{ability.synergy_name}" if ability.synergy_name %></span>
+			<span style="float:right"><%= "Synergy: #{ability.synergy.name}" if ability.synergy %></span>
 		</div>
 	</div>
 <% end %>

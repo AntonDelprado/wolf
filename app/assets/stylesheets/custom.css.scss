@@ -59,6 +59,76 @@ footer ul li {
 	@include box_sizing;
 }
 
-.well {
+.skill {
+	padding-bottom:10px;
+}
+
+.ability {
 	padding-bottom: 25px;
 }
+
+.synergy {
+	@extend .well;
+	padding: 5px;
+	text-align: center;
+}
+
+.synergy-row {
+	border-left: 1px solid black;
+}
+
+.small-left {
+	width: 20px;
+	height: 20px;
+	float: left;
+}
+
+.small-right {
+	width: 20px;
+	height: 20px;
+	float: right;
+}
+
+hr {
+	width:30px;
+	color: black;
+	background-color: black;
+	height:1px;
+}
+
+.warrior {
+	background-color: #fdd;
+}
+
+.rogue {
+	background-color: #ddf;
+}
+
+.channeller {
+	background-color: #ffd;
+}
+
+.mechanist {
+	background-color: #eee;
+}
+
+.trickster {
+	background-color: #fff1d8;
+}
+
+.battle-mage {
+	background-color: #fdf;
+}
+
+.necromancer {
+	background-color: #dfd;
+}
+
+.lore {
+	background-color: #cdc;
+}
+
+.no-synergy {
+	background-color: #ddd;
+}
+

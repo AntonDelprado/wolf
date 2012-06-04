@@ -1,5 +1,7 @@
 Wolf::Application.routes.draw do
 
+  get "characters/new"
+
   root to: 'static_pages#home'
 
   # Rules pages
