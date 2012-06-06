@@ -17,7 +17,9 @@
 
 $(document).ready(function() {
 	$('#skill-filter').change(skill_filter_change)
+	$('#statsBase').change(stats_change)
 	synergy_classes = ["warrior", "rogue", "channeller", "mechanist", "trickster", "battle-mage", "necromancer", "lore", "no-synergy"]
+	stats_change();
 });
 
 function skill_filter_change()
@@ -46,5 +48,13 @@ function skill_filter_change()
 			case "None": $('.no-synergy').css('display', 'block'); break;
 		}
 	}
+}
 
+function stats_change()
+{
+	for (var i=0; i<$('#statsBase option').length; i+=1)
+		if ($('#statsBase').val() == i)
+			$('#statsRaw'+i).css('display', 'block');
+		else
+			$('#statsRaw'+i).css('display', 'none')
 }

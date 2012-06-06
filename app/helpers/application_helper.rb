@@ -325,13 +325,13 @@ module ApplicationHelper
 		end
 
 		# def required_size
-		# 	return 1 if required_by.length == 0
+		# 	return 1 if required_by.empty?
 
 		# 	# Sum up the length of the sub-elems. Add 1 iff two adjacent sub-elems both have sub-elems
 		# 	length = required_by[0].required_size
-		# 	(1..required_by.length-1).each do |i|
+		# 	(1..required_by.count-1).each do |i|
 		# 		length += required_by[i].required_size
-		# 		length += 1 if required_by[i].required_by.length && required_by[i-1].required_by.length
+		# 		length += 1 if !required_by[i].required_by.empty? && required_by[i-1].required_by.length
 		# 	end
 		# 	return length
 		# end
@@ -352,7 +352,7 @@ module ApplicationHelper
 		# end
 
 		def required_size
-			return 1 if required_by.length == 0
+			return 1 if required_by.empty?
 			length = -1
 			required_by.each { |required| length += 1 + required.required_size }
 			return length
@@ -360,7 +360,7 @@ module ApplicationHelper
 
 		def required_row(row_num)
 			if row_num == 0
-				return [self] if @required_by.length == 0
+				return [self] if @required_by.empty?
 				return [self].concat(@required_by[0].required_row(0))
 			else
 				child_num = 0
@@ -439,7 +439,7 @@ module ApplicationHelper
 			if @requires
 				requires = ""
 				@requires.each do |node|
-					# requires << ", " if !requires.length.zero?
+					# requires << ", " if !requires.empty?
 					if node.name == 'XP'
 						if node.attributes['type'] == 'Spell'
 							requires << "#{node.content} <span class=\"label label-inverse\">XP</span> Spent in Spells"

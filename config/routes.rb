@@ -1,6 +1,5 @@
 Wolf::Application.routes.draw do
-
-  get "characters/new"
+  resources :characters
 
   root to: 'static_pages#home'
 

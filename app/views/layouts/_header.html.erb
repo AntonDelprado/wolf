@@ -4,26 +4,21 @@
 			<nav>
 				<ul class="nav pull-right">
 					<li><%= link_to "Home", root_path %></li>
-					<li><%= link_to "Character Builder", '#' %></li>
+					<% if session[:character] %>
+						<li class="dropdown">
+							<a href='#' class="dropdown-toggle" data-toggle="dropdown">
+								Character Builder<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><%= link_to "All Characters", characters_path %></li>
+								<li><%= link_to "New Character", new_character_path %></li>
+								<li><%= link_to "Character: #{session[:character].name}", session[:character] %></li>
+							</ul>
+						</li>
+					<% else %>
+						<li><%= link_to "Character Builder", characters_path %></li>
+					<% end %>
 					<li><%= link_to "Rules", rules_path%></li>
-					<!--
-					<li class="dropdown">
-						<a href='#' class="dropdown-toggle" data-toggle="dropdown">
-							Rules<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><%= link_to "Rules Home", rules_path %></li>
-							<li class="divider"></li>
-							<li><%= link_to "Core Rules", rules_core_path %></li>
-							<li><%= link_to "Combat", rules_combat_path %></li>
-							<li><%= link_to "Races", rules_race_path %></li>
-							<li><%= link_to "Skills", rules_skills_path %></li>
-							<li><%= link_to "Abilities", rules_abilities_path%></li>
-							<li><%= link_to "Items", rules_item_path%></li>
-							<li><%= link_to "Monsters", rules_monster_path%></li>
-						</ul>
-					</li>
-					!-->
 				</ul>
 			</nav>
 		</div>
