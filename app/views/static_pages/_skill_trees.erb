@@ -1,0 +1,43 @@
+<h2>Skill Trees</h2>
+
+<p>Below are all the skills arranged by requirements.</p>
+
+<% statless = ApplicationHelper::Skill.statless %>
+<% endurance = ApplicationHelper::Skill.find_by_name('Endurance') %>
+<% sprint = ApplicationHelper::Skill.find_by_name('Sprint') %>
+<% observation = ApplicationHelper::Skill.find_by_name('Observation') %>
+<% sense = ApplicationHelper::Skill.find_by_name('Sense') %>
+<% [statless, endurance,sprint,observation,sense].each_with_index do |base_skill, index| %>
+<h2><%= "#{%w[Statless Strength Dexterity Intelligence, Faith][index]} Based Skills " %></h2>
+<table>
+	<% (0..base_skill.required_size-1).each do |row| %>
+		<tr>
+			<td>&nbsp;</td>	
+			<% base_skill.required_row(row).each do |skill| %>
+				<td rowspan=<%= skill.required_size %> class=<%= skill == base_skill ? "" : "synergy-row" %> onClick="alert('blah')">
+					<div class=<%= "synergy span2 #{skill.synergy_css}".inspect.html_safe %> style="margin-bottom:0px">
+						<%= "<img src=\"assets/attack.png\" class=\"small-left\"/>".html_safe if skill.attack? %>
+						<%= "<img src=\"assets/defend.png\" class=\"small-left\"/>".html_safe if skill.defend? %>
+
+						<%= skill.name %>
+
+						<%= "<img src=\"assets/arthur.png\" class=\"small-right\"/>".html_safe if skill.spell == :arthur %>
+						<%= "<img src=\"assets/innodi.png\" class=\"small-right\"/>".html_safe if skill.spell == :innodi %>
+						<%= "<img src=\"assets/irdken.png\" class=\"small-right\"/>".html_safe if skill.spell == :irdken %>
+						<%= "<img src=\"assets/oxdoro.png\" class=\"small-right\"/>".html_safe if skill.spell == :oxdoro %>
+						<%= "<img src=\"assets/loreanna.png\" class=\"small-right\"/>".html_safe if skill.spell == :loreanna %>
+						<%= "<img src=\"assets/travaer.png\" class=\"small-right\"/>".html_safe if skill.spell == :travaer %>
+					</div>
+				</td>
+				<% if !skill.required_by.length.zero? %>
+					<td rowspan=<%= skill.required_size %>>
+						<hr/>
+					</td>
+				<% end %>
+			<% end %>
+		</tr>
+	<% end %>
+</table>
+<br/>
+<% end %>
+
