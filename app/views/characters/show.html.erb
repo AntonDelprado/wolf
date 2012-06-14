@@ -32,7 +32,7 @@
 		<h3>XP: <span id="xp"><%= @character.xp %></span></h3>
 		<p/>
 		<div class="center">
-			<a class="btn btn-small btn-primary" data-toggle="modal" href='#nameModal'>Modify</a>
+			<a class="btn btn-small btn-primary disable-button" data-toggle="modal" href='#nameModal'>Modify</a>
 		</div>
 	</div>
 	<div class="span5 offset1">
@@ -47,7 +47,7 @@
 						<th>
 							<div class="">
 								<% if @character.race != "Vampire" %>
-									<a class="btn btn-mini btn-primary" data-toggle="modal" href='#statsModal'>Modify</a>
+									<a class="btn btn-mini btn-primary disable-button" data-toggle="modal" href='#statsModal'>Modify</a>
 								<% end %>
 							</div>
 						</th>
@@ -105,106 +105,99 @@
 </div>
 
 
-<!-- ########### Skills Table ########### !-->
+<!-- ########### Skills Buttons ########### !-->
 
 <%= form_for(@character, url: { action: :update, skill_level: true }) do |f| %>
 
 <div class="row">
-	<div class="row skill-level">
-		<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2" %>
-		<a class="btn btn-large btn-success span2" data-toggle="modal" href='#addModal'>Add Skills</a>
-		<a class="btn btn-large btn-danger span2" data-toggle="modal" href='#removeModal'>Remove Skills</a>
-		<a class="btn btn-large btn-warning span2" onClick="show_skill_levels()">Change Skill Levels</a>
-	</div>
-	<div class="row skill-level-select">
-		<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2" %>
-		<span class="btn btn-success btn-large span2" disabled="disabled">Add Skills</span>
-		<span class="btn btn-danger btn-large span2" disabled="disabled">Remove Skills</span>
-		<div class="span2">
-			<%= f.submit "Save Changes", class: "btn btn-large btn-warning" %>
-		</div>
+	<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2 disable-button" %>
+	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addModal'>Add Skills</a>
+	<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeModal'>Remove Skills</a>
+	<a class="btn btn-large btn-warning span2 skill-level" onClick="show_skill_levels()">Change Skill Levels</a>
+	<div class="skill-level-select span2">
+		<%= f.submit "Save Changes", class: "btn btn-large btn-warning span2" %>
 	</div>
 </div>
 <p/>
 
-<div class="row">
-	<table class='table table-bordered table-condensed skill-table'>
-		<col class="skill-name"/>
-		<col class="small" id="level-col"/>
-		<col class="small"/>
-		<col class="small"/>
-		<col class="small"/>
-		<thead>
+
+<!-- ########### Skills Table ########### !-->
+
+<table class='table table-bordered table-condensed skill-table'>
+	<col class="skill-name"/>
+	<col class="small" id="level-col"/>
+	<col class="small"/>
+	<col class="small"/>
+	<col class="small"/>
+	<thead>
+		<tr>
+			<th>Skill Name</th>
+			<th>Level</th>
+			<th>Mana</th>
+			<th>Power</th>
+			<th>Dur.</th>
+			<th>Effect</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @character.skills.sort.map.each do |skill_name, level| %>
+			<% skill = ApplicationHelper::Skill.find_by_name(skill_name) %>
 			<tr>
-				<th>Skill Name</th>
-				<th>Level</th>
-				<th>Mana</th>
-				<th>Power</th>
-				<th>Dur.</th>
-				<th>Effect</th>
-			</tr>
-		</thead>
-		<tbody>
-			<% @character.skills.sort.map.each do |skill_name, level| %>
-				<% skill = ApplicationHelper::Skill.find_by_name(skill_name) %>
-				<tr>
-					<td rowspan=<%= skill.effects.count.to_s %> class=<%= skill.synergy_css('name-') %>>
-						<%= skill.name %>
-						<span style="float:right"><%= skill.icons %></span>
-					</td>
-					<td rowspan=<%= skill.effects.count.to_s %> style="text-align:center">
-						<span class="skill-level"><%= level %></span>
-						<span class="skill-level-select">
-							<%= select_tag :"level_#{skill_name.sub(' ','_')}", options_for_select(@character.min_skill_level(skill_name) .. 20, level), class:"skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
-						</span>
-					</td>
-					<% if !skill.effects.empty? %>
-						<% skill.effects.each_with_index do |effect, index| %>
-							<%= "<tr class=\"#{skill.synergy_css(false)}\">".html_safe if !index.zero? %>
-								<td style="color:#00f; text-align: center;"><%= effect.mana %></td>
-								<td class="power" style="text-align:center;"><%= @character.power(skill, effect) %></td>
-								<td class="power" style="text-align:center"><%= @character.duration(skill, effect) %></td>
-								<td style="text-align:center"><%= effect.quick %></td>
-							</tr>
-						<% end %>
-					<% else %>
-				</tr>
+				<td rowspan=<%= skill.effects.count.to_s %> class=<%= skill.synergy_css('name-') %>>
+					<%= skill.name %>
+					<span style="float:right"><%= skill.icons %></span>
+				</td>
+				<td rowspan=<%= skill.effects.count.to_s %> style="text-align:center">
+					<span class="skill-level"><%= level %></span>
+					<span class="skill-level-select">
+						<%= select_tag :"level_#{skill_name.sub(' ','_')}", options_for_select(@character.min_skill_level(skill_name) .. 20, level), class:"skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
+					</span>
+				</td>
+				<% if !skill.effects.empty? %>
+					<% skill.effects.each_with_index do |effect, index| %>
+						<%= "<tr class=\"#{skill.synergy_css(false)}\">".html_safe if !index.zero? %>
+							<td style="color:#00f; text-align: center;"><%= effect.mana %></td>
+							<td class="power" style="text-align:center;"><%= @character.power(skill, effect) %></td>
+							<td class="power" style="text-align:center"><%= @character.duration(skill, effect) %></td>
+							<td style="text-align:center"><%= effect.quick %></td>
+						</tr>
 					<% end %>
-			<% end %>
-		</tbody>
-	</table>
-</div>
+				<% else %>
+			</tr>
+				<% end %>
+		<% end %>
+	</tbody>
+</table>
 
 <% end %> <!-- end submit form !-->
 
 
-<!-- ########### Abilities Table ########### !-->
+<!-- ########### Abilities Buttons ########### !-->
 
 <div class="row">
-	<%= link_to "Abilities Page", '/rules#tab-abilities', class: "btn btn-primary btn-large span2" %>
-	<a class="btn btn-large btn-success span2" data-toggle="modal" href='#addAbilityModal'>Add Ability</a>
-	<a class="btn btn-large btn-danger span2" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>
+	<%= link_to "Abilities Page", '/rules#tab-abilities', class: "btn btn-primary btn-large span2 disable-button" %>
+	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addAbilityModal'>Add Abilities</a>
+	<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>
 </div>
 <p/>
 
-<div class="row">
-	<table class='table table-striped table-bordered table-condensed'>
-		<thead>
-			<tr>
-				<th>Ability Name</th>
-				<th>Effect</th>
-			</tr>
-		</thead>
-		<tbody>
-			<% @character.abilities.each do |ability_name| %>
-			<% ability = ApplicationHelper::Ability.find_by_name(ability_name) %>
-				<tr>
-					<td class=<%= ability.synergy_css("name-") %>><%= ability.name %></td>
-					<td><%= ability.quick %></td>
-				</tr>
-			<% end %>
-		</tbody>
-	</table>
-</div>
+<!-- ########### Abilities Table ########### !-->
 
+<table class='table table-striped table-bordered table-condensed'>
+	<thead>
+		<tr>
+			<th>Ability Name</th>
+			<th>Effect</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @character.abilities.each do |ability_name| %>
+		<% ability = ApplicationHelper::Ability.find_by_name(ability_name) %>
+			<tr>
+				<td class=<%= ability.synergy_css("name-") %>><%= ability.name %></td>
+				<td><%= ability.quick %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
 
