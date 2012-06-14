@@ -100,36 +100,171 @@ hr {
 	background-color: #fdd;
 }
 
+.skill-warrior {
+	@extend .well;
+	@extend .warrior;
+}
+
+.name-warrior {
+	color: #f44;
+	font-weight: bold;
+	text-align: left;
+}
+
+.add-warrior {
+	@extend .name-warrior;
+}
+
 .rogue {
 	background-color: #ddf;
+}
+
+.skill-rogue {
+	@extend .well;
+	@extend .rogue;
+}
+
+.name-rogue {
+	color: #44f;
+	font-weight: bold;
+}
+
+.add-rogue {
+	@extend .name-rogue;
 }
 
 .channeller {
 	background-color: #ffd;
 }
 
+.skill-channeller {
+	@extend .well;
+	@extend .channeller;
+}
+
+.name-channeller {
+	color: #cc0;
+	font-weight: bold;
+}
+
+.add-channeller {
+	@extend .name-channeller;
+}
+
 .mechanist {
 	background-color: #eee;
+}
+
+.skill-mechanist {
+	@extend .well;
+	@extend .mechanist;
+}
+
+.name-mechanist {
+	color: #aaa;
+	font-weight: bold;
+}
+
+.add-mechanist {
+	@extend .name-mechanist;
 }
 
 .trickster {
 	background-color: #fff1d8;
 }
 
+.skill-trickster {
+	@extend .well;
+	@extend .trickster;
+}
+
+.name-trickster {
+	color: #fb0;
+	font-weight: bold;
+}
+
+.add-trickster {
+	@extend .name-trickster;
+}
+
 .battle-mage {
 	background-color: #fdf;
+}
+
+.skill-battle-mage {
+	@extend .well;
+	@extend .battle-mage;
+}
+
+.name-battle-mage {
+	color: #c2c;
+	font-weight: bold;
+}
+
+.add-battle-mage {
+	@extend .name-battle-mage;
 }
 
 .necromancer {
 	background-color: #dfd;
 }
 
+.skill-necromancer {
+	@extend .well;
+	@extend .necromancer;
+}
+
+.name-necromancer {
+	color: #6c6;
+	font-weight: bold;
+}
+
+.add-necromancer {
+	@extend .name-necromancer;
+}
+
 .lore {
 	background-color: #cdc;
 }
 
+.skill-lore {
+	@extend .well;
+	@extend .lore;
+}
+
+.name-lore {
+	color: #595;
+	font-weight: bold;
+}
+
+.add-lore {
+	@extend .name-lore;
+}
+
 .no-synergy {
+}
+
+.skill-no-synergy {
+	@extend .well;
+	@extend .no-synergy;
 	background-color: #ddd;
+}
+
+.name-no-synergy {
+	color: #000;
+	font-weight: bold;
+}
+
+.add-no-synergy {
+	@extend .name-no-synergy;
+}
+
+.hp {
+	color: #f00;
+}
+
+.mp {
+	color: #00f;
 }
 
 /* Stat table */
@@ -144,6 +279,25 @@ col.stat-elem {
 
 table.stat-table td {
 	text-align: center;
+}
+
+/* Skill table */
+
+table.skill-table td {
+	vertical-align: middle;
+	/* text-align: center; */
+}
+
+col.skill-name {
+	width:180px;
+}
+
+col.small {
+	width: 50px;
+}
+
+.selected-char {
+	background-color: #ddf;
 }
 
 /* forms */
@@ -168,4 +322,19 @@ input, textarea, select, .uneditable-input {
 .field_with_errors {
   @extend .control-group;
   @extend .error;
+ }
+
+ /* Hiding skill tags */
+
+ .skill-level-select {
+ 	display: none;
+ }
+
+ .power {
+ 	text-align:center;
+ 	color: black;
+ }
+
+ .skill-icons {
+ 	width:20px;
  }

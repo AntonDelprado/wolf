@@ -1580,7 +1580,7 @@
             If appropriate an <name>Acrobatic</name> character may help another character perform an acrobatic action. If they do so it requires a <name>Major Action</name> for each turn that they assist. A <check type="dex">Sprint</check> is made with the <name>Sprint</name> skill of the assisting character and the <Dex/> of the assisted character.
             Acrobatic characters have two <name>Minor Action</name>s each turn.
         </Text>
-        <Quick>The character is unusually agile and has two Minor Actions each turn.</Quick>
+        <Quick>The character is unusually agile and has two <name>Minor Action</name>s each turn.</Quick>
     </Ability>
     
     <Ability>
@@ -1740,7 +1740,7 @@
     
     <Ability>
         <Name>Imbue</Name>
-        <Require>Orb Crafter</Require>
+        <Require><Ability>Orb Crafter</Ability></Require>
         <Text>
             By calling on divine powers an item can be imbued with the magics of an Orb or an Orb can be created by removing the divine powers of a magical item.
             When used to imbue an item with and Orb the power is <check type="fai">Sense<times/>2</check>. If the power of the skill is at least the power of the Orb then the item gains the properties of the Orb and the Orb is destroyed. If the power of the skill is less than the power of the Orb, the item already has magical properties, or the item is not compatible with the orb, then nothing happens. However if the power of the skill is zero then the Orb is destroyed.
@@ -1833,7 +1833,7 @@
     
     <Ability>
         <Name>Quick Changer</Name>
-        <Require>Wolf</Require>
+        <Require><Race>Wolf</Race></Require>
         <Text>
             A wolf that can quickly change requires only a <name>Minor Action</name> to change between human form and wolf form. Changing to or from warg form for the first time in a turn does not require a <name>Minor Action</name>.
         </Text>
@@ -1917,7 +1917,7 @@
     <Ability>
         <Name>Weapons: Large</Name>
         <Synergy>Warrior</Synergy>
-        <Require>Weapons: Medium</Require>
+        <Require><Ability>Weapons: Medium</Ability></Require>
         <Text>
             This character knows how to wield large weapons and can wield any two handed weapons as a one handed weapon. If they are also <name>Ambidextrous</name> they may dual wield two handed weapons.
         </Text>

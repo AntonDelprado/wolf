@@ -22,7 +22,7 @@
 </p>
 
 <% ApplicationHelper::Skill.all.each do |skill| %>
-	<%= "<div class=\"well skill #{skill.synergy_css}\">".html_safe %>
+	<div class=<%= skill.synergy_css('skill-') %>>
 		<div class="row">
 			<div class="span2">
 				<%= "<img src=\"assets/attack.png\" alt=\"Attack\"/>".html_safe if skill.attack? %>
@@ -55,7 +55,8 @@
 				<span style="float:left">Cost: <span class="badge badge-inverse"><%= skill.cost %></span></span>
 			</div>
 			<div class="span5 center">
-				<button class="btn btn-mini">Add Skill</button>
+				<%= link_to "Add Skill to: #{session[:character].name}", character_path(session[:character], add_skill: skill.name),
+					method: :put, class:"btn btn-mini btn-primary" if !session[:character].nil? %>
 			</div>
 			<div style="float:right">
 				<%= "Synergy: #{skill.synergy.name}" if skill.synergy %>

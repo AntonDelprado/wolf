@@ -5,13 +5,19 @@
 		<%= stylesheet_link_tag    "application", :media => "all" %>
 		<%= javascript_include_tag "application" %>
 		<%= csrf_meta_tags %>
-		<link rel="shortcut icon" href="wolf.ico" />
+		<link rel="shortcut icon" href="/wolf.ico" />
 	</head>
 	<body>
 		<%= render 'layouts/header' %>
 		<div class="container">
 			<% flash.each do |key, value| %>
-				<div class="alert alert-<%= key %>"><%= value %></div>
+				<% if value.class == Array %>
+					<% value.each do |inner_value| %>
+						<div class="alert alert-<%= key %>"><%= inner_value %></div>
+					<% end %>
+				<% else %>
+					<div class="alert alert-<%= key %>"><%= value %></div>
+				<% end %>
 			<% end %>
 			<%= yield %>
 			<%= render 'layouts/footer' %>

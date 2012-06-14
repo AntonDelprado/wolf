@@ -1,18 +1,22 @@
 <% provide(:title, "Characters") %>
-<h1>All Characters</h1>
-
-	<div class="row">
-<% Character.all.each do |character| %>
-		<div class="hero-unit span2 center">
+<div class="row center">
+	<% Character.all.each do |character| %>
+		<div class=<%= "\"well span3 center #{character == session[:character] ? 'selected-char' : ''}\"".html_safe %>>
 			<h2><%= character.name %></h2>
 			<h3>Player: <%= character.player %></h3>
 			<h3>Race: <%= character.race %></h3>
-			<h4>XP: 0</h4>
+			<h4>XP: <%= character.xp %></h4>
 			<p/>
 			<div class="center">
 				<%= link_to "View", character, class: "btn btn-small btn-primary" %>
 				<%= link_to "Delete", character, class: "btn btn-small btn-danger", confirm: "Are you sure you want to delete '#{character.name}'?", method: :delete %>
 			</div>
 		</div>
-<% end %>
+	<% end %>
+</div>
+
+<div class="row">
+	<div class="span10 center">
+		<%= link_to "New Character", new_character_path, class: "btn btn-large btn-primary" %>
 	</div>
+</div>

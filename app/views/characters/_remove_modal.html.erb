@@ -1,0 +1,38 @@
+<div id="removeModal" class="modal hide fade" style="display: none;">
+	<%= form_for(@character, url: { action: "update", remove_skills: true }) do |f| %>
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Remove Skills</h3>
+		</div>
+		<div class="modal-body">
+
+			<div class="row">
+				<div class="span2">
+
+					<% skills = @character.skills.reject { |skill| ApplicationHelper::Skill.base_skills.include? skill } %>
+					<% skills.sort.each_with_index do |(skill_name, level), index| %>
+
+						<p>
+							<% skill = ApplicationHelper::Skill.find_by_name(skill_name) %>
+							<%= check_box_tag(skill.name, "skill to remove", false,
+								onChange: skill.check_required, id: "remove_#{skill.name}".sub(" ", "_")) %>
+							<span class=<%= skill.synergy_css('name-') %>>
+								<%= skill.name %>
+							</span>
+						</p>
+
+						<% if @character.skills.count >= 3 && (index+1).modulo(@character.skills.count/3).zero? %>
+				</div>
+				<div class="span2">
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+
+		</div>
+		<div class="modal-footer">
+			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
+			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+		</div>
+	<% end %>
+</div>

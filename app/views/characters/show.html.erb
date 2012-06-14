@@ -1,30 +1,51 @@
 <% provide(:title, @character.name) %>
 
+<script type="text/javascript">
+	skill_costs = {
+		<% ApplicationHelper::Skill.all.each do |skill| %>
+			<%= "\"#{skill.name}\": #{skill.cost},".html_safe %>
+		<% end %>
+	};
+	skill_requires = {
+		<% ApplicationHelper::Skill.all.each do |skill| %>
+			<%= "\"#{skill.name}\": \"#{skill.requires.name}\",".html_safe if skill.requires && skill.requires.class != String%>
+		<% end %>
+	};
+</script>
+
+<!-- Custom Forms !-->
+<%= render 'characters/name_modal' %>
+<%= render 'characters/stats_modal' %>
+<%= render 'characters/remove_modal' %>
+<%= render 'characters/remove_ability_modal' %>
+<%= render 'characters/add_modal' %>
+<%= render 'characters/add_ability_modal' %>
+
 <div class="row">
 	<%= render 'shared/error_messages' %>
-	<div class="span4 hero-unit center">
+	<div class="span4 well center">
 		<h1><%= @character.name %></h1>
 		<h2>Player: <%= @character.player %></h2>
 		<h2>Race: <%= @character.race %></h2>
-		<h3>XP: 0</h3>
+		<h3 class="hp">HP: <%= @character.hp %></h3>
+		<h3 class="mp">MP: <%= @character.mp %></h3>
+		<h3>XP: <span id="xp"><%= @character.xp %></span></h3>
 		<p/>
 		<div class="center">
-			<%= render 'characters/name_modal' %>
 			<a class="btn btn-small btn-primary" data-toggle="modal" href='#nameModal'>Modify</a>
 		</div>
 	</div>
 	<div class="span5 offset1">
 		<div class="row">
 			<table class='table table-striped table-bordered table-condensed stat-table'>
-				<col class="stat-name">
-				<col class="stat-elem">
-				<col class="stat-elem">
-				<col class="stat-elem">
+				<col class="stat-name"/>
+				<col class="stat-elem"/>
+				<col class="stat-elem"/>
+				<col class="stat-elem"/>
 				<thead>
 					<tr>
 						<th>
 							<div class="">
-								<%= render 'characters/stats_modal' %>
 								<% if @character.race != "Vampire" %>
 									<a class="btn btn-mini btn-primary" data-toggle="modal" href='#statsModal'>Modify</a>
 								<% end %>
@@ -34,10 +55,30 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr><td><%= str %></td><td><%= @character.str %></td><td/><td/></tr>
-					<tr><td><%= dex %></td><td><%= @character.dex %></td><td/><td/></tr>
-					<tr><td><%= int %></td><td><%= @character.int %></td><td/><td/></tr>
-					<tr><td><%= fai %></td><td><%= @character.fai %></td><td/><td/></tr>
+					<tr>
+						<td><%= str %><img src="/assets/str.png" class="small-right"/></td>
+						<td><%= @character.str %></td>
+						<td><%= @character.str_mod_s %></td>
+						<td><%= @character.str_final %></td>
+					</tr>
+					<tr>
+						<td><%= dex %><img src="/assets/dex.png" class="small-right"/></td>
+						<td><%= @character.dex %></td>
+						<td><%= @character.dex_mod_s %></td>
+						<td><%= @character.dex_final %></td>
+					</tr>
+					<tr>
+						<td><%= int %><img src="/assets/int.png" class="small-right"/></td>
+						<td><%= @character.int %></td>
+						<td><%= @character.int_mod_s %></td>
+						<td><%= @character.int_final %></td>
+					</tr>
+					<tr>
+						<td><%= fai %><img src="/assets/fai.png" class="small-right"/></td>
+						<td><%= @character.fai %></td>
+						<td><%= @character.fai_mod_s %></td>
+						<td><%= @character.fai_final %></td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -46,25 +87,57 @@
 				<col class="stat-name">
 				<col class="stat-elem">
 				<col class="stat-elem">
-				<col class="stat-elem">
 				<thead>
-					<tr><th>Synergy Class</th><th>Bonus</th><th>Spent</th><th>Total</th></tr>
+					<tr><th>Synergy Class</th><th>Bonus</th><th>Spent</th></tr>
 				</thead>
 				<tbody>
-					<tr><td>No Class</td><td/><td>0</td><td>2</td></tr>
+					<% @character.synergies.each do |synergy, level_spent| %>
+						<tr>
+							<td class=<%= ApplicationHelper::Synergy.css_class synergy %>><%= synergy %></td>
+							<td><%= "+#{level_spent[0]}" if synergy != 'No Class'%></td>
+							<td><%= level_spent[1] %></td>
+						</tr>
+					<% end %>
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
 
+
+<!-- ########### Skills Table ########### !-->
+
+<%= form_for(@character, url: { action: :update, skill_level: true }) do |f| %>
+
 <div class="row">
-	<table class='table table-striped table-bordered table-condensed'>
+	<div class="row skill-level">
+		<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2" %>
+		<a class="btn btn-large btn-success span2" data-toggle="modal" href='#addModal'>Add Skills</a>
+		<a class="btn btn-large btn-danger span2" data-toggle="modal" href='#removeModal'>Remove Skills</a>
+		<a class="btn btn-large btn-warning span2" onClick="show_skill_levels()">Change Skill Levels</a>
+	</div>
+	<div class="row skill-level-select">
+		<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2" %>
+		<span class="btn btn-success btn-large span2" disabled="disabled">Add Skills</span>
+		<span class="btn btn-danger btn-large span2" disabled="disabled">Remove Skills</span>
+		<div class="span2">
+			<%= f.submit "Save Changes", class: "btn btn-large btn-warning" %>
+		</div>
+	</div>
+</div>
+<p/>
+
+<div class="row">
+	<table class='table table-bordered table-condensed skill-table'>
+		<col class="skill-name"/>
+		<col class="small" id="level-col"/>
+		<col class="small"/>
+		<col class="small"/>
+		<col class="small"/>
 		<thead>
 			<tr>
 				<th>Skill Name</th>
 				<th>Level</th>
-				<th>Stat</th>
 				<th>Mana</th>
 				<th>Power</th>
 				<th>Dur.</th>
@@ -72,36 +145,64 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td>Divine Arrow</td>
-				<td>11</td>
-				<td>Fai</td>
-				<td>2</td>
-				<td>11d10</td>
-				<td/>
-				<td>A: Attack for X.</td>
-			</tr>
-			<tr><td>...</td><td/><td/><td/><td/><td/><td/></tr>
+			<% @character.skills.sort.map.each do |skill_name, level| %>
+				<% skill = ApplicationHelper::Skill.find_by_name(skill_name) %>
+				<tr>
+					<td rowspan=<%= skill.effects.count.to_s %> class=<%= skill.synergy_css('name-') %>>
+						<%= skill.name %>
+						<span style="float:right"><%= skill.icons %></span>
+					</td>
+					<td rowspan=<%= skill.effects.count.to_s %> style="text-align:center">
+						<span class="skill-level"><%= level %></span>
+						<span class="skill-level-select">
+							<%= select_tag :"level_#{skill_name.sub(' ','_')}", options_for_select(@character.min_skill_level(skill_name) .. 20, level), class:"skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
+						</span>
+					</td>
+					<% if !skill.effects.empty? %>
+						<% skill.effects.each_with_index do |effect, index| %>
+							<%= "<tr class=\"#{skill.synergy_css(false)}\">".html_safe if !index.zero? %>
+								<td style="color:#00f; text-align: center;"><%= effect.mana %></td>
+								<td class="power" style="text-align:center;"><%= @character.power(skill, effect) %></td>
+								<td class="power" style="text-align:center"><%= @character.duration(skill, effect) %></td>
+								<td style="text-align:center"><%= effect.quick %></td>
+							</tr>
+						<% end %>
+					<% else %>
+				</tr>
+					<% end %>
+			<% end %>
 		</tbody>
 	</table>
 </div>
+
+<% end %> <!-- end submit form !-->
+
+
+<!-- ########### Abilities Table ########### !-->
+
+<div class="row">
+	<%= link_to "Abilities Page", '/rules#tab-abilities', class: "btn btn-primary btn-large span2" %>
+	<a class="btn btn-large btn-success span2" data-toggle="modal" href='#addAbilityModal'>Add Ability</a>
+	<a class="btn btn-large btn-danger span2" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>
+</div>
+<p/>
 
 <div class="row">
 	<table class='table table-striped table-bordered table-condensed'>
 		<thead>
 			<tr>
 				<th>Ability Name</th>
-				<th>Synergy</th>
 				<th>Effect</th>
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td>Reason</td>
-				<td>Rogue</td>
-				<td>Rational argument with <%= check('Observation','int') %></td>
-			</tr>
-			<tr><td>...</td><td/><td/></tr>
+			<% @character.abilities.each do |ability_name| %>
+			<% ability = ApplicationHelper::Ability.find_by_name(ability_name) %>
+				<tr>
+					<td class=<%= ability.synergy_css("name-") %>><%= ability.name %></td>
+					<td><%= ability.quick %></td>
+				</tr>
+			<% end %>
 		</tbody>
 	</table>
 </div>

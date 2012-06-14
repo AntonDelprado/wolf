@@ -63,6 +63,22 @@ module ApplicationHelper
 	end
 
 	class Synergy
+		def self.names
+			['Warrior', 'Rogue', 'Channeller', 'Mechanist', 'Trickster', 'Battle Mage', 'Necromancer', 'Lore', 'No Class']
+		end
+
+		def self.css_class(name)
+			return 'name-warrior' if name == 'Warrior'
+			return 'name-rogue' if name == 'Rogue'
+			return 'name-channeller' if name == 'Channeller'
+			return 'name-mechanist' if name == 'Mechanist'
+			return 'name-trickster' if name == 'Trickster'
+			return 'name-battle-mage' if name == 'Battle Mage'
+			return 'name-necromancer' if name == 'Necromancer'
+			return 'name-lore' if name == 'Lore'
+			return 'name-no-synergy'
+		end
+
 		def initialize(name = nil)
 			@class = case name
 			when 'Warrior' then :warrior
@@ -115,11 +131,12 @@ module ApplicationHelper
 	end
 
 	class Effect
-		attr_accessor :quick
+		attr_accessor :quick, :mana, :power, :duration
 		def initialize(xml_node)
 			@quick_raw = xml_node.find_first('Quick')
 			@mana = xml_node.find_first('Mana').content if xml_node.find_first('Mana')
 			@power = xml_node.find_first('Power')
+			@duration = xml_node.find_first('Duration')
 
 			if xml_node.find_first('Action')
 				case xml_node.find_first('Action').content.downcase
@@ -129,6 +146,10 @@ module ApplicationHelper
 				when 'defend' then @action = :defend_action
 				end
 			end
+		end
+
+		def action
+			@action
 		end
 
 		def attack?
@@ -141,11 +162,13 @@ module ApplicationHelper
 
 		def quick
 			return @quick_text if @quick_text
-			@quick_text = Skill.parse_text(@quick_raw).html_safe
-		end
-
-		def power(skills = nil, stats = nil)
-			# Calculate the power given the skills and stats.
+			case @action
+			when :major_action then text = '<span class="label label-inverse">Major Action</span>&nbsp;'
+			when :minor_action then text = '<span class="label label-inverse">Minor Action</span>&nbsp;'
+			else text = ""
+			end
+			text << Skill.parse_text(@quick_raw).gsub(/<\/?p>/, '') # regexp removes paragraph tags
+			@quick_text = text.html_safe
 		end
 	end
 
@@ -154,6 +177,11 @@ module ApplicationHelper
 
 		@@skills = nil
 		@@statless = nil
+		@@base_skills = ['Endurance', 'Sprint', 'Observation', 'Sense']
+
+		def self.base_skills
+			return @@base_skills
+		end
 
 		def self.all
 			if @@skills == nil
@@ -319,37 +347,52 @@ module ApplicationHelper
 			return "<h3 id=\"#{@name}\"> #{name} </h3>".html_safe
 		end
 
-		def synergy_css
-			return @synergy.css_class if @synergy
-			return "no-synergy"
+		def synergy_css(added_str = "")
+			synergy_name = @synergy ? @synergy.css_class : "no-synergy"
+			return "#{added_str}#{synergy_name}"
 		end
 
-		# def required_size
-		# 	return 1 if required_by.empty?
+		def icons
+			icon_list = []
 
-		# 	# Sum up the length of the sub-elems. Add 1 iff two adjacent sub-elems both have sub-elems
-		# 	length = required_by[0].required_size
-		# 	(1..required_by.count-1).each do |i|
-		# 		length += required_by[i].required_size
-		# 		length += 1 if !required_by[i].required_by.empty? && required_by[i-1].required_by.length
-		# 	end
-		# 	return length
-		# end
+			icon_list << '<img src="/assets/attack.png" alt="Attack" class="skill-icons"/>' if self.attack?
+			icon_list << '<img src="/assets/defend.png" alt="Defend" class="skill-icons"/>' if self.defend?
+			icon_list << '<img src="/assets/invertible.png" alt="Attack" class="skill-icons"/>' if self.invertible?
+			icon_list << '<img src="/assets/dividible.png" alt="Defend" class="skill-icons"/>' if self.dividible?
+			case @stat.downcase
+			when 'str' then icon_list << '<img src="/assets/str.png" alt="Str" class="skill-icons"/>'
+			when 'dex' then icon_list << '<img src="/assets/dex.png" alt="Dex" class="skill-icons"/>'
+			when 'int' then icon_list << '<img src="/assets/int.png" alt="Int" class="skill-icons"/>'
+			when 'fai' then icon_list << '<img src="/assets/fai.png" alt="Fai" class="skill-icons"/>'
+			end if !@stat.nil?
 
-		# def required_row(row_num)
-		# 	if row_num == 0
-		# 		return [self] if @required_by.length == 0
-		# 		return [self].concat(@required_by[0].required_row(0))
-		# 	else
-		# 		child_num = 0
-		# 		while @required_by[child_num].required_size+1 <= row_num
-		# 			row_num -= @required_by[child_num].required_size+1
-		# 			child_num += 1
-		# 		end
-		# 		return [] if @required_by[child_num].required_size == row_num
-		# 		return @required_by[child_num].required_row(row_num)
-		# 	end
-		# end
+			return icon_list.join.html_safe
+		end
+
+		def all_required
+			req = @required_by.dup
+			@required_by.each { |skill| req.concat skill.required_by }
+			return req
+		end
+
+		def all_requires
+			return [] if requires.nil? || requires.class == String
+			return requires.all_requires << requires
+		end
+
+		def check_required
+			required = self.all_required.collect { |skill| "\#remove_#{skill.name.sub(" ","_")}" }
+			this = "\#remove_#{self.name.sub(" ","_")}"
+			requires = self.all_requires.collect { |skill| "\#remove_#{skill.name.sub(" ","_")}"}
+			return "check_if_selected(\"#{this}\", #{required.inspect}, #{requires.inspect})"
+		end
+
+		def check_required_inv
+			required = self.all_required.collect { |skill| "\#add_#{skill.name.sub(" ","_")}" }
+			this = "\#add_#{self.name.sub(" ","_")}"
+			requires = self.all_requires.collect { |skill| "\#add_#{skill.name.sub(" ","_")}"}
+			return "check_if_selected(\"#{this}\", #{requires.inspect}, #{required.inspect})"
+		end
 
 		def required_size
 			return 1 if required_by.empty?
@@ -372,28 +415,6 @@ module ApplicationHelper
 				return @required_by[child_num].required_row(row_num)
 			end
 		end
-
-		# def required_size
-		# 	return 1 if required_by.length == 0
-		# 	length = 0
-		# 	required_by.each { |required| length += required.required_size }
-		# 	return length
-		# end
-
-		# def required_row(row_num)
-		# 	# If first row
-		# 	if row_num == 0
-		# 		return [self] if @required_by.length == 0
-		# 		return [self].concat(@required_by[0].required_row(0))
-		# 	else
-		# 		child_num = 0
-		# 		while @required_by[child_num].required_size <= row_num
-		# 			row_num -= @required_by[child_num].required_size
-		# 			child_num += 1
-		# 		end
-		# 		return @required_by[child_num].required_row(row_num)
-		# 	end
-		# end
 
 		def invertible?
 			@invertible
@@ -427,6 +448,10 @@ module ApplicationHelper
 			return @@abilities
 		end
 
+		def self.find_by_name(ability_name)
+			Ability.all.detect { |ability| ability.name == ability_name }
+		end
+
 		def initialize(xml_node)
 			@name = xml_node.find_first('Name').content
 			@requires = xml_node.find_first('Require')
@@ -456,6 +481,21 @@ module ApplicationHelper
 				return requires
 			end
 		end
+
+		def require_xml
+			return @requires
+		end
+		
+		def quick
+			return @quick_text if @quick_text
+			@quick_text = Skill.parse_text(@quick).gsub(/<\/?p>/, '').html_safe
+		end
+
+		def synergy_css(added_str = "")
+			synergy_name = @synergy ? @synergy.css_class : "no-synergy"
+			return "#{added_str}#{synergy_name}"
+		end
+
 	end
 
 end
