@@ -363,35 +363,39 @@ class Character < ActiveRecord::Base
 	def error_messages
 		errors = []
 
-		spent = 0
-		@synergies.each { |synergy, level_spent| spent += level_spent[1] - level_spent[0]}
-		errors << "Overspent Abilities by #{spent} Points." if spent > 0
-
-		errors << "May Only Follow One God" if self.abilities.select{ |ability| ability.include? "Follower" }.count > 1
-
-		self.skills.each do |skill_name, level|
-			if skill_name.include? "Will of" and !(abilities.include? skill_name.sub("Will of", "Follower of"))
-				god = skill_name.sub("Will of ", "")
-				errors << "Need to be a follower of #{god} to use '#{skill_name}'"
-			end
+		if @synergies
+			spent = 0
+			@synergies.each { |synergy, level_spent| spent += level_spent[1] - level_spent[0]}
+			errors << "Overspent Abilities by #{spent} Points." if spent > 0
 		end
 
-		self.abilities.each do |ability_name|
-			ability = ApplicationHelper::Ability.find_by_name(ability_name)
-			if ability.require_xml
-				(ability.require_xml.find('XP') || []).each do |xp_xml|
-					if xp_xml.attributes['type'] == 'Spell' and (self.xp :spell) < xp_xml.content.to_i
-						errors << "Need #{xp_xml.content.to_i} XP Spent in Spells. Only Have #{self.xp :spell}"
-					end
-					if xp_xml.attributes['type'].nil? and self.xp < xp_xml.content.to_i
-						errors << "Need #{xp_xml.content.to_i} XP Spent. Only Have #{self.xp}"
-					end
+		if self.skills
+			errors << "May Only Follow One God" if self.abilities.select{ |ability| ability.include? "Follower" }.count > 1
+
+			self.skills.each do |skill_name, level|
+				if skill_name.include? "Will of" and !(abilities.include? skill_name.sub("Will of", "Follower of"))
+					god = skill_name.sub("Will of ", "")
+					errors << "Need to be a follower of #{god} to use '#{skill_name}'"
 				end
-				(ability.require_xml.find('Race') || []).each do |race_xml|
-					errors << "'#{ability_name}' requires race '#{race_xml.content}'" if race_xml.content != self.race
-				end
-				(ability.require_xml.find('Ability') || []).each do |ability_xml|
-					errors << "'#{ability_name}' requires '#{ability_xml.content}'" if !(self.abilities.include? ability_xml.content)
+			end
+
+			self.abilities.each do |ability_name|
+				ability = ApplicationHelper::Ability.find_by_name(ability_name)
+				if ability.require_xml
+					(ability.require_xml.find('XP') || []).each do |xp_xml|
+						if xp_xml.attributes['type'] == 'Spell' and (self.xp :spell) < xp_xml.content.to_i
+							errors << "Need #{xp_xml.content.to_i} XP Spent in Spells. Only Have #{self.xp :spell}"
+						end
+						if xp_xml.attributes['type'].nil? and self.xp < xp_xml.content.to_i
+							errors << "Need #{xp_xml.content.to_i} XP Spent. Only Have #{self.xp}"
+						end
+					end
+					(ability.require_xml.find('Race') || []).each do |race_xml|
+						errors << "'#{ability_name}' requires race '#{race_xml.content}'" if race_xml.content != self.race
+					end
+					(ability.require_xml.find('Ability') || []).each do |ability_xml|
+						errors << "'#{ability_name}' requires '#{ability_xml.content}'" if !(self.abilities.include? ability_xml.content)
+					end
 				end
 			end
 		end
