@@ -1,40 +1,37 @@
 <h2>Synergy Classes</h2>
 
-<% statless = ApplicationHelper::Skill.statless %>
-<% endurance = ApplicationHelper::Skill.find_by_name('Endurance') %>
-<% sprint = ApplicationHelper::Skill.find_by_name('Sprint') %>
-<% observation = ApplicationHelper::Skill.find_by_name('Observation') %>
-<% sense = ApplicationHelper::Skill.find_by_name('Sense') %>
-<% [statless, endurance,sprint,observation,sense].each do |base_skill| %>
-<table>
-	<% (0..base_skill.required_size-1).each do |row| %>
-		<tr>
-			<td>&nbsp;</td>	
-			<% base_skill.required_row(row).each do |skill| %>
-				<td rowspan=<%= skill.required_size %> class=<%= skill == base_skill ? "" : "synergy-row" %> onClick="alert('blah')">
-					<div class=<%= "synergy span2 #{skill.synergy_css}".inspect.html_safe %> style="margin-bottom:0px">
-						<%= "<img src=\"assets/attack.png\" class=\"small-left\"/>".html_safe if skill.attack? %>
-						<%= "<img src=\"assets/defend.png\" class=\"small-left\"/>".html_safe if skill.defend? %>
+<p>Most skills belong to a synergy class. Points spent within a synergy class give a bonus to all other skills in that class as long as at least one point is spent on that skill. The bonuses provided by synergy classes do not affect requirements and are calculated before all bonuses and buffs including their own bonuses. For each 10 skill levels purchased in a synergy class, each skill in that class gains a bonus level.</p>
 
-						<%= skill.name %>
+<p>The synergy classes listed below as well as what each class is good at. A colour is used for each class which is used consistently on this site.</p>
 
-						<%= "<img src=\"assets/arthur.png\" class=\"small-right\"/>".html_safe if skill.spell == :arthur %>
-						<%= "<img src=\"assets/innodi.png\" class=\"small-right\"/>".html_safe if skill.spell == :innodi %>
-						<%= "<img src=\"assets/irdken.png\" class=\"small-right\"/>".html_safe if skill.spell == :irdken %>
-						<%= "<img src=\"assets/oxdoro.png\" class=\"small-right\"/>".html_safe if skill.spell == :oxdoro %>
-						<%= "<img src=\"assets/loreanna.png\" class=\"small-right\"/>".html_safe if skill.spell == :loreanna %>
-						<%= "<img src=\"assets/travaer.png\" class=\"small-right\"/>".html_safe if skill.spell == :travaer %>
-					</div>
-				</td>
-				<% if !skill.required_by.length.zero? %>
-					<td rowspan=<%= skill.required_size %>>
-						<hr/>
-					</td>
-				<% end %>
-			<% end %>
-		</tr>
-	<% end %>
-</table>
-<br/>
-<% end %>
+<h3>Warrior</h3>
 
+Warriors are fighters and are masters of brute force. They employ direct attacks and are built to shrug off damage. They have a variety of skills to regenerate their HP during battle. Their skills are coloured red.
+
+<h3>Rogue</h3>
+
+Rogues are indirect fighters and theives. They are skilled at perform highly dexterous tasks and have respect and understanding of nature. Their skills are coloured blue.
+
+<h3>Channeller</h3>
+
+Channellers are masters of the redirection of energies. They have the ability to take the spells of others and bend their magics to their will. They also have the ability to affect others emotions. They primarily draw their power from Ird’ken. Their skills are coloured yellow.
+
+<h3>Mechanist</h3>
+
+Mechanists have power of space and time. They gain their powers from Ox- doro. Their skills are coloured grey.
+
+<h3>Trickster</h3>
+
+Tricksters have powers over randomness and skill. They gain their powers from Loreanna. They can provide bonuses to stats and skills. They also have power over vision. Their skills are coloured orange.
+
+<h3>Battle Mage</h3>
+
+Battle Mages are experts in taking raw magical energy and feeding it into magical attacks. They have ability manipulating fire and lightning and draw their power from Arthur. Their skills are coloured purple.
+
+<h3>Necromancer</h3>
+
+Necromancers are spell casters that can manipulate life energies. They cross the divide of both providing life and taking it away. The primary deity of a Necromancer is Innodi. Their skills are coloured green.
+
+<h3>Lore</h3>
+
+The skill Lore is special. It receives a synergy bonus from every spell skill. It does not, however provide a synergy bonus to any skills.
