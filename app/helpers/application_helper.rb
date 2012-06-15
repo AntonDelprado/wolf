@@ -1,5 +1,18 @@
 require 'xml'
 
+module ObjectExtension
+  def nil_or
+    return self unless self.nil?
+    Class.new do
+      def method_missing(sym, *args); nil; end
+    end.new
+  end
+end
+ 
+class Object
+  include ObjectExtension
+end
+
 module ApplicationHelper
 
 	def full_title(page_title = nil)
@@ -316,14 +329,15 @@ module ApplicationHelper
 			@synergy = Synergy.new(xml_node.find_first('Synergy').content) if xml_node.find_first('Synergy')
 
 			if xml_node.find_first('Spell')
-				@spell = case xml_node.find_first('Spell').content
-				when 'Arthur' then :arthur
-				when 'Innodi' then :innodi
-				when "Ird'ken" then :irdken
-				when 'Oxdoro' then :oxdoro
-				when 'Loreanna' then :loreanna
-				when 'Travaer' then :travaer
-				end
+				@spell = xml_node.find_first('Spell').content
+				# @spell = case xml_node.find_first('Spell').content
+				# when 'Arthur' then :arthur
+				# when 'Innodi' then :innodi
+				# when "Ird'ken" then :irdken
+				# when 'Oxdoro' then :oxdoro
+				# when 'Loreanna' then :loreanna
+				# when 'Travaer' then :travaer
+				# end
 			end
 
 			# Find if dividible or invertible

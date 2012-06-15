@@ -73,7 +73,7 @@ class CharactersController < ApplicationController
 					@character.remove_skill skill_name
 				end
 			end
-			if !@character.save
+			unless @character.save
 				flash[:success] = nil
 				flash[:error] = "Removing Skills Failed"
 			end
@@ -87,7 +87,7 @@ class CharactersController < ApplicationController
 					@character.remove_ability ability_name
 				end
 			end
-			if !@character.save
+			unless @character.save
 				flash[:success] = nil
 				flash[:error] = "Removing Abilities Failed"
 			end
@@ -101,7 +101,7 @@ class CharactersController < ApplicationController
 					@character.add_skill skill_name
 				end
 			end
-			if !@character.save
+			unless @character.save
 				flash[:success] = nil
 				flash[:error] = "Adding Skills Failed"
 			end
@@ -115,7 +115,7 @@ class CharactersController < ApplicationController
 					@character.add_ability ability_name
 				end
 			end
-			if !@character.save
+			unless @character.save
 				flash[:success] = nil
 				flash[:error] = "Adding Abilities Failed"
 			end

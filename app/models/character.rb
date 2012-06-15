@@ -122,7 +122,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def min_skill_level(skill_name)
-		return 0 if !(self.skills.has_key? skill_name)
+		return 0 unless self.skills.has_key? skill_name
 
 		base_levels = [1]
 		base_levels << str/2 if skill_name == 'Endurance'
@@ -241,35 +241,35 @@ class Character < ActiveRecord::Base
 	end
 
 	def parse_effect_xml(skill, effect_xml)
-		if effect_xml.attributes['type'] == 'roll'
-			dice_total = effect_xml.attributes['add'].to_i
-			effect_xml.find('skill').each { |skill_xml| dice_total += self.skills[skill_xml.content].to_i } # note nil.to_i == 0
-			dice_total += @synergies[skill.synergy.name][0] if skill.synergy && @synergies[skill.synergy.name]
-			# dice_total += weapon bonus
-			dice_total *= effect_xml.attributes['times'].to_f if effect_xml.attributes['times']
-			dice_total += 2 if skill.name == 'Sense' && self.race == 'Wolf' # wolves have a bonus to sense
-			dice_total = dice_total.floor
+		return effect_xml.content if effect_xml.find_first('skill').nil?
 
-			case skill.stat
-			when 'Str' then dice_type = self.str_final
-			when 'Dex' then dice_type = self.dex_final
-			when 'Int' then dice_type = self.int_final
-			when 'Fai' then dice_type = self.fai_final
-			else dice_type = 0
+		total = effect_xml.attributes['add'].to_i
+		effect_xml.find('skill').each { |skill_xml| total += self.skills[skill_xml.content].to_i }
+		total += @synergies[skill.synergy.name][0] if skill.synergy && @synergies[skill.synergy.name]
+
+		if skill.spell and self.abilities.any? { |ability_name| ability_name[0,8] == "Follower" }
+			god = self.abilities.detect { |ability_name| ability_name[0,8] == "Follower" }.sub("Follower of ", "")
+			if god == "Travaer"
+				total += (skill.invertible?) ? 1 : -1
+			else
+				total += (skill.spell == god) ? 2 : -1
 			end
-
-			return "<span onClick='roll(#{dice_total.to_i}, #{dice_type})'>#{dice_total.to_i}d#{dice_type}</span>".html_safe
-		elsif effect_xml.find('skill')
-			total = effect_xml.attributes['add'].to_i
-			effect_xml.find('skill').each { |skill_xml| total += self.skills[skill_xml.content].to_i } # note nil.to_i == 0
-			total += @synergies[skill.synergy.name][0] if skill.synergy && @synergies[skill.synergy.name]
-			# total += weapon bonus
-			total *= effect_xml.attributes['times'].to_f if effect_xml.attributes['times']
-			total = total.floor
-			return total.to_i.to_s
-		else
-			return effect_xml.content
 		end
+		# total += weapon bonus
+		total *= effect_xml.attributes['times'].to_f if effect_xml.attributes['times']
+		total = total.floor
+
+		return total.to_i.to_s unless effect_xml.attributes['type'] == 'roll'
+
+		case skill.stat
+		when 'Str' then dice_type = self.str_final
+		when 'Dex' then dice_type = self.dex_final
+		when 'Int' then dice_type = self.int_final
+		when 'Fai' then dice_type = self.fai_final
+		else dice_type = 0
+		end
+
+		return "<span onClick='roll(#{total.to_i}, #{dice_type})'>#{total.to_i}d#{dice_type}</span>".html_safe
 	end
 
 	def power(skill, effect)
@@ -357,7 +357,7 @@ class Character < ActiveRecord::Base
 
 	def remove_confirmation(skill)
 		required = skill.all_required.collect{ |skill| skill.name if self.skills.has_key? skill.name }.compact
-		return "Removing '#{skill.name}' will also remove: #{required.join(', ')}. Proceed?" if !required.empty?
+		return "Removing '#{skill.name}' will also remove: #{required.join(', ')}. Proceed?" unless required.empty?
 	end
 
 	def error_messages
@@ -394,7 +394,7 @@ class Character < ActiveRecord::Base
 						errors << "'#{ability_name}' requires race '#{race_xml.content}'" if race_xml.content != self.race
 					end
 					(ability.require_xml.find('Ability') || []).each do |ability_xml|
-						errors << "'#{ability_name}' requires '#{ability_xml.content}'" if !(self.abilities.include? ability_xml.content)
+						errors << "'#{ability_name}' requires '#{ability_xml.content}'" unless self.abilities.include? ability_xml.content
 					end
 				end
 			end
