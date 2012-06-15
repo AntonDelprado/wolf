@@ -21,8 +21,13 @@
 <%= render 'characters/add_modal' %>
 <%= render 'characters/add_ability_modal' %>
 
+<!-- Error and Warning Messages -->
+<%= render 'shared/error_messages' %>
+
 <div class="row">
-	<%= render 'shared/error_messages' %>
+
+	<!-- ########### Character Display ########### !-->
+
 	<div class="span4 well center">
 		<h1><%= @character.name %></h1>
 		<h2>Player: <%= @character.player %></h2>
@@ -36,6 +41,9 @@
 		</div>
 	</div>
 	<div class="span5 offset1">
+
+<!-- ########### Stat Table ########### !-->
+
 		<div class="row">
 			<table class='table table-striped table-bordered table-condensed stat-table'>
 				<col class="stat-name"/>
@@ -82,20 +90,31 @@
 				</tbody>
 			</table>
 		</div>
+
+<!-- ########### Synergy Table ########### !-->
+
 		<div class="row">
 			<table class='table table-striped table-bordered table-condensed stat-table'>
 				<col class="stat-name">
 				<col class="stat-elem">
 				<col class="stat-elem">
+				<col class="stat-elem">
 				<thead>
-					<tr><th>Synergy Class</th><th>Bonus</th><th>Spent</th></tr>
+					<tr><th>Synergy Class</th><th>Bonus</th><th>Spent</th><th>Remaining</th></tr>
 				</thead>
 				<tbody>
 					<% @character.synergies.each do |synergy, level_spent| %>
 						<tr>
 							<td class=<%= ApplicationHelper::Synergy.css_class synergy %>><%= synergy %></td>
-							<td><%= "+#{level_spent[0]}" if synergy != 'No Class'%></td>
-							<td><%= level_spent[1] %></td>
+							<% if synergy == 'No Class' %>
+								<td/>
+								<td><%= level_spent[1] %></td>
+								<td><%= level_spent[0] %> Total</td>
+							<% else %>
+								<td><%= "+#{level_spent[0]}" %></td>
+								<td><%= level_spent[1] %></td>
+								<td><%= level_spent[0] - level_spent[1] %></td>
+							<% end %>
 						</tr>
 					<% end %>
 				</tbody>

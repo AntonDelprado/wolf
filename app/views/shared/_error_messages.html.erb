@@ -1,24 +1,37 @@
 <% if @character.errors.any?  %>
-	<div id="error_explanation">
+	<div id="form_error_explanation" class="dont-print">
 		<div class="alert alert-error">
 			The form contains <%= pluralize(@character.errors.count, "error") %>.
 		</div>
-		<ul>
+		<ul> class="dont-print" id="form_error_explanation">
 			<% @character.errors.full_messages.each do |msg| %>
-			<li>* <%= msg %></li>
+				<li>* <%= msg %></li>
 			<% end %>
 		</ul>
 	</div>
 <% end %>
 
 <% if @character.error_messages.any?  %>
-	<div id="error_explanation">
+	<div id="error_explanation" class="dont-print">
 		<div class="alert alert-error">
 			The character contains <%= pluralize(@character.error_messages.count, "error") %>.
 		</div>
 		<ul>
 			<% @character.error_messages.each do |msg| %>
-			<li>* <%= msg %></li>
+				<li>* <%= msg %></li>
+			<% end %>
+		</ul>
+	</div>
+<% end %>
+
+<% if @character.warning_messages.any? %>
+	<div id="warning_explanation" class="dont-print">
+		<div class="alert alert-warning">
+			The character contains <%= pluralize(@character.warning_messages.count, "warning") %>.
+		</div>
+		<ul>
+			<% @character.warning_messages.each do |msg| %>
+				<li>* <%= msg %></li>
 			<% end %>
 		</ul>
 	</div>

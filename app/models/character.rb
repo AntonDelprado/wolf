@@ -93,7 +93,17 @@ class Character < ActiveRecord::Base
 				end
 			end
 
-			@synergies = synergies.reject { |synergy, level_spent| level_spent[0].zero? && level_spent[1].zero? }
+			spent = 0
+			synergies.each { |synergy, level| spent += level[0] - level[1] unless synergy == 'No Class' }
+			synergies['No Class'][0] = spent - synergies['No Class'][1]
+
+			if synergies['No Class'][0] < 0 and bonus_remaining
+				bonus_remaining = false
+				synergies['No Class'][0] += 2
+			end
+
+			@synergy_bonus = bonus_remaining
+			@synergies = synergies.reject { |synergy, level_spent| not synergy == 'No Class' and level_spent[0].zero? and level_spent[1].zero? }
 		end
 	end
 
@@ -240,6 +250,10 @@ class Character < ActiveRecord::Base
 		@synergies
 	end
 
+	def synergy_bonus
+		@synergy_bonus
+	end
+
 	def parse_effect_xml(skill, effect_xml)
 		return effect_xml.content if effect_xml.find_first('skill').nil?
 
@@ -364,9 +378,10 @@ class Character < ActiveRecord::Base
 		errors = []
 
 		if @synergies
-			spent = 0
-			@synergies.each { |synergy, level_spent| spent += level_spent[1] - level_spent[0]}
-			errors << "Overspent Abilities by #{spent} Points." if spent > 0
+			# spent = 0
+			# @synergies.each { |synergy, level_spent| spent += level_spent[1] - level_spent[0]}
+			errors << "Overspent Abilities by #{-@synergies['No Class'][0]} Points." if @synergies['No Class'][0] < 0
+			# errors << @synergies.inspect
 		end
 
 		if self.skills
@@ -378,6 +393,8 @@ class Character < ActiveRecord::Base
 					errors << "Need to be a follower of #{god} to use '#{skill_name}'"
 				end
 			end
+
+			errors << "Only Wolves and Vampires may use 'Devour'" if self.skills.has_key? 'Devour' and not %[Wolf Vampire].include? self.race
 
 			self.abilities.each do |ability_name|
 				ability = ApplicationHelper::Ability.find_by_name(ability_name)
@@ -401,6 +418,16 @@ class Character < ActiveRecord::Base
 		end
 
 		return errors
+	end
+
+	def warning_messages
+		warnings = []
+
+		warnings << "Unspent Free Ability" if @synergy_bonus
+		warnings << "Unspent Ability points" if @synergies and @synergies['No Class'][0] >= 2
+		warnings << "Only Urgan Elite may use 'Were-Bear'" if self.abilities.include? 'Were-Bear'
+
+		return warnings
 	end
 
 end

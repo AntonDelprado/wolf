@@ -466,7 +466,7 @@
     <Skill>
         <Name>Extra MP</Name>
         <Cost>5</Cost>
-        <Synergy>Trickster</Synergy>
+        <Synergy>Lore</Synergy>
         <Text>
             This character has willpower beyond normal bounds. Each level of this skill increases the character's maximum <MP/> by three.
         </Text>
@@ -889,7 +889,7 @@
     <Skill>
         <Name>Lore</Name>
         <Stat>Int</Stat>
-        <Cost>1</Cost>
+        <Cost>2</Cost>
         <Synergy>Lore</Synergy>
         <Text>
             A character with this skill is particularly knowledgable when it comes to divine lore.
@@ -1128,7 +1128,7 @@
     <Skill>
         <Name>Refresh</Name>
         <Cost>5</Cost>
-        <Synergy>Battle Mage</Synergy>
+        <Synergy>Lore</Synergy>
         <Text>
             The character has great propensity to renew mental energies.
             The character's refresh rate is equal to the level of this skill minus 5.
