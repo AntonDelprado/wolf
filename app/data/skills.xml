@@ -1802,6 +1802,14 @@
         </Text>
         <Quick>This character is skilled at masonry.</Quick>
     </Ability>
+
+    <Ability>
+        <Name>Miner</Name>
+        <Text>
+            This character is skilled at mining and geology. They may make a <check type="int">Observation</check> to make geological identitfication and <check type="str">Endurance</check> to mine ore.
+        </Text>
+        <Quick>This character is skilled at mining and geology.</Quick>
+    </Ability>
     
     <Ability>
         <Name>Orb Crafter</Name>

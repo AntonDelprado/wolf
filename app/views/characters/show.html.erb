@@ -32,7 +32,7 @@
 		<h3>XP: <span id="xp"><%= @character.xp %></span></h3>
 		<p/>
 		<div class="center">
-			<a class="btn btn-small btn-primary disable-button" data-toggle="modal" href='#nameModal'>Modify</a>
+			<a class="btn btn-small btn-primary disable-butto dont-print" data-toggle="modal" href='#nameModal'>Modify</a>
 		</div>
 	</div>
 	<div class="span5 offset1">
@@ -47,7 +47,7 @@
 						<th>
 							<div class="">
 								<% if @character.race != "Vampire" %>
-									<a class="btn btn-mini btn-primary disable-button" data-toggle="modal" href='#statsModal'>Modify</a>
+									<a class="btn btn-mini btn-primary disable-button dont-print" data-toggle="modal" href='#statsModal'>Modify</a>
 								<% end %>
 							</div>
 						</th>
@@ -56,25 +56,25 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td><%= str %><img src="/assets/str.png" class="small-right"/></td>
+						<td>Strength<img src="/assets/str.png" class="small-right"/></td>
 						<td><%= @character.str %></td>
 						<td><%= @character.str_mod_s %></td>
 						<td><%= @character.str_final %></td>
 					</tr>
 					<tr>
-						<td><%= dex %><img src="/assets/dex.png" class="small-right"/></td>
+						<td>Dexterity<img src="/assets/dex.png" class="small-right"/></td>
 						<td><%= @character.dex %></td>
 						<td><%= @character.dex_mod_s %></td>
 						<td><%= @character.dex_final %></td>
 					</tr>
 					<tr>
-						<td><%= int %><img src="/assets/int.png" class="small-right"/></td>
+						<td>Intelligence<img src="/assets/int.png" class="small-right"/></td>
 						<td><%= @character.int %></td>
 						<td><%= @character.int_mod_s %></td>
 						<td><%= @character.int_final %></td>
 					</tr>
 					<tr>
-						<td><%= fai %><img src="/assets/fai.png" class="small-right"/></td>
+						<td>Faith<img src="/assets/fai.png" class="small-right"/></td>
 						<td><%= @character.fai %></td>
 						<td><%= @character.fai_mod_s %></td>
 						<td><%= @character.fai_final %></td>
@@ -109,7 +109,7 @@
 
 <%= form_for(@character, url: { action: :update, skill_level: true }) do |f| %>
 
-<div class="row">
+<div class="row dont-print">
 	<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2 disable-button" %>
 	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addModal'>Add Skills</a>
 	<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeModal'>Remove Skills</a>
@@ -174,7 +174,7 @@
 
 <!-- ########### Abilities Buttons ########### !-->
 
-<div class="row">
+<div class="row dont-print">
 	<%= link_to "Abilities Page", '/rules#tab-abilities', class: "btn btn-primary btn-large span2 disable-button" %>
 	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addAbilityModal'>Add Abilities</a>
 	<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>

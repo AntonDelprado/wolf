@@ -142,8 +142,7 @@ function show_skill_levels()
 	$('.skill-level-select').css('display', 'block');
 	$('.power').css('color', '#ddd');
 	$('.disable-button').attr('disabled', true);
-	$('.disable-button').css('pointer-events', 'none');
-	$('.disable-button').css('cursor', 'default');
+	$('.disable-button').click(function () { return false; });
 }
 
 function name_to_option(skill_name)

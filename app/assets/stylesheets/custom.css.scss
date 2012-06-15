@@ -105,14 +105,10 @@ hr {
 	@extend .warrior;
 }
 
-.name-warrior {
+.name-warrior, .add-warrior {
 	color: #f44;
 	font-weight: bold;
 	text-align: left;
-}
-
-.add-warrior {
-	@extend .name-warrior;
 }
 
 .rogue {
@@ -124,13 +120,9 @@ hr {
 	@extend .rogue;
 }
 
-.name-rogue {
+.name-rogue, .add-rogue {
 	color: #44f;
 	font-weight: bold;
-}
-
-.add-rogue {
-	@extend .name-rogue;
 }
 
 .channeller {
@@ -142,13 +134,9 @@ hr {
 	@extend .channeller;
 }
 
-.name-channeller {
+.name-channeller, .add-channeller {
 	color: #cc0;
 	font-weight: bold;
-}
-
-.add-channeller {
-	@extend .name-channeller;
 }
 
 .mechanist {
@@ -160,13 +148,9 @@ hr {
 	@extend .mechanist;
 }
 
-.name-mechanist {
+.name-mechanist, .add-mechanist {
 	color: #aaa;
 	font-weight: bold;
-}
-
-.add-mechanist {
-	@extend .name-mechanist;
 }
 
 .trickster {
@@ -178,13 +162,9 @@ hr {
 	@extend .trickster;
 }
 
-.name-trickster {
+.name-trickster, .add-trickster {
 	color: #fb0;
 	font-weight: bold;
-}
-
-.add-trickster {
-	@extend .name-trickster;
 }
 
 .battle-mage {
@@ -196,13 +176,9 @@ hr {
 	@extend .battle-mage;
 }
 
-.name-battle-mage {
+.name-battle-mage, .add-battle-mage {
 	color: #c2c;
 	font-weight: bold;
-}
-
-.add-battle-mage {
-	@extend .name-battle-mage;
 }
 
 .necromancer {
@@ -214,13 +190,9 @@ hr {
 	@extend .necromancer;
 }
 
-.name-necromancer {
+.name-necromancer, .add-necromancer {
 	color: #6c6;
 	font-weight: bold;
-}
-
-.add-necromancer {
-	@extend .name-necromancer;
 }
 
 .lore {
@@ -232,13 +204,9 @@ hr {
 	@extend .lore;
 }
 
-.name-lore {
+.name-lore, .add-lore {
 	color: #595;
 	font-weight: bold;
-}
-
-.add-lore {
-	@extend .name-lore;
 }
 
 .no-synergy {
@@ -250,13 +218,9 @@ hr {
 	background-color: #ddd;
 }
 
-.name-no-synergy {
+.name-no-synergy, .add-no-synergy {
 	color: #000;
 	font-weight: bold;
-}
-
-.add-no-synergy {
-	@extend .name-no-synergy;
 }
 
 .hp {

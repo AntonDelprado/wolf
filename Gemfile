@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.3'
+# gem 'less-rails'
+# gem 'less-rails-bootstrap'
 gem 'bootstrap-sass'
 gem 'bcrypt-ruby', '3.0.1'
 gem 'libxml-ruby', '2.3.2'
