@@ -37,7 +37,8 @@
 		<h3>XP: <span id="xp"><%= @character.xp %></span></h3>
 		<p/>
 		<div class="center">
-			<a class="btn btn-small btn-primary disable-butto dont-print" data-toggle="modal" href='#nameModal'>Modify</a>
+			<a class="btn btn-small btn-primary disable-button dont-print" data-toggle="modal" href='#nameModal'>Modify</a>
+			<%= link_to "Export", export_character_path(@character), class: "btn btn-small btn-primary dont-print" %>
 		</div>
 	</div>
 	<div class="span5 offset1">

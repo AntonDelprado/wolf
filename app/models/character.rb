@@ -107,6 +107,40 @@ class Character < ActiveRecord::Base
 		end
 	end
 
+	def export(file_type = :xml)
+		case file_type
+		when :xml
+			doc = XML::Document.new()
+			doc.root = XML::Node.new('Character')
+
+			# Character, player and race
+			doc.root << (XML::Node.new('Name') << XML::Node.new_text(self.name))
+			doc.root << (XML::Node.new('Player') << XML::Node.new_text(self.player))
+			doc.root << (XML::Node.new('Race') << XML::Node.new_text(self.race))
+
+			# Stats
+			doc.root << (XML::Node.new('Strength') << XML::Node.new_text(self.str.to_s))
+			doc.root << (XML::Node.new('Dexterity') << XML::Node.new_text(self.dex.to_s))
+			doc.root << (XML::Node.new('Intelligence') << XML::Node.new_text(self.int.to_s))
+			doc.root << (XML::Node.new('Faith') << XML::Node.new_text(self.fai.to_s))
+
+			# Skills
+			self.skills.each do |skill_name, level|
+				skill_node = XML::Node.new('Skill')
+				skill_node.attributes['level'] = level.to_s
+				skill_node << XML::Node.new_text(skill_name)
+				doc.root << skill_node
+			end
+
+			# Abilities
+			self.abilities.each do |ability_name|
+				doc.root << (XML::Node.new('Ability') << XML::Node.new_text(ability_name))
+			end
+
+			return doc
+		end
+	end
+
 	def update_base_skills
 		self.skills['Endurance'] = [self.skills['Endurance'], self.str/2].max
 		self.skills['Sprint'] = [self.skills['Sprint'], self.dex/2].max
@@ -425,7 +459,7 @@ class Character < ActiveRecord::Base
 
 		warnings << "Unspent Free Ability" if @synergy_bonus
 		warnings << "Unspent Ability points" if @synergies and @synergies['No Class'][0] >= 2
-		warnings << "Only Urgan Elite may use 'Were-Bear'" if self.abilities.include? 'Were-Bear'
+		warnings << "Only Urgan Elite may use 'Were-Bear'" if self.abilities and self.abilities.include? 'Were-Bear'
 
 		return warnings
 	end

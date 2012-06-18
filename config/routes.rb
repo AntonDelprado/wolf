@@ -1,5 +1,9 @@
 Wolf::Application.routes.draw do
-  resources :characters
+  resources :characters do
+    member do
+      get :export
+    end
+  end
 
   root to: 'static_pages#home'
 

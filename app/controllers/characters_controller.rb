@@ -24,6 +24,11 @@ class CharactersController < ApplicationController
 	def index
 	end
 
+	def export
+		@character = Character.find(params[:id])
+		send_data((@character.export :xml), type: 'text/xml', filename: "#{@character.name}.xml")
+	end
+
 	# Prior to editing
 	def edit
 		@character = Character.find(params[:id])
