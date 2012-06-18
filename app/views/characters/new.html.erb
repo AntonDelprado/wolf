@@ -1,5 +1,7 @@
 <% provide(:title, "New Character") %>
 
+<%= render 'characters/import_modal' %>
+
 <h1>Create a New Character</h1>
 
 <div class="row">
@@ -16,7 +18,10 @@
 			<%= f.label :race %>
 			<%= f.select(:race, %w[Wolf Dwarf Goblin Vampire]) %>
 
-			<%= f.submit "Create Character", class: "btn btn-large btn-primary" %>
+			<div>
+				<%= f.submit "Create Character", class: "btn btn-large btn-primary" %>
+				<a class="btn btn-large btn-primary disable-button dont-print right" data-toggle="modal" href='#importModal'>Import Character</a></p>
+			</div>
 
 		<% end %>
 	</div>

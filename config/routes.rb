@@ -3,6 +3,10 @@ Wolf::Application.routes.draw do
     member do
       get :export
     end
+
+    collection do
+      post :import
+    end
   end
 
   root to: 'static_pages#home'

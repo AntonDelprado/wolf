@@ -26,7 +26,30 @@ class CharactersController < ApplicationController
 
 	def export
 		@character = Character.find(params[:id])
-		send_data((@character.export :xml), type: 'text/xml', filename: "#{@character.name}.xml")
+		send_data(@character.export_xml, type: 'text/xml', filename: "#{@character.name}.xml")
+	end
+
+	def import
+		begin
+			xml_doc = XML::Document.io(params[:character][:file])
+		rescue #XML::Parser::ParseError
+			flash[:error] = "Invalid XML File"
+			redirect_to new_character_path
+			return
+		end
+
+		@character = Character.import_xml(xml_doc.root)
+
+		if @character.nil?
+			flash[:error] = "Invalid Character XML"
+			redirect_to new_character_path
+		elsif @character.save
+			flash[:success] = "'#{@character.name}' sucessfully imported."
+			redirect_to @character
+		else
+			flash[:error] = "'#{@character.name}' failed to import."
+			redirect_to new_character_path
+		end
 	end
 
 	# Prior to editing
@@ -154,6 +177,7 @@ class CharactersController < ApplicationController
 	def destroy
 		character = Character.find(params[:id])
 		flash[:success] = "Successfully destroyed: #{character.name}"
+		session[:character] = nil if session[:character] == character
 		character.destroy
 		redirect_to characters_path
 	end

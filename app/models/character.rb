@@ -62,7 +62,6 @@ class Character < ActiveRecord::Base
 
 		# always initialise synergies if there are skills
 		if self.skills
-
 			synergies = {}
 			bonus_remaining = true
 			ApplicationHelper::Synergy.names.each { |name| synergies[name] = [0,0] }
@@ -107,7 +106,41 @@ class Character < ActiveRecord::Base
 		end
 	end
 
-	def export(file_type = :xml)
+	def self.import_xml(xml_root)
+		begin
+			character = Character.new
+
+			character.name = xml_root.find_first('Name').content
+			character.player = xml_root.find_first('Player').content
+			character.race = xml_root.find_first('Race').content
+
+			character.str = xml_root.find_first('Strength').content.to_i
+			character.dex = xml_root.find_first('Dexterity').content.to_i
+			character.int = xml_root.find_first('Intelligence').content.to_i
+			character.fai = xml_root.find_first('Faith').content.to_i
+
+			character.skills = {}
+			xml_root.find('Skill').each do |skill_node|
+				character.add_skill(skill_node.content, skill_node.attributes['level'].to_i)
+			end
+
+			character.add_skill('Endurance', character.str/2)
+			character.add_skill('Sprint', character.dex/2)
+			character.add_skill('Observation', character.int/2)
+			character.add_skill('Sense', character.fai/2)
+
+			character.abilities = []
+			xml_root.find('Ability').each do |ability_node|
+				character.add_ability ability_node.content
+			end
+
+			return character
+		rescue NoMethodError
+			return nil
+		end
+	end
+
+	def export_xml(file_type = :xml)
 		case file_type
 		when :xml
 			doc = XML::Document.new()
@@ -119,23 +152,28 @@ class Character < ActiveRecord::Base
 			doc.root << (XML::Node.new('Race') << XML::Node.new_text(self.race))
 
 			# Stats
-			doc.root << (XML::Node.new('Strength') << XML::Node.new_text(self.str.to_s))
-			doc.root << (XML::Node.new('Dexterity') << XML::Node.new_text(self.dex.to_s))
-			doc.root << (XML::Node.new('Intelligence') << XML::Node.new_text(self.int.to_s))
-			doc.root << (XML::Node.new('Faith') << XML::Node.new_text(self.fai.to_s))
+			stats_node = XML::Node.new('Stats')
+			stats_node << (XML::Node.new('Strength') << XML::Node.new_text(self.str.to_s))
+			stats_node << (XML::Node.new('Dexterity') << XML::Node.new_text(self.dex.to_s))
+			stats_node << (XML::Node.new('Intelligence') << XML::Node.new_text(self.int.to_s))
+			stats_node << (XML::Node.new('Faith') << XML::Node.new_text(self.fai.to_s))
 
 			# Skills
+			skills_node = XML::Node.new('Skills')
 			self.skills.each do |skill_name, level|
 				skill_node = XML::Node.new('Skill')
 				skill_node.attributes['level'] = level.to_s
 				skill_node << XML::Node.new_text(skill_name)
-				doc.root << skill_node
+				skills_node << skill_node
 			end
 
 			# Abilities
+			abilities_node = XML::Node.new('Abilities')
 			self.abilities.each do |ability_name|
-				doc.root << (XML::Node.new('Ability') << XML::Node.new_text(ability_name))
+				abilities_node << (XML::Node.new('Ability') << XML::Node.new_text(ability_name))
 			end
+
+			doc.root << stats_node << skills_node << abilities_node
 
 			return doc
 		end
@@ -149,14 +187,16 @@ class Character < ActiveRecord::Base
 	end
 
 	def add_skill(skill_name, level=1)
-		added_skills = []
+		skill = ApplicationHelper::Skill.find_by_name(skill_name)
+		return nil if skill.nil?
 
+		added_skills = []
 		if self.skills[skill_name].nil? || self.skills[skill_name] < level
 			added_skills << skill_name if self.skills[skill_name].nil?
 			self.skills[skill_name] = level
 		end
 
-		required_skill = ApplicationHelper::Skill.find_by_name(skill_name).requires
+		required_skill = skill.requires
 		added_skills.concat self.add_skill(required_skill.name, level+1) if required_skill and required_skill.class == ApplicationHelper::Skill
 
 		return added_skills
@@ -196,6 +236,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def add_ability(ability_name)
+		return nil if ApplicationHelper::Ability.find_by_name(ability_name)
 		self.abilities << ability_name
 	end
 
@@ -412,13 +453,12 @@ class Character < ActiveRecord::Base
 		errors = []
 
 		if @synergies
-			# spent = 0
-			# @synergies.each { |synergy, level_spent| spent += level_spent[1] - level_spent[0]}
 			errors << "Overspent Abilities by #{-@synergies['No Class'][0]} Points." if @synergies['No Class'][0] < 0
-			# errors << @synergies.inspect
 		end
 
 		if self.skills
+			errors << "Invalid Stats" unless Character.stats(self.race).include? self.stats.sort.reverse
+
 			errors << "May Only Follow One God" if self.abilities.select{ |ability| ability.include? "Follower" }.count > 1
 
 			self.skills.each do |skill_name, level|
