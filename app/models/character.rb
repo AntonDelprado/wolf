@@ -15,10 +15,13 @@
 #  updated_at :datetime        not null
 #
 
+include ApplicationHelper
+
 class Character < ActiveRecord::Base
 	attr_accessible :dex, :fai, :int, :name, :player, :race, :str
 	serialize :skills
 	serialize :abilities
+	serialize :items
 	after_initialize :init_rest
 
 	validates :name, presence: true, length: { maximum: 100 }
@@ -44,7 +47,7 @@ class Character < ActiveRecord::Base
 
 	def init_rest
 		# initialze only on create, not on new/find
-		if self.skills.nil? && self.race
+		if self.skills.nil? and self.race
 			stats_new = self.class.stats(self.race)[0]
 			self.str = stats_new[0]
 			self.dex = stats_new[1]
@@ -58,51 +61,59 @@ class Character < ActiveRecord::Base
 				'Sense' => self.fai/2
 			}
 			self.abilities = []
+			self.items = {}
 		end
 
 		# always initialise synergies if there are skills
 		if self.skills
+			self.items ||= {}
+
 			synergies = {}
 			bonus_remaining = true
-			ApplicationHelper::Synergy.names.each { |name| synergies[name] = [0,0] }
+			ApplicationHelper::Synergy.names.each { |name| synergies[name] = { level: 0, spent: 0 } }
+
 
 			self.skills.each do |skill_name, level|
-				skill = ApplicationHelper::Skill.find_by_name(skill_name)
-				synergies[skill.synergy.name][0] += level if skill.synergy
-				synergies['Lore'][0] += level if skill.spell
+				skill = ApplicationHelper::Skill.find_by_name skill_name
+				synergies[skill.synergy.name][:level] += level if skill.synergy
+				synergies['Lore'][:level] += level if skill.spell
 			end
 
-			synergies.each { |synergy, level_zero| synergies[synergy] = [level_zero[0]/10,0] } if self.race != 'Goblin'
-			synergies.each { |synergy, level_zero| synergies[synergy] = [level_zero[0]/6,0] } if self.race == 'Goblin'
+			if race == 'Goblin'
+				synergies.each { |synergy_name, synergy| synergy[:level] /= 6 }
+			else
+				synergies.each { |synergy_name, synergy| synergy[:level] /= 10 }
+			end
 
 			self.abilities.each do |ability_name, level|
 				ability = ApplicationHelper::Ability.find_by_name(ability_name)
 				if ability.synergy
-					if synergies[ability.synergy.name][0] < synergies[ability.synergy.name][1]+2
-						if bonus_remaining
-							bonus_remaining = false
-						else
-							synergies['No Class'][1] += 3
-						end
+					if synergies[ability.synergy.name][:level] < synergies[ability.synergy.name][:spent]+2
+						bonus_remaining ? bonus_remaining = false : synergies['No Class'][:spent] += 3
 					else
-						synergies[ability.synergy.name][1] += 2
+						synergies[ability.synergy.name][:spent] += 2
 					end
 				else
-					synergies['No Class'][1] += 2
+					synergies['No Class'][:spent] += 2
 				end
 			end
 
 			spent = 0
-			synergies.each { |synergy, level| spent += level[0] - level[1] unless synergy == 'No Class' }
-			synergies['No Class'][0] = spent - synergies['No Class'][1]
+			synergies.each do |synergy_name, synergy|
+				next if synergy_name.eql? 'No Class'
+				remaining = synergy[:level] - synergy[:spent]
+				spent += remaining
+				synergy[:remaining] = remaining
+			end
+			synergies['No Class'][:remaining] = spent - synergies['No Class'][:spent]
 
-			if synergies['No Class'][0] < 0 and bonus_remaining
+			if synergies['No Class'][:remaining] < 0 and bonus_remaining
 				bonus_remaining = false
-				synergies['No Class'][0] += 2
+				synergies['No Class'][:remaining] += 2
 			end
 
 			@synergy_bonus = bonus_remaining
-			@synergies = synergies.reject { |synergy, level_spent| not synergy == 'No Class' and level_spent[0].zero? and level_spent[1].zero? }
+			@synergies = synergies.reject { |synergy_name, synergy| synergy_name != 'No Class' and synergy[:level].zero? and synergy[:spent].zero? }
 		end
 	end
 
@@ -114,13 +125,14 @@ class Character < ActiveRecord::Base
 			character.player = xml_root.find_first('Player').content
 			character.race = xml_root.find_first('Race').content
 
-			character.str = xml_root.find_first('Strength').content.to_i
-			character.dex = xml_root.find_first('Dexterity').content.to_i
-			character.int = xml_root.find_first('Intelligence').content.to_i
-			character.fai = xml_root.find_first('Faith').content.to_i
+			stats_xml = xml_root.find_first('Stats')
+			character.str = stats_xml.find_first('Strength').content.to_i
+			character.dex = stats_xml.find_first('Dexterity').content.to_i
+			character.int = stats_xml.find_first('Intelligence').content.to_i
+			character.fai = stats_xml.find_first('Faith').content.to_i
 
 			character.skills = {}
-			xml_root.find('Skill').each do |skill_node|
+			xml_root.find_first('Skills').find('Skill').each do |skill_node|
 				character.add_skill(skill_node.content, skill_node.attributes['level'].to_i)
 			end
 
@@ -130,7 +142,7 @@ class Character < ActiveRecord::Base
 			character.add_skill('Sense', character.fai/2)
 
 			character.abilities = []
-			xml_root.find('Ability').each do |ability_node|
+			xml_root.find_first('Abilities').find('Ability').each do |ability_node|
 				character.add_ability ability_node.content
 			end
 
@@ -236,7 +248,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def add_ability(ability_name)
-		return nil if ApplicationHelper::Ability.find_by_name(ability_name)
+		return nil unless ApplicationHelper::Ability.find_by_name(ability_name)
 		self.abilities << ability_name
 	end
 
@@ -254,6 +266,78 @@ class Character < ActiveRecord::Base
 		abilities = ApplicationHelper::Ability.all.reject { |ability| self.abilities.include? ability.name }
 		abilities.reject! { |ability| (ability.name.include? "Follower of") && !self.follower_of.nil? }
 		return abilities
+	end
+
+	def equip(equipment)
+		self.items ||= {}
+		equiped = []
+
+		if equipment[:primary] == 'None'
+			self.items.delete :primary
+		else
+			self.items[:primary] = weapons.detect { |weapon| weapon[:name].eql? equipment[:primary] }
+			equiped << self.items[:primary]
+		end
+
+		if equipment[:off_hand] == 'None'
+			self.items.delete :off_hand
+		else
+			self.items[:off_hand] = weapons.concat(shields).detect { |item| item[:name].eql? equipment[:off_hand] }
+			equiped << self.items[:off_hand]
+		end
+
+		if equipment[:armour] == 'Cloth'
+			self.items.delete :armour
+		else
+			self.items[:armour] = armours.detect { |armour| armour[:name].eql? equipment[:armour] }
+			equiped << self.items[:armour]
+		end
+
+		return equiped
+	end
+
+	def pass_require?(requirements)
+		return true if requirements.nil?
+		requirements.all? do |type, value|
+			case type
+			when :str then self.str >= value
+			when :dex then self.dex >= value
+			when :int then self.int >= value
+			when :fai then self.fai >= value
+			when :xp then self.xp >= value
+			when :spell_xp then self.xp :spell >= value
+			when :abilities then value.all? { |ability| self.abilities.include? ability }
+			end
+		end
+	end
+
+	def can_equip(slot)
+		case slot
+		when :primary
+			return weapons.select { |weapon| self.pass_require? weapon[:require] }.collect { |weapon| weapon[:name] }.unshift('None')
+		when :off_hand
+			if self.abilities.include? "Ambidextrous"
+				off_hand_equip = weapons.select { |weapon| self.pass_require? weapon[:require] } if self.abilities.include? "Weapons: Large"
+				off_hand_equip ||= weapons.select { |weapon| self.pass_require? weapon[:require] and weapon[:hands] == 1 }
+			end
+			off_hand_equip ||= []
+			shields.each { |shield| off_hand_equip << shield if self.pass_require? shield[:require] }
+			return off_hand_equip.collect { |item| item[:name] }.unshift('None')
+		when :armour
+			return armours.select { |armour| self.pass_require? armour[:require] }.collect { |armour| armour[:name] }
+		end
+	end
+
+	def primary
+		self.items[:primary]
+	end
+
+	def off_hand
+		self.items[:off_hand]
+	end
+
+	def armour
+		self.items[:armour]
 	end
 
 	# index1 represents which ba
@@ -275,6 +359,30 @@ class Character < ActiveRecord::Base
 
 	def stats
 		[self.str, self.dex, self.int, self.fai]
+	end
+
+	def str_mod
+		mod = 0
+		self.items.each { |slot, item| mod += item[:effect][:str].to_i unless item[:effect].nil? }
+		return mod
+	end
+
+	def dex_mod
+		mod = 0
+		self.items.each { |slot, item| mod += item[:effect][:dex].to_i unless item[:effect].nil? }
+		return mod
+	end
+
+	def int_mod
+		mod = 0
+		self.items.each { |slot, item| mod += item[:effect][:int].to_i unless item[:effect].nil? }
+		return mod
+	end
+
+	def fai_mod
+		mod = 0
+		self.items.each { |slot, item| mod += item[:effect][:fai].to_i unless item[:effect].nil? }
+		return mod
 	end
 
 	def str_mod_s
@@ -321,6 +429,18 @@ class Character < ActiveRecord::Base
 		return self.fai
 	end
 
+	def primary
+		self.items[:primary]
+	end
+
+	def off_hand
+		self.items[:off_hand]
+	end
+
+	def armour
+		self.items[:armour]
+	end
+
 	def synergies
 		@synergies
 	end
@@ -333,8 +453,8 @@ class Character < ActiveRecord::Base
 		return effect_xml.content if effect_xml.find_first('skill').nil?
 
 		total = effect_xml.attributes['add'].to_i
-		effect_xml.find('skill').each { |skill_xml| total += self.skills[skill_xml.content].to_i }
-		total += @synergies[skill.synergy.name][0] if skill.synergy && @synergies[skill.synergy.name]
+		effect_xml.find('skill').each { |skill_xml| total += self.skills[Skill.find_by_name(skill_xml.content).name].to_i }
+		total += @synergies[skill.synergy.name][:level] if skill.synergy && @synergies[skill.synergy.name]
 
 		if skill.spell and self.abilities.any? { |ability_name| ability_name[0,8] == "Follower" }
 			god = self.abilities.detect { |ability_name| ability_name[0,8] == "Follower" }.sub("Follower of ", "")
@@ -344,7 +464,8 @@ class Character < ActiveRecord::Base
 				total += (skill.spell == god) ? 2 : -1
 			end
 		end
-		# total += weapon bonus
+		total += self.weapon_bonus if effect_xml.attributes['weapon']
+		self.items.each { |slot, item| total += item[:effect][skill.name].to_i if item[:effect] }
 		total *= effect_xml.attributes['times'].to_f if effect_xml.attributes['times']
 		total = total.floor
 
@@ -403,45 +524,48 @@ class Character < ActiveRecord::Base
 		return spent_xp
 	end
 
-	def hp
-		hp_base = self.str + self.dex
-		if self.synergies['Warrior']
-			hp_base += (self.skills['Extra HP'].to_i + self.synergies['Warrior'][0]) * 3
-			regen = ((self.skills['Regenerate'].to_f+self.synergies['Warrior'][0])/2).floor - 5
-		else
-			hp_base += self.skills['Extra HP'].to_i * 3
-			regen = (self.skills['Regenerate'].to_f/2).floor - 5
-		end
-
-		case
-		when regen == 0 then text = "#{hp_base} + 1/ Turn"
-		when regen < 0 then text = "#{hp_base} + 1/ #{2**(-regen)} Turns"
-		when regen > 0 then text = "#{hp_base} + #{1+regen} / Turn"
-		end
-
-		return "<span onClick=\"total_time(#{hp_base},#{regen})\">#{text}</span>".html_safe
+	def hp_max
+		return self.str + self.dex + 3*(self.skills['Extra HP'].to_i + @synergies['Warrior'][:level]) if @synergies['Warrior']
+		return self.str + self.dex + 3*self.skills['Extra HP'].to_i
 	end
 
-	def mp
-		mp_base = self.int + self.fai
-		if self.synergies['Trickster']
-			mp_base += (self.skills['Extra MP'].to_i + self.synergies['Trickster'][0]) * 3
+	def hp_rate
+		return ((self.skills['Regenerate'].to_f+self.synergies['Warrior'][:level])/2).floor - 5 if @synergies['Warrior']
+		return ((self.skills['Regenerate'].to_f)/2).floor - 5
+	end
+
+	def hp_time
+		if self.hp_rate >= 0
+			seconds = 10*self.hp_max/(1+self.hp_rate)
 		else
-			mp_base += self.skills['Extra MP'].to_i * 3
-		end
-		if self.synergies['Battle Mage']
-			refresh = ((self.skills['Refresh'].to_f+self.synergies['Battle Mage'][0])/2).floor - 5
-		else
-			refresh = (self.skills['Refresh'].to_f/2).floor - 5
+			seconds = 10*self.hp_max*(2**-self.hp_rate).to_i
 		end
 
-		case
-		when refresh == 0 then text = "#{mp_base} + 1/ Turn"
-		when refresh < 0 then text = "#{mp_base} + 1/ #{2**(-refresh)} Turns"
-		when refresh > 0 then text = "#{mp_base} + #{1+refresh} / Turn"
+		return "#{seconds} sec" if seconds < 60
+		return "#{(seconds/60.0).round(1)} min" if seconds < 3600
+		return "#{(seconds/3600.0).round(1)} hrs"
+	end
+
+	def mp_max
+		return self.int + self.fai + 3*(self.skills['Extra MP'].to_i + @synergies['Lore'][:level]) if @synergies['Lore']
+		return self.int + self.fai + 3*self.skills['Extra MP'].to_i
+	end
+
+	def mp_rate
+		return ((self.skills['Refresh'].to_f+@synergies['Lore'][:level])/2).floor - 5 if @synergies['Lore']
+		return ((self.skills['Refresh'].to_f)/2).floor - 5
+	end
+
+	def mp_time
+		if self.mp_rate >= 0
+			seconds = 10*self.mp_max/(1+self.mp_rate)
+		else
+			seconds = 10*self.mp_max*(2**-self.mp_rate).to_i
 		end
 
-		return "<span onClick=\"total_time(#{mp_base},#{refresh})\">#{text}</span>".html_safe
+		return "#{seconds} sec" if seconds < 60
+		return "#{(seconds/60.0).round(1)} min" if seconds < 3600
+		return "#{(seconds/3600.0).round(1)} hrs"
 	end
 
 	def remove_confirmation(skill)
@@ -449,11 +573,25 @@ class Character < ActiveRecord::Base
 		return "Removing '#{skill.name}' will also remove: #{required.join(', ')}. Proceed?" unless required.empty?
 	end
 
+	def damage_reduction
+		dr = 0
+		self.items.each do |slot, item|
+			dr += item[:effect][:dr].to_i if item[:effect]
+		end
+		return dr
+	end
+
+	def weapon_bonus
+		bonus = 0
+		self.items.each { |slot, item| bonus += item[:bonus].to_i }
+		return bonus
+	end
+
 	def error_messages
 		errors = []
 
 		if @synergies
-			errors << "Overspent Abilities by #{-@synergies['No Class'][0]} Points." if @synergies['No Class'][0] < 0
+			errors << "Overspent Abilities by #{-@synergies['No Class'][:remaining]} Points." if @synergies['No Class'][:remaining] < 0
 		end
 
 		if self.skills
@@ -491,6 +629,23 @@ class Character < ActiveRecord::Base
 			end
 		end
 
+		if self.items
+			self.items.each do |slot, item|
+				if item[:type]
+					case item[:type]
+					when :ranged then errors << "Need to train in Ranged Weapons" unless self.abilities.include? "Weapons: Ranged"
+					when :medium, :large then errors << "Need to train in Medium Weapons" unless self.abilities.include? "Weapons: Medium"
+					end
+				end
+
+				errors << "Does not satisfy requirements for '#{item[:name]}'" unless self.pass_require? item[:require]
+			end
+
+			if self.primary and self.primary[:hands] == 2 and self.off_hand and not self.abilities.include? "Weapons: Large"
+				errors << "Hands overfull"
+			end			
+		end
+
 		return errors
 	end
 
@@ -498,8 +653,15 @@ class Character < ActiveRecord::Base
 		warnings = []
 
 		warnings << "Unspent Free Ability" if @synergy_bonus
-		warnings << "Unspent Ability points" if @synergies and @synergies['No Class'][0] >= 2
+		warnings << "Unspent Ability points" if @synergies and @synergies['No Class'][:remaining] >= 2
 		warnings << "Only Urgan Elite may use 'Were-Bear'" if self.abilities and self.abilities.include? 'Were-Bear'
+
+		unless self.race.eql? 'Wolf' or self.items.nil?
+			warnings << "No Equiped Weapon" if self.items[:primary].nil?
+			if self.items[:off_hand].nil? and (self.items[:primary].nil? or self.items[:primary][:hands] == 1 or self.abilities.include? "Weapons: Large")
+				warnings << "Nothing Equiped Off Hand"
+			end
+		end
 
 		return warnings
 	end

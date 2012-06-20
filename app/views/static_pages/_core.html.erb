@@ -22,7 +22,7 @@
 
 <h3>Observing, Sensing and Noticing</h3>
 
-<p>There are two skills that characters use to notice something that occurs around them: <%= skill 'Observation' %> and <%= skill 'Sense' %>. <%= skill 'Observation' %> is used to notice anything visual or aural and <%= skill 'Sense' %> is used to notice anything else. Characters can be asked to notice something or to perform a "notice" check. If so they may make a check with either skill. Note what they notice depends on which skill they use.</p>
+<p>There are two skills that characters use to notice something that occurs around them: <%= skill 'Observation' %> and <%= skill 'Sense' %>. <%= skill 'Observation' %> is used to notice anything visual or aural and <%= skill 'Sense' %> is used to notice anything else. Characters can be asked to notice something or to perform <%= check('Notice', '') %>. If so they may make <%= check('Observation','Int')%> or <%= check('Sense','Fai') %>. Note that what they notice depends on which skill they use.</p>
 
 <h2>Turns</h2>
 

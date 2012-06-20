@@ -187,20 +187,20 @@
         <Synergy>Channeller</Synergy>
         <Text>
             By calling on the power of <name>Ird'ken</name> the caster can bend the will of their target to their own or simply shatter it.
-            When used to charm the power of this skill is <check type="fai">Charm<times/>2</check>. If the power of this skill is greater than the <MP/> of the target then the target is charmed. This means that the target will obey the caster as long as the caster does not require them to go against the principles or motivations of the target. Casting requires a <name>Major Action</name>.
-            When used to confuse the power of this skill is <check type="fai">Confuse<times/>2</check>. If the power of this skill is greater than the <MP/> of the target then the target becomes confused and aggressive. While in this state the target will not see the difference between friend and foe, attacking the nearest target. If the attack is on a friend then the caster chooses which skill will be used. If the attack is on a foe then the target chooses which skill will be used. Casting requires a <name>Major Action</name>.
+            When used to charm the power of this skill is <check type="fai">Charm</check>. If twice the power of this skill is greater than the <MP/> of the target then the target is charmed. This means that the target will obey the caster as long as the caster does not require them to go against the principles or motivations of the target. Casting requires a <name>Major Action</name>.
+            When used to confuse the power of this skill is <check type="fai">Confuse</check>. If twice the power of this skill is greater than the <MP/> of the target then the target becomes confused and aggressive. While in this state the target will not see the difference between friend and foe, attacking the nearest target. If the attack is on a friend then the caster chooses which skill will be used. If the attack is on a foe then the target chooses which skill will be used. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
             <Mana>5,2</Mana>
-            <Power type="roll" times="2"><skill>Charm</skill></Power>
-            <Quick>If X is at least target's MP they are charmed.</Quick>
+            <Power type="roll"><skill>Charm</skill></Power>
+            <Quick>If 2X is at least target's MP they are charmed.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
             <Mana>5,2</Mana>
-            <Power type="roll" times="2"><skill>Confuse</skill></Power>
-            <Quick>If X is at least target's MP they become confused, attacking characters randomly.</Quick>
+            <Power type="roll"><skill>Confuse</skill></Power>
+            <Quick>If 2X is at least target's MP they become confused, attacking characters randomly.</Quick>
         </Effect>
     </Skill>
     
@@ -486,20 +486,20 @@
         <Synergy>Channeller</Synergy>
         <Text>
             By calling on the power of <name>Ird'ken</name> the caster can instill fear into a single target or make a character unquestionably the target of attack.
-            When used to cause fear this skill has power <check type="fai">Fear<times/>2</check>. If the power of the skill is greater than the <MP/> of the target then the target becomes afraid of the caster and may not attack them under any circumstances and will try to avoid them as much a possible. If the power of the skill is greater than twice the <MP/> of the target then the target will attempt to flee. Casting requires a <name>Major Action</name>.
-            When used to anger this skill has power <check type="fai">Anger<times/>2</check>. To use this skill a single character is chosen and the skill targets all characters who are opposed to the chosen character. All targeted characters with <MP/> less than the power of this skill must attack the chosen character. The attackers may use any attack skill they wish and if it is impossible for them to attack the target they may take whatever action they wish. Casting requires a <name>Major Action</name>.
+            When used to cause fear this skill has power <check type="fai">Fear</check>. If twice the power of the skill is greater than the <MP/> of the target then the target becomes afraid of the caster and may not attack them under any circumstances and will try to avoid them as much a possible. If the power of the skill is greater than twice the <MP/> of the target then the target will attempt to flee. Casting requires a <name>Major Action</name>.
+            When used to anger this skill has power <check type="fai">Anger</check>. To use this skill a single character is chosen and the skill targets all characters who are opposed to the chosen character. All targeted characters with <MP/> less than twice the power of this skill must attack the chosen character. The attackers may use any attack skill they wish and if it is impossible for them to attack the target they may take whatever action they wish. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
             <Mana>3,1</Mana>
-            <Power type="roll" times="2"><skill>Fear</skill></Power>
-            <Quick>If X is at least targets MP then target fears the caster.</Quick>
+            <Power type="roll"><skill>Fear</skill></Power>
+            <Quick>If 2X is at least targets MP then target fears the caster.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
             <Mana>3,1</Mana>
-            <Power type="roll" times="2"><skill>Fear</skill></Power>
-            <Quick>If X is at least targets MP then target attacks a scapegoat.</Quick>
+            <Power type="roll"><skill>Fear</skill></Power>
+            <Quick>If 2X is at least targets MP then target attacks a scapegoat.</Quick>
         </Effect>
     </Skill>
     
@@ -1185,6 +1185,7 @@
             By calling on the power of <name>Ird'ken</name> the caster can gain control over their state of consciousness.
             If trying to cause a character to sleep the power of this skill is <check type="fai">Sleep</check>. While under the influence of this skill the targeted character has their <HP/> lowered by power of this skill for the purposes of consciousness and unconsciousness. Note that this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
             If trying to wake an unconscious character the power is <name>Wake</name>. For the duration of this skill the character has their <HP/> raised by the power of this skill for the purposes of consciousness and unconsciousness. Note this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
+            An unaware target who remains conscoius may make a <check>Notice</check> to see if they notice the effect. If the notice power is at least the power of the skill then they notice.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -1960,7 +1961,6 @@
     
     <Armour>
         <Name>Cloth</Name>
-        <Effect></Effect>
     </Armour>
     
     <Armour>
@@ -2001,8 +2001,7 @@
     
     <Shield>
         <Name>Tower Shield</Name>
-        <Require><Str>8</Str></Require>
-        <Require><Dex>6</Dex></Require>
+        <Require><Str>8</Str><Dex>6</Dex></Require>
         <Effect><DR>2</DR></Effect>
         <Quick>DR 2</Quick>
     </Shield>
@@ -2012,13 +2011,7 @@
         <Hands>1</Hands>
         <Class>Small</Class>
         <Damage>Piercing</Damage>
-    </Weapon>
-
-    <Weapon>
-        <Name>Claws</Name>
-        <Hands>2</Hands>
-        <Class>Misc</Class>
-        <Damage>Slashing</Damage>
+        <Bonus>0</Bonus>
     </Weapon>
 
     <Weapon>
@@ -2069,7 +2062,7 @@
     <Weapon>
         <Name>Rapier</Name>
         <Require><Dex>8</Dex></Require>
-        <Hands>1</Hands>
+        <Hands>2</Hands>
         <Class>Medium</Class>
         <Damage>Piercing</Damage>
         <Bonus>2</Bonus>
@@ -2086,6 +2079,7 @@
         <Hands>2</Hands>
         <Class>Small</Class>
         <Damage>Crushing</Damage>
+        <Bonus>0</Bonus>
     </Weapon>
     
     <Weapon>

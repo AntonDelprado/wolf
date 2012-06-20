@@ -1,7 +1,7 @@
 <% provide(:title, "Characters") %>
 <div class="row center">
 	<% Character.all.each do |character| %>
-		<div class=<%= "\"well span3 center #{character == session[:character] ? 'selected-char' : ''}\"".html_safe %>>
+		<div class=<%= "\"well span3 center #{character.id == session[:character] ? 'selected-char' : ''}\"".html_safe %>>
 			<h2><%= character.name %></h2>
 			<h3>Player: <%= character.player %></h3>
 			<h3>Race: <%= character.race %></h3>

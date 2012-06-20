@@ -65,6 +65,14 @@ module ApplicationHelper
 		return "<span class=\"label\">#{skill_name.name}</span>".html_safe
 	end
 
+	def rate(value)
+		case
+		when value == 0 then text = "1/ Turn"
+		when value < 0 then text = "1/ #{2**(-value)} Turns"
+		when value > 0 then text = "#{1+value} / Turn"
+		end
+	end
+
 	def check(skill_name, stat_name)
 		# case stat_name.downcase
 		# when 'str' then stat_name = "Strength"
@@ -73,6 +81,105 @@ module ApplicationHelper
 		# when 'fai' then stat_name = "Faith"
 		# end
 		"<span class=\"label label-warning\">#{skill_name.capitalize}:#{stat_name.capitalize}</span>".html_safe
+	end
+
+	def parse_require(require_xml)
+		requirements = {}
+		require_xml.children.each do |require_node|
+			case require_node.name
+			when 'Str' then requirements[:str] = require_node.content.to_i
+			when 'Dex' then requirements[:dex] = require_node.content.to_i
+			when 'Int' then requirements[:int] = require_node.content.to_i
+			when 'Fai' then requirements[:fai] = require_node.content.to_i
+			when 'Race' then requirements[:race] = require_node.content
+			when 'Ability'
+				requirements[:abilities] ||= []
+				requirements[:abilities] << require_node.content
+			when 'XP'
+				if require_node.attributes['type'] == 'Spell'
+					requirements[:spell_xp] = require_node.content.to_i
+				else
+					requirements[:xp] = require_node.content.to_i
+				end
+			else requirements[:custom] = require_node.content
+			end
+		end
+		requirements
+	end
+
+	def parse_effect(effect_xml)
+		effects = {}
+		effect_xml.children.each do |effect_node|
+			case effect_node.name
+			when 'DR' then effects[:dr] = effect_node.content.to_i
+			when 'Str' then effects[:str] = effect_node.content.to_i
+			when 'Dex' then effects[:dex] = effect_node.content.to_i
+			when 'Int' then effects[:int] = effect_node.content.to_i
+			when 'Fai' then effects[:fai] = effect_node.content.to_i
+			when 'skill'
+				effects[effect_node.content] = effect_node.attributes['add'].to_i 
+			end
+		end
+		effects
+	end
+
+	def armours
+		unless @armours
+			@armours = []
+			XML::Parser.file('app/data/skills.xml').parse.root.find('Armour').each do |armour_xml|
+				armour = { name: armour_xml.find_first('Name').content }
+				armour[:require] = parse_require armour_xml.find_first('Require') if armour_xml.find_first('Require')
+				armour[:effect] = parse_effect armour_xml.find_first('Effect') if armour_xml.find_first('Effect')
+				armour[:quick] = armour_xml.find_first('Quick').content if armour_xml.find_first('Quick')
+				armour[:quick] ||= ""
+
+				@armours << armour
+			end
+		end
+
+		@armours
+	end
+
+	def weapons
+		unless @weapons
+			@weapons = []
+			XML::Parser.file('app/data/skills.xml').parse.root.find('Weapon').each do |weapon_xml|
+				weapon = {
+					name:   weapon_xml.find_first('Name').content,
+					hands:  weapon_xml.find_first('Hands').content.to_i,
+					type:   weapon_xml.find_first('Class').content.downcase.to_sym,
+					damage: weapon_xml.find_first('Damage').content.downcase.to_sym,
+					bonus:  weapon_xml.find_first('Bonus').content.to_i,
+				}
+				weapon[:range] = weapon_xml.find_first('Range').content if weapon_xml.find_first('Range')
+
+				weapon[:require] = parse_require weapon_xml.find_first('Require') if weapon_xml.find_first('Require')
+				weapon[:effect] = parse_effect weapon_xml.find_first('Effect') if weapon_xml.find_first('Effect')
+				weapon[:quick] = weapon_xml.find_first('Quick').content if weapon_xml.find_first('Quick')
+				weapon[:quick] ||= ""
+				
+				@weapons << weapon
+			end
+		end
+
+		@weapons
+	end
+
+	def shields
+		unless @shields
+			@shields = []
+			XML::Parser.file('app/data/skills.xml').parse.root.find('Shield').each do |shield_xml|
+				shield = { name: shield_xml.find_first('Name').content }
+				shield[:require] = parse_require shield_xml.find_first('Require') if shield_xml.find_first('Require')
+				shield[:effect] = parse_effect shield_xml.find_first('Effect') if shield_xml.find_first('Effect')
+				shield[:quick] = shield_xml.find_first('Quick').content if shield_xml.find_first('Quick')
+				shield[:quick] ||= ""
+
+				@shields << shield
+			end
+		end
+		
+		@shields
 	end
 
 	class Synergy
@@ -285,7 +392,7 @@ module ApplicationHelper
 				when 'mpmax' then text << "<span class=\"label label-info\">MP Max</span>"
 				when 'emph' then text << "<em>#{node.content}</em>"
 				when 'check'
-					stat = node.attributes['type'].capitalize
+					stat = node.attributes['type'] ? node.attributes['type'].capitalize : ""
 					skill = ""
 					node.each do |inner_node|
 						if inner_node.name == 'times'

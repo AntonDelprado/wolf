@@ -9,7 +9,7 @@ class CharactersController < ApplicationController
 		@character = Character.new(params[:character])
 		if @character.save
 			flash[:success] = "Successfully Created #{@character.name}"
-			session[:character] = @character
+			session[:character] = @character.id
 			redirect_to @character
 		else
 			render 'new'
@@ -18,7 +18,7 @@ class CharactersController < ApplicationController
 
 	def show
 		@character = Character.find(params[:id])
-		session[:character] = @character
+		session[:character] = @character.id
 	end
 
 	def index
@@ -71,6 +71,18 @@ class CharactersController < ApplicationController
 				flash[:error] = "Failed to Change Stats"
 				@character = Character.find(@character.id)
 			end
+			redirect_to @character
+
+		elsif params[:change_items]
+			flash[:success] = "Changed Items to: Weapon:#{params[:primary]}, Off:#{params[:off_hand]}, Armour:#{params[:armour]}"
+			equiped = @character.equip primary: params[:primary], off_hand: params[:off_hand], armour: params[:armour]
+
+			if @character.save
+				flash[:success] = "Equiped: #{equiped.collect{ |item| item[:name] }.join(', ')}"
+			else
+				flash[:error] = "Equip failed."
+			end
+
 			redirect_to @character
 
 		elsif params[:add_skill]
@@ -177,7 +189,7 @@ class CharactersController < ApplicationController
 	def destroy
 		character = Character.find(params[:id])
 		flash[:success] = "Successfully destroyed: #{character.name}"
-		session[:character] = nil if session[:character] == character
+		session[:character] = nil if session[:character] == character.id
 		character.destroy
 		redirect_to characters_path
 	end

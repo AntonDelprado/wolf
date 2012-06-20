@@ -1,0 +1,24 @@
+<div id="itemModal" class="modal hide fade" style="display: none;">
+	<%= form_for(@character, url: { action: "update", change_items: true }) do |f| %>
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<h3>Change Items</h3>
+		</div>
+		<div class="modal-body">
+
+			Weapon:
+			<%= select_tag(:primary, options_for_select(@character.can_equip(:primary), @character.primary ? @character.primary[:name] : nil)) %>
+
+			Off Hand:
+			<%= select_tag(:off_hand, options_for_select(@character.can_equip(:off_hand), @character.off_hand ? @character.off_hand[:name] : nil)) %>
+
+			Armour:
+			<%= select_tag(:armour, options_for_select(@character.can_equip(:armour), @character.armour ? @character.armour[:name] : nil)) %>
+
+		</div>
+		<div class="modal-footer">
+			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
+			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+		</div>
+	<% end %>
+</div>

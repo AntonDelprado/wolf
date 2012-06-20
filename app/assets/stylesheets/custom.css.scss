@@ -252,16 +252,63 @@ table.skill-table td {
 	/* text-align: center; */
 }
 
-col.skill-name {
+col.name-col {
 	width:180px;
 }
 
-col.small {
+col.slot-col {
+	width: 165px;
+}
+
+col.level-col {
+	width: 65px;
+}
+
+col.small-col {
 	width: 50px;
+}
+
+col.mid-col {
+	width: 120px;
+}
+
+td.bold {
+	font-weight: bold;
 }
 
 .selected-char {
 	background-color: #ddf;
+}
+
+#weapon-table { /* width 700px + effect */
+	td.center {
+		text-align:center;
+	}
+}
+
+#armour-table {
+	width:460px;
+
+	td.center {
+		text-align:center;
+	}
+}
+
+#shield-table {
+	width:410px;
+
+	td.center {
+		text-align:center;
+	}
+}
+
+table.item-table {
+	td:first-child {
+		font-weight: bold;
+	}
+	td.center {
+		text-align: center;
+	}
 }
 
 /* forms */

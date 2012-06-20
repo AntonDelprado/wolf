@@ -19,8 +19,8 @@
 
 		<div class="row">
 			<div class="span5 offset2 center">
-					<%= link_to "Add Ability to: #{session[:character].name}", character_path(session[:character], add_ability: ability.name),
-					method: :put, class:"btn btn-mini btn-primary" if !session[:character].nil? %>
+					<%= link_to "Add Ability to: #{Character.find(session[:character]).name}", character_path(session[:character], add_ability: ability.name),
+					method: :put, class:"btn btn-mini btn-primary" unless session[:character].nil? %>
 			</div>
 			<span style="float:right"><%= "Synergy: #{ability.synergy.name}" if ability.synergy %></span>
 		</div>

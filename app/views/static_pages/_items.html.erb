@@ -1,1 +1,109 @@
 <h2>Items</h2>
+
+<h3>Weapons</h3>
+
+<table class='table table-striped table-bordered table-condensed' id='weapon-table'>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<col class="small-col"/>
+	<col class="mid-col"/>
+	<col class="small-col"/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Requires</th>
+			<th>Class</th>
+			<th>Hands</th>
+			<th>Damage Type</th>
+			<th>Bonus</th>
+			<th>Effects</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% weapons.each do |weapon| %>
+			<tr>
+				<td class="bold"><%= weapon[:name] %></td>
+				<td>
+					<% weapon[:require].each do |require_type, value| %>
+						<%= "Str: d#{value}" if require_type == :str %>
+						<%= "Dex: d#{value}" if require_type == :dex %>
+						<%= "Int: d#{value}" if require_type == :int %>
+						<%= "Fai: d#{value}" if require_type == :fai %>
+					<% end if weapon[:require] %>
+				</td>
+				<td><%= weapon[:type].to_s.capitalize %></td>
+				<td class="center"><%= weapon[:hands] %></td>
+				<td><%= weapon[:damage].to_s.capitalize %></td>
+				<td class="center">+<%= weapon[:bonus].to_s %></td>
+				<td/>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<h3>Shields</h3>
+
+<table class='table table-striped table-bordered table-condensed' id='shield-table'>
+	<col class="name-col"/>
+	<col class="name-col"/>
+	<col class="small-col"/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Requires</th>
+			<th>DR</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% shields.each do |shield| %>
+			<tr>
+				<td class="bold"><%= shield[:name] %></td>
+				<td>
+					<% shield[:require].each do |require_type, value| %>
+						<%= "Str: d#{value}" if require_type == :str %>
+						<%= "Dex: d#{value}" if require_type == :dex %>
+						<%= "Int: d#{value}" if require_type == :int %>
+						<%= "Fai: d#{value}" if require_type == :fai %>
+					<% end if shield[:require] %>
+				</td>
+				<td class="center"><%= shield[:effect][:dr] %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+
+<h3>Armour</h3>
+
+<table class='table table-striped table-bordered table-condensed' id='armour-table'>
+	<col class="name-col"/>
+	<col class="name-col"/>
+	<col class="small-col"/>
+	<col class="small-col"/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Requires</th>
+			<th>DR</th>
+			<th>Dex</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% armours.each do |armour| %>
+			<tr>
+				<td class="bold"><%= armour[:name] %></td>
+				<td>
+					<% armour[:require].each do |require_type, value| %>
+						<%= "Str: d#{value}" if require_type == :str %>
+						<%= "Dex: d#{value}" if require_type == :dex %>
+						<%= "Int: d#{value}" if require_type == :int %>
+						<%= "Fai: d#{value}" if require_type == :fai %>
+					<% end if armour[:require] %>
+				</td>
+				<td class="center"><%= armour[:effect][:dr] if armour[:effect] %></td>
+				<td class="center"><%= armour[:effect][:dex] if armour[:effect] %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

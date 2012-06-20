@@ -22,10 +22,29 @@ $(document).ready(function() {
 	synergy_classes = ["warrior", "rogue", "channeller", "mechanist", "trickster", "battle-mage", "necromancer", "lore", "no-synergy"]
 	stats_change();
 
-	$(function () {
-		var activeTab = $('[href=' + location.hash + ']');
-		activeTab && activeTab.tab('show');
-	});
+	var activeTab = $('[href=' + location.hash + ']');
+	activeTab && activeTab.tab('show');
+	
+	// // alert('done');
+	// if (window.location.hash != "")
+	// {
+	// 	alert('hash');
+	// 	$('a[href="' + window.location.hash + '"]').click();
+	// }
+	// var url = document.location.toString();
+	// if (url.match('#')) {
+	// 	alert('start:' + location.hash);
+	// 	activeTab = $('a[href=' + location.hash + ']');
+	// 	alert('tab?')
+	// 	if (activeTab)
+	// 	{
+	// 		alert('tab' + activeTab)
+	// 		activeTab.tab('show');
+	// 		alert('done')
+	// 	}
+	// 	else
+	// 		alert('no tab');
+	// } 
 
 	$('.add_ability').each(function () {
 		if ($(this).attr('id').indexOf("Follower") != -1)
@@ -114,7 +133,7 @@ function follower_selected (this_obj)
 
 function stats_change()
 {
-	$('#level-col').css('width', '60px');
+	// $('#level-col').css('width', '60px');
 	for (var i=0; i<$('#statsBase option').length; i+=1)
 		if ($('#statsBase').val() == i)
 			$('#statsRaw'+i).css('display', 'block');
@@ -197,8 +216,6 @@ function recalculate_xp()
 	var xp_total = 0
 
 	$(".skill-level-option").each(function () {
-		//xp_total += skill_costs[$(this).attr('id').substr(6).replace("_", " ")] * $(this).val()
-		// alert("Name: " + option_to_name($(this)));
 		xp_total += skill_costs[option_to_name($(this))] * $(this).val();
 	});
 
