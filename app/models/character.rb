@@ -61,6 +61,7 @@ class Character < ActiveRecord::Base
 				'Sense' => self.fai/2
 			}
 			self.abilities = []
+			self.abilities << 'Atheist' << 'Literate' if self.race == 'Vampire'
 			self.items = {}
 		end
 
@@ -662,6 +663,16 @@ class Character < ActiveRecord::Base
 				warnings << "Nothing Equiped Off Hand"
 			end
 		end
+
+		if self.abilities and self.abilities.include? "Atheist"
+			self.skills.each do |skill_name, level|
+				skill = Skill.find_by_name skill_name
+				warnings << "As an atheist, cannot use '#{skill_name}'" if skill.spell
+			end
+		end
+
+		warnings << "Vampires must be atheists" if self.race == 'Vampire' and not self.abilities.include? 'Atheist'
+		warnings << "Vampires must be literate" if self.race == 'Vampire' and not self.abilities.include? 'Literate'
 
 		return warnings
 	end
