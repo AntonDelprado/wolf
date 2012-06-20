@@ -1,80 +1,8 @@
 <h2>Items</h2>
 
-<h3>Weapons</h3>
-
-<table class='table table-striped table-bordered table-condensed' id='weapon-table'>
-	<col class="mid-col"/>
-	<col class="mid-col"/>
-	<col class="mid-col"/>
-	<col class="small-col"/>
-	<col class="mid-col"/>
-	<col class="small-col"/>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Requires</th>
-			<th>Class</th>
-			<th>Hands</th>
-			<th>Damage Type</th>
-			<th>Bonus</th>
-			<th>Effects</th>
-		</tr>
-	</thead>
-	<tbody>
-		<% weapons.each do |weapon| %>
-			<tr>
-				<td class="bold"><%= weapon[:name] %></td>
-				<td>
-					<% weapon[:require].each do |require_type, value| %>
-						<%= "Str: d#{value}" if require_type == :str %>
-						<%= "Dex: d#{value}" if require_type == :dex %>
-						<%= "Int: d#{value}" if require_type == :int %>
-						<%= "Fai: d#{value}" if require_type == :fai %>
-					<% end if weapon[:require] %>
-				</td>
-				<td><%= weapon[:type].to_s.capitalize %></td>
-				<td class="center"><%= weapon[:hands] %></td>
-				<td><%= weapon[:damage].to_s.capitalize %></td>
-				<td class="center">+<%= weapon[:bonus].to_s %></td>
-				<td/>
-			</tr>
-		<% end %>
-	</tbody>
-</table>
-
-<h3>Shields</h3>
-
-<table class='table table-striped table-bordered table-condensed' id='shield-table'>
-	<col class="name-col"/>
-	<col class="name-col"/>
-	<col class="small-col"/>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Requires</th>
-			<th>DR</th>
-		</tr>
-	</thead>
-	<tbody>
-		<% shields.each do |shield| %>
-			<tr>
-				<td class="bold"><%= shield[:name] %></td>
-				<td>
-					<% shield[:require].each do |require_type, value| %>
-						<%= "Str: d#{value}" if require_type == :str %>
-						<%= "Dex: d#{value}" if require_type == :dex %>
-						<%= "Int: d#{value}" if require_type == :int %>
-						<%= "Fai: d#{value}" if require_type == :fai %>
-					<% end if shield[:require] %>
-				</td>
-				<td class="center"><%= shield[:effect][:dr] %></td>
-			</tr>
-		<% end %>
-	</tbody>
-</table>
-
-
 <h3>Armour</h3>
+
+<p>Different levels of armour provide damage reduction but this comes with a penalty to <%= dex %> based skills. Armour also has a minimum <%= str %> requirement which applies only to the base stat. The different kinds of armour are shown in the table below.</p>
 
 <table class='table table-striped table-bordered table-condensed' id='armour-table'>
 	<col class="name-col"/>
@@ -107,3 +35,176 @@
 		<% end %>
 	</tbody>
 </table>
+
+<p>A wolf changing to Warg Form will break any armour they are wearing. However it can be cheaply repaired. If a wolf changes directly to Wolf Form their armour will become loose and they will need to use a <%= minor_action %> to get out of it before they can do anything else.</p>
+
+<h3>Shields</h3>
+
+<p>A shield can be used with a single handed weapon. In this case the shield provides damage reduction with no <%= dex %> penalty. The following table shows the types of shield.</p>
+
+<table class='table table-striped table-bordered table-condensed' id='shield-table'>
+	<col class="name-col"/>
+	<col class="name-col"/>
+	<col class="small-col"/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Requires</th>
+			<th>DR</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% shields.each do |shield| %>
+			<tr>
+				<td class="bold"><%= shield[:name] %></td>
+				<td>
+					<% shield[:require].each do |require_type, value| %>
+						<%= "Str: d#{value}" if require_type == :str %>
+						<%= "Dex: d#{value}" if require_type == :dex %>
+						<%= "Int: d#{value}" if require_type == :int %>
+						<%= "Fai: d#{value}" if require_type == :fai %>
+					<% end if shield[:require] %>
+				</td>
+				<td class="center"><%= shield[:effect][:dr] %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<h3>Weapons</h3>
+
+<p>Weapons provide a bonus to certain attack skills. Each weapon deals a different type of damage. Damage types do not effect the amount of damage dealt but certain creatures are vulnerable to different damage types.</p>
+
+<h4>Mêlée Weapons</h4>
+
+<p>Mêlée weapons can be used to increase any attack skill that is not also a spell. Below is a table of mêlée weapons and their properties. While rapiers are wielded in one hand only small objects may be held in the other. Rapiers may be imbued with defensive powers as well as offensive powers.</p>
+
+<table class='table table-striped table-bordered table-condensed' id='weapon-table'>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<col class="small-col"/>
+	<col class="mid-col"/>
+	<col class="small-col"/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Requires</th>
+			<th>Class</th>
+			<th>Hands</th>
+			<th>Damage Type</th>
+			<th>Bonus</th>
+			<th>Effects</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% weapons.reject{ |weapon| weapon[:type] == :ranged or weapon[:name] == 'Sling' }.each do |weapon| %>
+			<tr>
+				<td class="bold"><%= weapon[:name] %></td>
+				<td>
+					<% weapon[:require].each do |require_type, value| %>
+						<%= "Str: d#{value}" if require_type == :str %>
+						<%= "Dex: d#{value}" if require_type == :dex %>
+						<%= "Int: d#{value}" if require_type == :int %>
+						<%= "Fai: d#{value}" if require_type == :fai %>
+					<% end if weapon[:require] %>
+				</td>
+				<td><%= weapon[:type].to_s.capitalize %></td>
+				<td class="center"><%= weapon[:hands] %></td>
+				<td><%= weapon[:damage].to_s.capitalize %></td>
+				<td class="center">+<%= weapon[:bonus].to_s %></td>
+				<td><%= weapon[:quick] %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<h4>Ranged Weapons</h4>
+
+<p>Bows and crossbows give a bonus to <%= skill 'Attack' %> or <%= skill 'Precision Attack' %>. They also have a range limitation. If the target of the attack skill is further away than the power of the skill plus the range bonus of the weapon in metres then the attack misses without the target using a defensive skill.</p>
+
+<p>Below is a table of ranged weapons and their properties. All ranged weapons deal piercing damage except for slings which deal crushing damage. After a crossbow is fired it requires a <%= major_action %> to reload it.</p>
+
+<table class='table table-striped table-bordered table-condensed item-table' id='weapon-table'>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<col class="mid-col"/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Requires</th>
+			<th>Attack Bonus</th>
+			<th>Range Bonus</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% weapons.select{ |weapon| weapon[:type] == :ranged or weapon[:name] == 'Sling' }.each do |weapon| %>
+			<tr>
+				<td><%= weapon[:name] %></td>
+				<td>
+					<% weapon[:require].each do |require_type, value| %>
+						<%= "Str: d#{value}" if require_type == :str %>
+						<%= "Dex: d#{value}" if require_type == :dex %>
+						<%= "Int: d#{value}" if require_type == :int %>
+						<%= "Fai: d#{value}" if require_type == :fai %>
+					<% end if weapon[:require] %>
+				</td>
+				<td class="center"><%= "+#{weapon[:bonus]}" if weapon[:bonus] %></td>
+				<td class="center"><%= "+#{weapon[:range]}" if weapon[:range] %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<h3>Weapon Quality</h3>
+
+<p>When a item is made it has an inherent quality. This is an indication of how well made and will provide a bonus or penalty to the item. Weapon quality provides a bonus to attack; shield and armour quality provides a bonus to damage reduction.<p/>
+
+<p> For example a quality 1 short sword will give +1 to attack. A −1 shield will reduce damage reduction by 1.</p>
+
+<h3>Magic Weapons</h3>
+
+<h3>Prices</h3>
+
+<table class='table table-striped table-bordered table-condensed cost-table'>
+	<thead>
+		<tr>
+			<th>Category</th>
+			<th>Item</th>
+			<th>Cost</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr><td rowspan="5" class="bold">Miscellaneous</td>
+			<td>A week of rations</td><td>5</td></tr>
+		<tr><td>Rope</td><td>5</td></tr>
+		<tr><td>Lantern etc.</td><td>2</td></tr>
+		<tr><td>1L Canteen</td><td>1</td></tr>
+		<tr><td>Shovel or Pick</td><td>1</td></tr>
+
+		<tr><td rowspan="5" class="bold">Armour/Shield</td>
+			<td>Leather</td><td>10</td></tr>
+		<tr><td>Chain</td><td>30</td></tr>
+		<tr><td>Plate</td><td>100</td></tr>
+		<tr><td>Buckler</td><td>10</td></tr>
+		<tr><td>Tower Shield</td><td>100</td></tr>
+
+		<tr><td rowspan="7" class="bold">Mêlée Weapons</td>
+			<td>Dagger</td><td>5</td></tr>
+		<tr><td>Short Sword</td><td>10</td></tr>
+		<tr><td>Claymore</td><td>15</td></tr>
+		<tr><td>Battle Axe</td><td>15</td></tr>
+		<tr><td>Mace</td><td>10</td></tr>
+		<tr><td>War Hammer</td><td>15</td></tr>
+		<tr><td>Rapier</td><td>15</td></tr>
+
+		<tr><td rowspan="4" class="bold">Ranged Weapons</td>
+			<td>Sling</td><td>5</td></tr>
+		<tr><td>Long Bow</td><td>10</td></tr>
+		<tr><td>Short Bow</td><td>10</td></tr>
+		<tr><td>Crossbow</td><td>20</td></tr>
+
+	</tbody>
+</table>
+

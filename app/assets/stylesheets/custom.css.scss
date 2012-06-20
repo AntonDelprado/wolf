@@ -311,6 +311,12 @@ table.item-table {
 	}
 }
 
+table.cost-table{
+	td:first-child {
+		vertical-align: middle;
+	}
+}
+
 /* forms */
 
 input, textarea, select, .uneditable-input {

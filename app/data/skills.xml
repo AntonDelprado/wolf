@@ -2104,7 +2104,7 @@
     
     <Weapon>
         <Name>Crossbow</Name>
-        <Require><Dex>6</Dex></Require>
+        <Require><Dex>6</Dex><Str>6</Str></Require>
         <Hands>2</Hands>
         <Class>Ranged</Class>
         <Damage>Piercing</Damage>

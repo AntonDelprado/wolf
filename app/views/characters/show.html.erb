@@ -160,12 +160,14 @@
 			<col class="mid-col"/>
 			<col class="mid-col"/>
 			<col class="small-col"/>
+			<col class="small-col"/>
 			<thead>
 				<tr>
 					<th>Item Name</th>
 					<th>Bonus</th>
 					<th>Class</th>
 					<th>Damage</th>
+					<th>Range</th>
 					<th>DR</th>
 					<th>Effect</th>
 				</tr>
@@ -177,6 +179,7 @@
 						<td class="center"><%= "+#{item[:bonus]}" if item[:bonus] %></td>
 						<td><%= item[:type].to_s.capitalize if item[:type] %></td>
 						<td><%= item[:damage].to_s.capitalize if item[:damage] %></td>
+						<td class="center"><%= "+#{item[:range]}" if item[:range] %></td>
 						<td class="center"><%= item[:effect][:dr] if item[:effect] %></td>
 						<td><%= item[:quick] %></td>
 					</tr>
