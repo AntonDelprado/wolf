@@ -13,6 +13,10 @@
 #  abilities  :text
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
+#  race       :string(255)
+#  items      :text
+#  visibility :string(255)
+#  user_id    :integer
 #
 
 require 'spec_helper'

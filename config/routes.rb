@@ -1,4 +1,7 @@
 Wolf::Application.routes.draw do
+
+  resources :users
+  resources :sessions, only: [:new, :create, :destroy]
   resources :characters do
     member do
       get :export
@@ -9,7 +12,14 @@ Wolf::Application.routes.draw do
     end
   end
 
+
   root to: 'static_pages#home'
+
+  # Sign up/in/out pages
+
+  match '/signup', to: 'users#new'
+  match '/signin', to: 'sessions#new'
+  match '/signout', to: 'sessions#destroy', via: :delete
 
   # Rules pages
 
@@ -22,6 +32,7 @@ Wolf::Application.routes.draw do
   match '/rules/synergy', to: 'static_pages#synergy'
   match '/rules/item', to: 'static_pages#item'
   match '/rules/monster', to: 'static_pages#monster'
+  match '/setting', to: 'static_pages#setting'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

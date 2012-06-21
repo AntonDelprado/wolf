@@ -1,22 +1,48 @@
 <% provide(:title, "Characters") %>
-<div class="row center">
-	<% Character.all.each do |character| %>
-		<div class=<%= "\"well span3 center #{character.id == session[:character] ? 'selected-char' : ''}\"".html_safe %>>
-			<h2><%= character.name %></h2>
-			<h3>Player: <%= character.player %></h3>
-			<h3>Race: <%= character.race %></h3>
-			<h4>XP: <%= character.xp %></h4>
-			<p/>
-			<div class="center">
-				<%= link_to "View", character, class: "btn btn-small btn-primary" %>
-				<%= link_to "Delete", character, class: "btn btn-small btn-danger", confirm: "Are you sure you want to delete '#{character.name}'?", method: :delete %>
-			</div>
+
+<% if signed_in? %>
+	<h1 class="span10">Your Characters</h1>
+
+	<div class="row">
+		<% Character.all.each do |character| %>
+			<% if character.user_id == current_user.id %>
+				<div class="well span3 center">
+					<h2><%= character.name %></h2>
+					<h3>Race: <%= character.race %></h3>
+					<h4>XP: <%= character.xp %></h4>
+					<p/>
+					<div class="center">
+						<%= link_to "View", character, class: "btn btn-small btn-primary" %>
+						<%= link_to "Delete", character, class: "btn btn-small btn-danger", confirm: "Are you sure you want to delete '#{character.name}'?", method: :delete %>
+					</div>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
+
+	<div class="row" style="padding-bottom: 20px;">
+		<div class="span10 center">
+			<%= link_to "New Character", new_character_path, class: "btn btn-large btn-primary" %>
 		</div>
-	<% end %>
-</div>
+	</div>
+
+<% end %>
+
+<h1 class="span10">Public Characters</h1>
 
 <div class="row">
-	<div class="span10 center">
-		<%= link_to "New Character", new_character_path, class: "btn btn-large btn-primary" %>
-	</div>
+	<% Character.all.sort_by{ |character| character.name }.each do |character| %>
+		<% if character.visibility == 'public' and ((not signed_in?) or character.user_id != current_user.id) %>
+			<div class="well span3 center">
+				<h2><%= character.name %></h2>
+				<h3>Player: <%= User.find(character.user_id).handle %></h3>
+				<h3>Race: <%= character.race %></h3>
+				<h4>XP: <%= character.xp %></h4>
+				<p/>
+				<div class="center">
+					<%= link_to "View", character, class: "btn btn-small btn-primary" %>
+				</div>
+			</div>
+		<% end %>
+	<% end %>
 </div>

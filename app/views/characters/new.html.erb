@@ -18,6 +18,9 @@
 			<%= f.label :race %>
 			<%= f.select(:race, %w[Wolf Dwarf Goblin Vampire]) %>
 
+			<%= f.label :visibility %>
+			<%= f.select(:visibility, %w[public private]) %>
+
 			<div>
 				<%= f.submit "Create Character", class: "btn btn-large btn-primary" %>
 				<a class="btn btn-large btn-primary disable-button dont-print right" data-toggle="modal" href='#importModal'>Import Character</a></p>

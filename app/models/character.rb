@@ -13,16 +13,19 @@
 #  abilities  :text
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
+#  race       :string(255)
+#  items      :text
+#  visibility :string(255)
+#  user_id    :integer
 #
 
 include ApplicationHelper
 
 class Character < ActiveRecord::Base
-	attr_accessible :dex, :fai, :int, :name, :player, :race, :str
+	attr_accessible :dex, :fai, :int, :name, :player, :race, :str, :user_id, :visibility
 	serialize :skills
 	serialize :abilities
 	serialize :items
-	after_initialize :init_rest
 
 	validates :name, presence: true, length: { maximum: 100 }
 	validates :player, presence: true, length: { maximum: 100 }
@@ -32,11 +35,19 @@ class Character < ActiveRecord::Base
 	validates :int, presence: true, inclusion: [4,6,8,10,12]
 	validates :fai, presence: true, inclusion: [4,6,8,10,12]
 
+	after_initialize :init_rest
+
+	WOLF_STATS = [[12,4,4,4], [10,10,4,4], [10,8,6,4], [8,8,8,6]]
+	DWARF_STATS = WOLF_STATS
+	GOBLIN_STATS = [[8,6,4,4], [6,6,6,6]]
+	VAMPIRE_STATS = [[12,12,12,4]]
+
 	def self.stats(race="Wolf")
 		case race
-		when "Wolf", "Dwarf" then return [[12,4,4,4], [10,10,4,4], [10,8,6,4], [8,8,8,6]]
-		when "Vampire" then return [[12,12,12,4]]
-		when "Goblin" then return [[8,6,4,4], [6,6,6,6]]
+		when "Wolf" then return WOLF_STATS
+		when "Dwarf" then return DWARF_STATS
+		when "Vampire" then return VAMPIRE_STATS
+		when "Goblin" then return GOBLIN_STATS
 		else [[0,0,0,0]]
 		end
 	end
@@ -63,11 +74,13 @@ class Character < ActiveRecord::Base
 			self.abilities = []
 			self.abilities << 'Atheist' << 'Literate' if self.race == 'Vampire'
 			self.items = {}
+			self.visibility = 'public'
 		end
 
 		# always initialise synergies if there are skills
 		if self.skills
 			self.items ||= {}
+			self.visibility ||= 'public'
 
 			synergies = {}
 			bonus_remaining = true

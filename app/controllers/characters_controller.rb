@@ -2,23 +2,38 @@ class CharactersController < ApplicationController
 	helper ApplicationHelper
 
 	def new
-		@character = Character.new
+		if signed_in?
+			@character = Character.new
+		else
+			flash[:error] = "You must sign in to create a character"
+			redirect_to characters_path
+		end
 	end
 
 	def create
-		@character = Character.new(params[:character])
-		if @character.save
-			flash[:success] = "Successfully Created #{@character.name}"
-			session[:character] = @character.id
-			redirect_to @character
+		if signed_in?
+			@character = Character.new(params[:character])
+			if @character.save
+				flash[:success] = "Successfully Created #{@character.name}"
+				activate @character
+				redirect_to @character
+			else
+				render 'new'
+			end
 		else
-			render 'new'
+			flash[:error] = "You must sign in to create a character"
+			redirect_to characters_path
 		end
 	end
 
 	def show
 		@character = Character.find(params[:id])
-		session[:character] = @character.id
+		if @character.visibility == 'public' or (signed_in? and @character.user_id == current_user.id)
+			activate @character
+		else
+			flash[:error] = "Unable to access character"
+			redirect_to characters_path
+		end
 	end
 
 	def index
@@ -30,36 +45,51 @@ class CharactersController < ApplicationController
 	end
 
 	def import
-		begin
-			xml_doc = XML::Document.io(params[:character][:file])
-		rescue #XML::Parser::ParseError
-			flash[:error] = "Invalid XML File"
-			redirect_to new_character_path
-			return
-		end
+		if signed_in?
+			begin
+				xml_doc = XML::Document.io(params[:character][:file])
+			rescue #XML::Parser::ParseError
+				flash[:error] = "Invalid XML File"
+				redirect_to new_character_path
+				return
+			end
 
-		@character = Character.import_xml(xml_doc.root)
+			@character = Character.import_xml(xml_doc.root)
 
-		if @character.nil?
-			flash[:error] = "Invalid Character XML"
-			redirect_to new_character_path
-		elsif @character.save
-			flash[:success] = "'#{@character.name}' sucessfully imported."
-			redirect_to @character
+			if @character.nil?
+				flash[:error] = "Invalid Character XML"
+				redirect_to new_character_path
+			elsif @character.save
+				flash[:success] = "'#{@character.name}' sucessfully imported."
+				redirect_to @character
+			else
+				flash[:error] = "'#{@character.name}' failed to import."
+				redirect_to new_character_path
+			end
 		else
-			flash[:error] = "'#{@character.name}' failed to import."
-			redirect_to new_character_path
+			flash[:error] = "You must sign in to create a character"
+			redirect_to characters_path
 		end
 	end
 
 	# Prior to editing
 	def edit
 		@character = Character.find(params[:id])
+		if !signed_in? or @character.user_id != current_user.id
+			flash[:error] = "You may only edit you own characters"
+			redirect_to characters_path
+		end
 	end
 
 	# Post to editing
 	def update
 		@character = Character.find(params[:id])
+
+		if !signed_in? or @character.user_id != current_user.id
+			flash[:error] = "You may only edit you own characters"
+			redirect_to characters_path
+			return
+		end
 
 		if params[:base_stats]
 			stats = @character.base_stats(params[:base_stats].to_i, params[:"raw_stats#{params[:base_stats]}"].to_i)
@@ -188,9 +218,13 @@ class CharactersController < ApplicationController
 
 	def destroy
 		character = Character.find(params[:id])
-		flash[:success] = "Successfully destroyed: #{character.name}"
-		session[:character] = nil if session[:character] == character.id
-		character.destroy
+		if signed_in? and character.user_id == current_user.id
+			flash[:success] = "Successfully destroyed: #{character.name}"
+			deactivate
+			character.destroy
+		else
+			flash[:error] = "You can only destroy your own characters!"
+		end
 		redirect_to characters_path
 	end
 end

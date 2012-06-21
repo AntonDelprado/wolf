@@ -4,20 +4,37 @@
 			<nav>
 				<ul class="nav pull-right">
 					<li><%= link_to "Home", root_path %></li>
-					<li class="dropdown">
-						<a href='#' class="dropdown-toggle" data-toggle="dropdown">
-							Character Builder<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><%= link_to "All Characters", characters_path %></li>
-							<li><%= link_to "New Character", new_character_path %></li>
-							<% unless session[:character].nil? %>
-								<li class="divider"/>
-								<li><%= link_to "Character: #{Character.find(session[:character]).name}", character_path(session[:character]) %></li>
-							<% end %>
-						</ul>
-					</li>
+					<li><%= link_to "Setting", setting_path %></li>
 					<li><%= link_to "Rules", rules_path %></li>
+					<% if signed_in? %>
+						<li class="dropdown">
+							<a href='#' class="dropdown-toggle" data-toggle="dropdown">
+								Character Builder<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><%= link_to "All Characters", characters_path %></li>
+								<li><%= link_to "New Character", new_character_path %></li>
+								<% if activated_character? %>
+									<li class="divider"/>
+									<li><%= link_to "Character: #{active_character.name}", active_character %></li>
+								<% end %>
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href='#' class="dropdown-toggle" data-toggle="dropdown">
+								Account<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><%= link_to "Profile", current_user %></li>
+								<li><%= link_to "Settings", edit_user_path(current_user) %></li>
+								<li class="divider"/>
+								<li><%= link_to "Sign out", signout_path, method: 'delete' %></li>
+							</ul>
+						</li>
+					<% else %>
+						<li><%= link_to "All Characters", characters_path %></li>
+						<li><%= link_to "Sign in", signin_path %></li>
+					<% end %>
 				</ul>
 			</nav>
 		</div>
