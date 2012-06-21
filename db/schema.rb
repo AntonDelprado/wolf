@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120619022127) do
+ActiveRecord::Schema.define(:version => 20120621015740) do
 
   create_table "characters", :force => true do |t|
     t.string   "name"
@@ -25,10 +25,6 @@ ActiveRecord::Schema.define(:version => 20120619022127) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.string   "race"
-    t.integer  "str_mod"
-    t.integer  "dex_mod"
-    t.integer  "int_mod"
-    t.integer  "fai_mod"
     t.text     "items"
     t.string   "visibility"
   end
