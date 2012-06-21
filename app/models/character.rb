@@ -147,6 +147,11 @@ class Character < ActiveRecord::Base
 				character.add_ability ability_node.content
 			end
 
+			items_xml = xml_root.find_first('Items')
+			character.equip_with_name(:primary, items_xml.find_first('Primary').content) if items_xml.find_first('Primary')
+			character.equip_with_name(:off_hand, items_xml.find_first('OffHand').content) if items_xml.find_first('OffHand')
+			character.equip_with_name(:armour, items_xml.find_first('Armour').content) if items_xml.find_first('Armour')
+
 			return character
 		rescue NoMethodError
 			return nil
@@ -186,7 +191,13 @@ class Character < ActiveRecord::Base
 				abilities_node << (XML::Node.new('Ability') << XML::Node.new_text(ability_name))
 			end
 
-			doc.root << stats_node << skills_node << abilities_node
+			# Items
+			items_node = XML::Node.new('Items')
+			items_node << (XML::Node.new('Primary') << XML::Node.new_text(items[:primary][:name])) if items[:primary]
+			items_node << (XML::Node.new('OffHand') << XML::Node.new_text(items[:off_hand][:name])) if items[:off_hand]
+			items_node << (XML::Node.new('Armour') << XML::Node.new_text(items[:armour][:name])) if items[:armour]
+
+			doc.root << stats_node << skills_node << abilities_node << items_node
 
 			return doc
 		end
@@ -295,6 +306,12 @@ class Character < ActiveRecord::Base
 		end
 
 		return equiped
+	end
+
+	def equip_with_name(slot, item_name)
+		self.items ||= {}
+		item = weapons.concat(shields).concat(armours).detect { |item| item[:name] == item_name }
+		self.items[slot] = item unless item.nil?
 	end
 
 	def pass_require?(requirements)
