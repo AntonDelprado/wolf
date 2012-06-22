@@ -1,11 +1,19 @@
 <% provide(:title, 'Profile') %>
 
-<h1>User profile for: <%= @user.handle %></h1>
+<h1>User Profile</h1>
 
-<h2>Email:</h2>
+Handle:
 
-<%= @user.email %>
+<h2><%= @user.handle %></h2>
 
-<h2>Full Name:</h2>
+Email:
 
-<%= @user.name %>
+<h2><%= @user.email %></h2>
+
+Full Name:
+
+<h2><%= @user.name %></h2>
+
+<h1>Characters</h1>
+
+<%= render 'shared/character_list' %>

@@ -38,7 +38,9 @@
 	<div class="span7">
 		<div class="well center span5">
 			<h1><%= @character.name %></h1>
-			<h2>Player: <%= User.find(@character.user_id).handle %></h2>
+			<% unless current_user_owns? @character %>
+				<h2>Player: <%= link_to User.find(@character.user_id).handle, user_path(@character.user_id) %></h2>
+			<% end %>
 			<h2>Race: <%= @character.race %></h2>
 			<% if @character.visibility != 'public' %>
 				<h3><%= @character.visibility.capitalize %></h3>

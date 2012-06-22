@@ -122,7 +122,7 @@
 			</div>
 			<div class="span5 center">
 				<%= link_to "Add Skill to: #{active_character.name}", character_path(active_character, add_skill: skill.name),
-					method: :put, class:"btn btn-mini btn-primary" if activated_character? %>
+					method: :put, class:"btn btn-mini btn-primary" if current_user_owns? active_character %>
 			</div>
 			<div style="float:right">
 				<%= "Synergy: #{skill.synergy.name}" if skill.synergy %>

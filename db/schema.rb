@@ -11,11 +11,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120621045056) do
+ActiveRecord::Schema.define(:version => 20120621082441) do
 
   create_table "characters", :force => true do |t|
     t.string   "name"
-    t.string   "player"
     t.integer  "str"
     t.integer  "dex"
     t.integer  "int"

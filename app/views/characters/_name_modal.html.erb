@@ -9,14 +9,11 @@
 			<%= f.label :name %>
 			<%= f.text_field :name %>
 
-			<%= f.label :player %>
-			<%= f.text_field :player %>
-
 			<%= f.label :race %>
 			<%= f.select(:race, %w[Wolf Dwarf Goblin Vampire], selected: @character.race) %>
 
 			<%= f.label :visibility %>
-			<%= f.select(:visibility, %w[public private], selected: @character.visibility) %>
+			<%= f.select(:visibility, [['Public', 'public'], ['Private', 'private']], selected: @character.visibility) %>
 
 		</div>
 		<div class="modal-footer">

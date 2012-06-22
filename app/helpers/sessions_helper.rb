@@ -25,6 +25,10 @@ module SessionsHelper
 		not current_user.nil?
 	end
 
+	def current_user_owns?(character)
+		character.user_id == self.current_user.id if self.current_user
+	end
+
 	def activate(character)
 		session[:active_character_id] = character.id
 		self.active_character = character

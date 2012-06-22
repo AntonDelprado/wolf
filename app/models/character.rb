@@ -4,7 +4,6 @@
 #
 #  id         :integer         not null, primary key
 #  name       :string(255)
-#  player     :string(255)
 #  str        :integer
 #  dex        :integer
 #  int        :integer
@@ -20,20 +19,22 @@
 #
 
 include ApplicationHelper
+include SessionsHelper
 
 class Character < ActiveRecord::Base
-	attr_accessible :dex, :fai, :int, :name, :player, :race, :str, :user_id, :visibility
+	attr_accessible :dex, :fai, :int, :name, :race, :str, :user_id, :visibility
 	serialize :skills
 	serialize :abilities
 	serialize :items
 
 	validates :name, presence: true, length: { maximum: 100 }
-	validates :player, presence: true, length: { maximum: 100 }
 	validates :race, presence: true, inclusion: %w[Wolf Dwarf Goblin Vampire]
 	validates :str, presence: true, inclusion: [4,6,8,10,12]
 	validates :dex, presence: true, inclusion: [4,6,8,10,12]
 	validates :int, presence: true, inclusion: [4,6,8,10,12]
 	validates :fai, presence: true, inclusion: [4,6,8,10,12]
+	validates :user_id, presence: true
+	validates :visibility, presence: true, inclusion: %w[public private]
 
 	after_initialize :init_rest
 
@@ -136,7 +137,6 @@ class Character < ActiveRecord::Base
 			character = Character.new
 
 			character.name = xml_root.find_first('Name').content
-			character.player = xml_root.find_first('Player').content
 			character.race = xml_root.find_first('Race').content
 
 			stats_xml = xml_root.find_first('Stats')
@@ -177,9 +177,8 @@ class Character < ActiveRecord::Base
 			doc = XML::Document.new()
 			doc.root = XML::Node.new('Character')
 
-			# Character, player and race
+			# Character and race
 			doc.root << (XML::Node.new('Name') << XML::Node.new_text(self.name))
-			doc.root << (XML::Node.new('Player') << XML::Node.new_text(self.player))
 			doc.root << (XML::Node.new('Race') << XML::Node.new_text(self.race))
 
 			# Stats
@@ -216,6 +215,10 @@ class Character < ActiveRecord::Base
 		end
 	end
 
+	def public?
+		self.visibility == 'public'
+	end
+
 	def update_base_skills
 		self.skills['Endurance'] = [self.skills['Endurance'], self.str/2].max
 		self.skills['Sprint'] = [self.skills['Sprint'], self.dex/2].max
@@ -225,7 +228,7 @@ class Character < ActiveRecord::Base
 
 	def add_skill(skill_name, level=1)
 		skill = ApplicationHelper::Skill.find_by_name(skill_name)
-		return nil if skill.nil?
+		return [] if skill.nil?
 
 		added_skills = []
 		if self.skills[skill_name].nil? || self.skills[skill_name] < level
@@ -259,7 +262,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def remove_skill(skill_name)
-		return nil if ApplicationHelper::Skill.base_skills.include? skill_name # sanity check
+		return [] if ApplicationHelper::Skill.base_skills.include? skill_name # sanity check
 		skill = ApplicationHelper::Skill.find_by_name(skill_name)
 		self.skills.delete skill_name
 		removed_skills = [skill_name]
@@ -269,7 +272,7 @@ class Character < ActiveRecord::Base
 				removed_skills << required_skill.name
 			end
 		end
-		return removed_skills.join(', ')
+		return removed_skills
 	end
 
 	def add_ability(ability_name)

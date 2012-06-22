@@ -20,7 +20,7 @@
 		<div class="row">
 			<div class="span5 offset2 center">
 					<%= link_to "Add Ability to: #{active_character.name}", character_path(active_character, add_ability: ability.name),
-					method: :put, class:"btn btn-mini btn-primary" if activated_character? %>
+					method: :put, class:"btn btn-mini btn-primary" if current_user_owns? active_character %>
 			</div>
 			<span style="float:right"><%= "Synergy: #{ability.synergy.name}" if ability.synergy %></span>
 		</div>

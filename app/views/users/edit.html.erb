@@ -1,7 +1,30 @@
-<% provide(:title, 'Modify') %>
+<% provide(:title, "Modify") %>
 
-<h1>Modify Profile for:</h1>
+<%= render 'password_modal' %>
 
-<h2><%= @user.handle %></h2>
+<h1>Change Account Settings</h1>
 
-<h2>Not yet done ....</h2>
+<div class="row">
+	<div class="span6 offset3">
+		<%= form_for(@user) do |f| %>
+
+			<%= f.label :email, "Email" %>
+			<%= f.text_field :email %>
+
+			<%= f.label :handle, "User Name" %>
+			<%= f.text_field :handle %>
+
+			<%= f.label :name, "Real Name" %>
+			<%= f.text_field :name %>
+
+			<%= f.label :password, "Password" %>
+			<%= f.password_field :password %>
+
+			<div>
+				<%= f.submit "Save Changes", class: "btn btn-large btn-primary" %>
+				<a class="btn btn-large btn-primary right" data-toggle="modal" href='#passwordModal'>Change Password</a>
+			</div>
+
+		<% end %>
+	</div>
+</div>

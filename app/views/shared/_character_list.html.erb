@@ -1,0 +1,18 @@
+<div class="row">
+	<% @character_list[:characters].sort_by{ |character| character.name }.each do |character| %>
+		<div class="well span3 center">
+			<h2><%= link_to character.name, character %></h2>
+			<% unless @character_list[:hide_player] %>
+				<h3>Player: <%= link_to User.find(character.user_id).handle, user_path(character.user_id) %></h3>
+			<% end %>
+			<h3>Race: <%= character.race %></h3>
+			<h4>XP: <%= character.xp %></h4>
+			<% if @character_list[:deletable] %>
+				<p/>
+				<div class="center">
+					<%= link_to "Delete", character, class: "btn btn-small btn-danger", confirm: "Are you sure you want to delete '#{character.name}'?", method: :delete %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+</div>

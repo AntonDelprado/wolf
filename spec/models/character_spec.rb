@@ -4,7 +4,6 @@
 #
 #  id         :integer         not null, primary key
 #  name       :string(255)
-#  player     :string(255)
 #  str        :integer
 #  dex        :integer
 #  int        :integer

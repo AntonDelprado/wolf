@@ -12,18 +12,14 @@
 			<%= f.label :name %>
 			<%= f.text_field :name %>
 
-			<%= f.label :player %>
-			<%= f.text_field :player %>
-
 			<%= f.label :race %>
 			<%= f.select(:race, %w[Wolf Dwarf Goblin Vampire]) %>
 
-			<%= f.label :visibility %>
-			<%= f.select(:visibility, %w[public private]) %>
+			<%= f.hidden_field(:user_id, value: current_user.id) %>
 
 			<div>
 				<%= f.submit "Create Character", class: "btn btn-large btn-primary" %>
-				<a class="btn btn-large btn-primary right" data-toggle="modal" href='#importModal'>Import Character</a></p>
+				<a class="btn btn-large btn-primary right" data-toggle="modal" href='#importModal'>Import Character</a>
 			</div>
 
 		<% end %>
