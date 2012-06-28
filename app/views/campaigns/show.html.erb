@@ -1,0 +1,85 @@
+<% provide(:title, @campaign.name) %>
+
+<% is_admin = @campaign.has_admin? current_user %>
+
+<div class="hero-unit">
+	<h1><%= @campaign.name %></h1>
+	<div class="center"><h4 class="center">Privacy: <%= @campaign.visibility == :open ? "Open" : "Closed" %></h4><p/></div>
+	<h3><%= @campaign.description %></h3>
+	<% unless @campaign.has_member? current_user or not signed_in? %>
+		<div class="center">
+			<% membership = CampaignMember.find_by_campaign_id_and_user_id(@campaign.id, current_user.id) %>
+			<% if membership.nil? %>
+				<%= link_to "Request Membership", join_campaign_path(@campaign), class: 'btn btn-large btn-primary' %>
+			<% elsif membership.membership == :invite %>
+				<%= link_to "Accept Invitation", join_campaign_path(@campaign), class: 'btn btn-large btn-primary' %>
+			<% elsif membership.membership == :request %>
+				<h3>Request Pending</h3>
+			<% elsif membership.membership == :denied %>
+				<h3>Request Denied</h3>
+			<% end %>
+		</div>
+	<% end %>
+</div>
+
+<h1 class="span10">Characters</h1>
+
+<%= render 'shared/character_list' %>
+
+<h2>Member List:</h2>
+
+<table class="table table-striped table-bordered">
+	<col/>
+	<col/>
+	<col/>
+	<% if is_admin %>
+		<col width="10%"/>
+		<col width="10%"/>
+	<% end %>
+	<thead>
+		<tr>
+			<th/>
+			<th>User Handle</th>
+			<th>Member Type</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @campaign.members.each_with_index do |member, index| %>
+			<tr>
+				<td><%= index+1 %></td>
+				<td><%= link_to member.handle, member %></td>
+				<td><%= @campaign.member_type(member).to_s.capitalize %></td>
+				<% if is_admin %>
+					<td></td>
+					<% kick_id = CampaignMember.find_by_campaign_id_and_user_id(@campaign.id, member.id).id %>
+					<td><%= link_to "Kick", invite_campaign_path(@campaign, revoke_id: kick_id), class: 'btn btn-small btn-danger span1' unless @campaign.has_admin? member%></td>
+				<% end %>
+			</tr>
+		<% end %>
+		<% CampaignMember.find_all_by_campaign_id(@campaign.id).reject { |membership| membership.member? }.each do |membership| %>
+			<tr>
+				<td/>
+				<td><%= link_to membership.user.handle, membership.user %></td>
+				<% case membership.membership %>
+				<% when :request %>
+					<td>Requesting to Join</td>
+					<td><%= link_to "Accept", invite_campaign_path(@campaign, request_id: membership.id), class: 'btn btn-small btn-success span1' %></td>
+					<td><%= link_to "Deny", invite_campaign_path(@campaign, deny_id: membership.id), class: 'btn btn-small btn-danger span1' %></td>
+				<% when :invite %>
+					<td>Invited to Join</td>
+					<td/>
+					<td><%= link_to "Revoke", invite_campaign_path(@campaign, revoke_id: membership.id), class: 'btn btn-small btn-danger span1' %></td>
+				<% when :denied %>
+					<td>Denied Membership</td>
+					<td><%= link_to "Accept", invite_campaign_path(@campaign, request_id: membership.id), class: 'btn btn-small btn-success span1' %></td>
+					<td/>
+				<% else %>
+					<td> ??? </td>
+					<td/>
+					<td/>
+				<% end %>
+			</tr>
+		<% end if is_admin %>
+	</tbody>
+</table>
+
