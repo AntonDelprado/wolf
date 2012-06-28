@@ -29,12 +29,14 @@ class User < ActiveRecord::Base
 
 	before_save { |user| user.email = email.downcase }
 
+
+
 	def campaigns
 		@campaigns ||= CampaignMember::CampaignMember.find_all_by_user_id(self.id).collect { |membership| membership.member? ? Campaign.find(membership.campaign_id) : nil }.compact
 	end
 
 	def characters
-		@characters ||= Character::Character.find_all_by_user_id(self.id)
+		@characters ||= Character.find_all_by_user_id(self.id)
 	end
 
 	def campaign_select
@@ -44,14 +46,14 @@ class User < ActiveRecord::Base
 	def active_characters
 		@actives ||= [self.active_character_id, self.character2_id, self.character3_id].collect do |char_id|
 			begin
-				Character::Character.find(char_id) unless char_id.nil?
+				Character.find(char_id) unless char_id.nil?
 			rescue ActiveRecord::RecordNotFound
 			end
 		end.compact
 	end
 
 	def active_character
-		@active ||= Character::Character.find(self.active_character_id) unless active_character_id.nil?
+		@active ||= Character.find(self.active_character_id) unless active_character_id.nil?
 	end
 
 	def push_active_character(character)
@@ -71,14 +73,14 @@ class User < ActiveRecord::Base
 	def active_campaigns
 		@active_campaigns ||= [self.active_campaign_id, self.campaign2_id, self.campaign3_id].collect do |camp_id|
 			begin
-				Campaign::Campaign.find(camp_id) unless camp_id.nil?
+				Campaign.find(camp_id) unless camp_id.nil?
 			rescue ActiveRecord::RecordNotFound
 			end
 		end.compact
 	end
 
 	def active_campaign
-		@active_campaign ||= Campaign::Campaign.find(self.active_campaign_id) unless active_campaign_id.nil?
+		@active_campaign ||= Campaign.find(self.active_campaign_id) unless active_campaign_id.nil?
 	end
 
 	def push_active_campaign(campaign)
