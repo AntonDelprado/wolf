@@ -4,7 +4,7 @@
 			<button type="button" class="close" data-dismiss="modal">×</button>
 			<h3>Add Skills</h3>
 			Show:&nbsp;
-			<%= select_tag(:skill_filter, options_for_select(ApplicationHelper::Synergy.names.unshift('All')), class: "span2") %>
+			<%= select_tag(:skill_filter, options_for_select(Skill.synergy_names.unshift('All')), class: "span2") %>
 		</div>
 		<div class="modal-body">
 
@@ -13,13 +13,13 @@
 
 					<% skills = @character.can_add_skills %>
 					<% skills.each_with_index do |skill, index| %>
-						<p class=<%= skill.synergy_css('add-') %>>
-							<%= check_box_tag(skill.name, "skill to add", false,
-								onChange: skill.check_required_inv, id: "add_#{skill.name}".gsub(" ","_")) %>
+						<%= content_tag :p, class: skill.synergy_css('add-') do %>
+							<%= check_box_tag(skill.name, 'skill to add', false,
+								onChange: "add_selected('#{skill.name}')", id: "add_#{skill.name}".gsub(' ','_')) %>
 							<%= skill.name %>
-						</p>
+						<% end %>
 
-						<% if skills.count >= 3 && (index+1).modulo(skills.count/3).zero? %>
+						<% if skills.count >= 3 and (index+1).modulo(skills.count/3).zero? %>
 				</div>
 				<div class="span2">
 						<% end %>
@@ -30,7 +30,7 @@
 		</div>
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
-			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+			<%= f.submit "Add Skills", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>
 </div>

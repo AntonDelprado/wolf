@@ -1,19 +1,27 @@
 <% provide(:title, 'Profile') %>
 
-<h1>User Profile</h1>
+<div class="span10">
+	<div class="hero-unit">
+		<h1><%= @user.handle %></h1>
+		<div style="float:left;">
+			Email:
+			<h2><%= @user.email %></h2>
+		</div>
+		<div style="float:right;">
+			Full Name:
+			<h2><%= @user.name %></h2>
+		</div>
+		<div style="clear:both;"/>
+	</div>
+</div>
 
-Handle:
+<% @campaign_list = @user.campaigns %>
+<% unless @campaign_list.empty? %>
+	<h1 class="span10">Campaigns</h1>
+<% end %>
 
-<h2><%= @user.handle %></h2>
+<%= render 'shared/campaign_list' %>
 
-Email:
-
-<h2><%= @user.email %></h2>
-
-Full Name:
-
-<h2><%= @user.name %></h2>
-
-<h1>Characters</h1>
+<h1 class="span10">Characters</h1>
 
 <%= render 'shared/character_list' %>

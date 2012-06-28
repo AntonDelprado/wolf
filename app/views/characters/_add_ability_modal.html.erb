@@ -11,10 +11,10 @@
 
 					<% abilities = @character.can_add_abilities %>
 					<% abilities.each_with_index do |ability, index| %>
-						<p class=<%= ability.synergy_css('name-') %>>
-							<%= check_box_tag(ability.name, "ability to add", false, id: "add_#{ability.name}".gsub(" ","_"), class: "add_ability") %>
+						<%= content_tag :p, class: ability.synergy_css('name-') do %>
+							<%= check_box_tag(ability.name, 'ability to add', false, id: "add_#{ability.name}".gsub(' ','_'), class: 'add_ability') %>
 							<%= ability.name %>
-						</p>
+						<% end %>
 
 						<% if abilities.count >= 3 && (index+1).modulo(abilities.count/3).zero? %>
 				</div>
@@ -27,7 +27,7 @@
 		</div>
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
-			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+			<%= f.submit "Add Abilities", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>
 </div>

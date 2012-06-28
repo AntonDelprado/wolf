@@ -25,27 +25,6 @@ $(document).ready(function() {
 	var activeTab = $('[href=' + location.hash + ']');
 	activeTab && activeTab.tab('show');
 	
-	// // alert('done');
-	// if (window.location.hash != "")
-	// {
-	// 	alert('hash');
-	// 	$('a[href="' + window.location.hash + '"]').click();
-	// }
-	// var url = document.location.toString();
-	// if (url.match('#')) {
-	// 	alert('start:' + location.hash);
-	// 	activeTab = $('a[href=' + location.hash + ']');
-	// 	alert('tab?')
-	// 	if (activeTab)
-	// 	{
-	// 		alert('tab' + activeTab)
-	// 		activeTab.tab('show');
-	// 		alert('done')
-	// 	}
-	// 	else
-	// 		alert('no tab');
-	// } 
-
 	$('.add_ability').each(function () {
 		if ($(this).attr('id').indexOf("Follower") != -1)
 			$(this).change(function () { follower_selected($(this)) });
@@ -133,7 +112,6 @@ function follower_selected (this_obj)
 
 function stats_change()
 {
-	// $('#level-col').css('width', '60px');
 	for (var i=0; i<$('#statsBase option').length; i+=1)
 		if ($('#statsBase').val() == i)
 			$('#statsRaw'+i).css('display', 'block');
@@ -141,19 +119,60 @@ function stats_change()
 			$('#statsRaw'+i).css('display', 'none')
 }
 
-function check_if_selected(this_box, required_boxes, requires_boxes)
+function remove_selected(skill_name)
 {
-	if ($(this_box).is(':checked'))
+	box = $('#remove_'+skill_name.replace(/[ ]/g, '_'))
+
+	if (box.length == 0)
+		return;
+
+	if (box.is(':checked'))
 	{
-		for (var i=0; i<required_boxes.length; i+=1)
-			$(required_boxes[i]).attr('checked', true);
+		for (var skill in skill_requires)
+			if (skill_requires[skill] == skill_name)
+			{
+				$('#remove_'+skill.replace(/[ ]/g, '_')).attr('checked', true);
+				remove_selected(skill)
+			}
 	}
 	else
 	{
-		for (var i=0; i<requires_boxes.length; i+=1)
-			$(requires_boxes[i]).attr('checked', false);
+		skill = skill_requires[skill_name];
+		if (skill)
+		{
+			$('#remove_'+skill.replace(/[ ]/g, '_')).attr('checked', false);
+			remove_selected(skill)
+		}
 	}
 }
+
+function add_selected(skill_name)
+{
+	box = $('#add_'+skill_name.replace(/[ ]/g, '_'))
+
+	if (box.length == 0)
+		return;
+
+	if (box.is(':checked'))
+	{
+		skill = skill_requires[skill_name];
+		if (skill)
+		{
+			$('#add_'+skill.replace(/[ ]/g, '_')).attr('checked', true);
+			add_selected(skill)
+		}
+	}
+	else
+	{
+		for (var skill in skill_requires)
+			if (skill_requires[skill] == skill_name)
+			{
+				$('#add_'+skill.replace(/[ ]/g, '_')).attr('checked', false);
+				add_selected(skill)
+			}
+	}
+}
+
 
 function show_skill_levels()
 {

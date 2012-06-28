@@ -1,53 +1,55 @@
 module SessionsHelper
 
 	def sign_in(user)
-		session[:current_user_id] = user.id
 		self.current_user = user
-		deactivate
 	end
 
 	def sign_out
 		self.current_user = nil
-		self.active_character = nil
-		session.delete :current_user_id
-		session.delete :active_character_id
+		# session.delete :current_user_id
 	end
 
 	def current_user=(user)
 		@current_user = user
+		if user.nil?
+			session.delete :current_user_id
+		else
+			session[:current_user_id] = user.id
+		end
 	end
 
 	def current_user
-		@current_user ||= User.find(session[:current_user_id]) unless @current_user.nil? and session[:current_user_id].nil?
+		@current_user ||= User.find(session[:current_user_id]) unless session[:current_user_id].nil?
 	end
 
 	def signed_in?
 		not current_user.nil?
 	end
 
-	def current_user_owns?(character)
-		character.user_id == self.current_user.id if self.current_user
+	def current_user_owns?(character_or_campaign)
+		return false if current_user.nil?
+
+		case character_or_campaign
+		when Character then character_or_campaign.user_id == current_user.id
+		when Campaign then character_or_campaign.has_admin? current_user
+		end
 	end
 
-	def activate(character)
-		session[:active_character_id] = character.id
-		self.active_character = character
-	end
+	def visible?(character)
+		return true if current_user_owns? character
 
-	def deactivate
-		session.delete :active_character_id
-		self.active_character = nil
-	end
-
-	def active_character=(character)
-		@active_character = character
+		case character.privacy
+		when :public then true
+		when :campaign then character.in_campaign? and character.campaign.has_member? current_user
+		when :private then false
+		end
 	end
 
 	def active_character
-		@active_character || Character.find(session[:active_character_id]) unless @active_character.nil? and session[:active_character_id].nil?
+		current_user.active_character if signed_in? and current_user_owns? current_user.active_character
 	end
 
-	def activated_character?
-		not active_character.nil?
+	def active_campaign
+		current_user.active_campaign if signed_in? and current_user_owns? current_user.active_campaign
 	end
 end

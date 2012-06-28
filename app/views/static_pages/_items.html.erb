@@ -18,19 +18,19 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% armours.each do |armour| %>
+		<% Equipment.armours.each do |armour| %>
 			<tr>
-				<td class="bold"><%= armour[:name] %></td>
+				<td class="bold"><%= armour.name %></td>
 				<td>
-					<% armour[:require].each do |require_type, value| %>
+					<% armour.requirements.each do |require_type, value| %>
 						<%= "Str: d#{value}" if require_type == :str %>
 						<%= "Dex: d#{value}" if require_type == :dex %>
 						<%= "Int: d#{value}" if require_type == :int %>
 						<%= "Fai: d#{value}" if require_type == :fai %>
-					<% end if armour[:require] %>
+					<% end if armour.requirements %>
 				</td>
-				<td class="center"><%= armour[:effect][:dr] if armour[:effect] %></td>
-				<td class="center"><%= armour[:effect][:dex] if armour[:effect] %></td>
+				<td class="center"><%= armour.dr %></td>
+				<td class="center"><%= armour.dex_mod %></td>
 			</tr>
 		<% end %>
 	</tbody>
@@ -54,18 +54,18 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% shields.each do |shield| %>
+		<% Equipment.shields.each do |shield| %>
 			<tr>
-				<td class="bold"><%= shield[:name] %></td>
+				<td class="bold"><%= shield.name %></td>
 				<td>
-					<% shield[:require].each do |require_type, value| %>
+					<% shield.requirements.each do |require_type, value| %>
 						<%= "Str: d#{value}" if require_type == :str %>
 						<%= "Dex: d#{value}" if require_type == :dex %>
 						<%= "Int: d#{value}" if require_type == :int %>
 						<%= "Fai: d#{value}" if require_type == :fai %>
-					<% end if shield[:require] %>
+					<% end if shield.requirements %>
 				</td>
-				<td class="center"><%= shield[:effect][:dr] %></td>
+				<td class="center"><%= shield.dr %></td>
 			</tr>
 		<% end %>
 	</tbody>
@@ -98,22 +98,22 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% weapons.reject{ |weapon| weapon[:type] == :ranged or weapon[:name] == 'Sling' }.each do |weapon| %>
+		<% Equipment.weapons.reject{ |weapon| weapon.weapon_class == 'Ranged' or weapon.name == 'Sling' }.each do |weapon| %>
 			<tr>
 				<td class="bold"><%= weapon[:name] %></td>
 				<td>
-					<% weapon[:require].each do |require_type, value| %>
+					<% weapon.requirements.each do |require_type, value| %>
 						<%= "Str: d#{value}" if require_type == :str %>
 						<%= "Dex: d#{value}" if require_type == :dex %>
 						<%= "Int: d#{value}" if require_type == :int %>
 						<%= "Fai: d#{value}" if require_type == :fai %>
-					<% end if weapon[:require] %>
+					<% end if weapon.requirements %>
 				</td>
-				<td><%= weapon[:type].to_s.capitalize %></td>
-				<td class="center"><%= weapon[:hands] %></td>
-				<td><%= weapon[:damage].to_s.capitalize %></td>
-				<td class="center">+<%= weapon[:bonus].to_s %></td>
-				<td><%= weapon[:quick] %></td>
+				<td><%= weapon.weapon_class %></td>
+				<td class="center"><%= weapon.hands %></td>
+				<td><%= weapon.damage %></td>
+				<td class="center">+<%= weapon.bonus %></td>
+				<td><%= weapon.quick %></td>
 			</tr>
 		<% end %>
 	</tbody>
@@ -139,19 +139,19 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% weapons.select{ |weapon| weapon[:type] == :ranged or weapon[:name] == 'Sling' }.each do |weapon| %>
+		<% Equipment.weapons.select{ |weapon| weapon.weapon_class == 'Ranged' or weapon.name == 'Sling' }.each do |weapon| %>
 			<tr>
-				<td><%= weapon[:name] %></td>
+				<td><%= weapon.name %></td>
 				<td>
-					<% weapon[:require].each do |require_type, value| %>
+					<% weapon.requirements.each do |require_type, value| %>
 						<%= "Str: d#{value}" if require_type == :str %>
 						<%= "Dex: d#{value}" if require_type == :dex %>
 						<%= "Int: d#{value}" if require_type == :int %>
 						<%= "Fai: d#{value}" if require_type == :fai %>
-					<% end if weapon[:require] %>
+					<% end if weapon.requirements %>
 				</td>
-				<td class="center"><%= "+#{weapon[:bonus]}" if weapon[:bonus] %></td>
-				<td class="center"><%= "+#{weapon[:range]}" if weapon[:range] %></td>
+				<td class="center"><%= "+#{weapon.bonus}" if weapon.bonus %></td>
+				<td class="center"><%= "+#{weapon.range}" if weapon.range %></td>
 			</tr>
 		<% end %>
 	</tbody>

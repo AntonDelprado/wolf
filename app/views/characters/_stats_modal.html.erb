@@ -8,7 +8,6 @@
 
 			Stats Type:
 			<%= select_tag :base_stats, options_for_select(@character.stats_options, @character.stats_selected), id: "statsBase" %>
-			<%#= select(:stats, :base_stats, options_for_select(@character.stats_options), id: "statsBase") %>
 
 			Base Stats:
 			<% @character.stats_options.each_with_index do |stat, index| %>
@@ -17,7 +16,7 @@
 		</div>
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
-			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+			<%= f.submit "Change Stats", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>
 </div>

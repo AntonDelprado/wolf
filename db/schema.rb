@@ -11,7 +11,40 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120621082441) do
+ActiveRecord::Schema.define(:version => 20120626082132) do
+
+  create_table "abilities", :force => true do |t|
+    t.integer  "character_id"
+    t.string   "name"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "campaign_members", :force => true do |t|
+    t.integer  "campaign_id"
+    t.integer  "user_id"
+    t.integer  "membership"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "campaigns", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+    t.integer  "visibility",  :limit => 255
+  end
+
+  create_table "character_skills", :force => true do |t|
+    t.integer  "character_id"
+    t.string   "name"
+    t.integer  "level"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.string   "required_skill"
+    t.string   "synergy_name"
+  end
 
   create_table "characters", :force => true do |t|
     t.string   "name"
@@ -19,23 +52,45 @@ ActiveRecord::Schema.define(:version => 20120621082441) do
     t.integer  "dex"
     t.integer  "int"
     t.integer  "fai"
-    t.text     "skills"
-    t.text     "abilities"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.string   "race"
-    t.text     "items"
-    t.string   "visibility"
     t.integer  "user_id"
+    t.integer  "campaign_id"
+    t.integer  "privacy"
+  end
+
+  create_table "equipment", :force => true do |t|
+    t.integer  "character_id"
+    t.string   "slot"
+    t.string   "name"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "item_type"
+  end
+
+  create_table "skills", :force => true do |t|
+    t.integer  "character_id"
+    t.string   "name"
+    t.integer  "level"
+    t.string   "required_skill"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.string   "handle"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
     t.string   "password_digest"
+    t.integer  "active_character_id"
+    t.integer  "character2_id"
+    t.integer  "character3_id"
+    t.integer  "active_campaign_id"
+    t.integer  "campaign2_id"
+    t.integer  "campaign3_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

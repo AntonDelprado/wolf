@@ -7,18 +7,18 @@
 		<div class="modal-body">
 
 			Weapon:
-			<%= select_tag(:primary, options_for_select(@character.can_equip(:primary), @character.primary ? @character.primary[:name] : nil)) %>
+			<%= select_tag(:primary, options_for_select(@character.can_equip(:primary), @character.primary_equiped? ? @character.primary.name : nil)) %>
 
 			Off Hand:
-			<%= select_tag(:off_hand, options_for_select(@character.can_equip(:off_hand), @character.off_hand ? @character.off_hand[:name] : nil)) %>
+			<%= select_tag(:off_hand, options_for_select(@character.can_equip(:off_hand), @character.off_hand_equiped? ? @character.off_hand.name : nil)) %>
 
 			Armour:
-			<%= select_tag(:armour, options_for_select(@character.can_equip(:armour), @character.armour ? @character.armour[:name] : nil)) %>
+			<%= select_tag(:armour, options_for_select(@character.can_equip(:armour), @character.armour_equiped? ? @character.armour.name : nil)) %>
 
 		</div>
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
-			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+			<%= f.submit "Change Equip", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>
 </div>

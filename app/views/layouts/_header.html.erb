@@ -2,20 +2,39 @@
 	<div class="navbar-inner">
 		<div class="container">
 			<nav>
-				<ul class="nav pull-right">
+				<ul class="nav pull-left">
 					<li><%= link_to "Setting", setting_path %></li>
 					<li><%= link_to "Rules", rules_path %></li>
+				</ul>
+				<ul class="nav pull-right">
 					<% if signed_in? %>
 						<li class="dropdown">
+							<a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+								Campaigns<b class='caret'></b>
+							</a>
+							<ul class='dropdown-menu'>
+								<li><%= link_to "All Campaigns", campaigns_path %></li>
+								<li><%= link_to "New Campaign", new_campaign_path %></li>
+								<% unless current_user.active_campaigns.empty? %>
+									<li class='divider'/>
+									<% current_user.active_campaigns.each do |campaign| %>
+										<li><%= link_to campaign.name, campaign %></li>
+									<% end %>
+								<% end %>
+							</ul>
+						</li>
+						<li class="dropdown">
 							<a href='#' class="dropdown-toggle" data-toggle="dropdown">
-								Character Builder<b class="caret"></b>
+								Characters<b class="caret"></b>
 							</a>
 							<ul class="dropdown-menu">
 								<li><%= link_to "All Characters", characters_path %></li>
 								<li><%= link_to "New Character", new_character_path %></li>
-								<% if activated_character? %>
+								<% unless current_user.active_characters.empty? %>
 									<li class="divider"/>
-									<li><%= link_to "Character: #{active_character.name}", active_character %></li>
+									<% current_user.active_characters.each do |character| %>
+										<li><%= link_to character.name, character %></li>
+									<% end %>
 								<% end %>
 							</ul>
 						</li>
@@ -31,6 +50,7 @@
 							</ul>
 						</li>
 					<% else %>
+						<li><%= link_to "Campaigns", campaigns_path %></li>
 						<li><%= link_to "Characters", characters_path %></li>
 						<li><%= link_to "Sign In", signin_path %></li>
 					<% end %>

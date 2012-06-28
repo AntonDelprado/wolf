@@ -2,20 +2,18 @@
 #
 # Table name: characters
 #
-#  id         :integer         not null, primary key
-#  name       :string(255)
-#  str        :integer
-#  dex        :integer
-#  int        :integer
-#  fai        :integer
-#  skills     :text
-#  abilities  :text
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#  race       :string(255)
-#  items      :text
-#  visibility :string(255)
-#  user_id    :integer
+#  id          :integer         not null, primary key
+#  name        :string(255)
+#  str         :integer
+#  dex         :integer
+#  int         :integer
+#  fai         :integer
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
+#  race        :string(255)
+#  user_id     :integer
+#  campaign_id :integer
+#  privacy     :integer
 #
 
 require 'spec_helper'

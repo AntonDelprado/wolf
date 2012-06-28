@@ -18,11 +18,7 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find(params[:id])
-		@character_list = {
-			characters: Character.find_all_by_user_id(@user.id),
-			hide_player: true,
-			deletable: @user == current_user,
-		}
+		@character_list =  Character.find_all_by_user_id(@user.id)
 	end
 
 	def edit
@@ -61,10 +57,6 @@ class UsersController < ApplicationController
 		end
 	end
 
-	def destroy
-		# destroy user here
-	end
-
 	private
 
 	def signed_in_user
@@ -73,6 +65,6 @@ class UsersController < ApplicationController
 
 	def correct_user
 		@user = User.find(params[:id])
-		redirect_to root_path, flash: { error: 'You may only edit your own profile' } unless @user == current_user
+		redirect_to @user, flash: { error: 'You may only edit your own profile' } unless @user == current_user
 	end
 end

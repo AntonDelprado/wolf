@@ -9,15 +9,12 @@
 			<div class="row">
 				<div class="span2">
 
-					<% @character.abilities.reject { |ability| %w[Atheist Literate].include? ability and @character.race == 'Vampire' }.each_with_index do |ability_name, index| %>
+					<% @character.abilities.reject { |ability| %w[Atheist Literate].include? ability.name and @character.race == 'Vampire' }.each_with_index do |ability, index| %>
 
-						<p>
-							<% ability = ApplicationHelper::Ability.find_by_name(ability_name) %>
+						<%= content_tag :p, class: ability.synergy_css('name-') do %>
 							<%= check_box_tag(ability.name, "ability to remove", false, id: "remove_#{ability.name}".sub(" ", "_")) %>
-							<span class=<%= ability.synergy_css('name-') %>>
-								<%= ability.name %>
-							</span>
-						</p>
+							<%= ability.name %>
+						<% end %>
 
 						<% if @character.abilities.count >= 3 && (index+1).modulo(@character.abilities.count/3).zero? %>
 				</div>
@@ -31,7 +28,7 @@
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
 			<%= f.hidden_field(:remove_abilities, value: true, name: 'remove_abilities') %>
-			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+			<%= f.submit "Remove Abilities", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>
 </div>

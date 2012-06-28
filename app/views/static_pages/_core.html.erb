@@ -1,9 +1,9 @@
 <h2>Stats and Skill Checks</h2>
-<p>Characters in the Wolf System have four Stats: <%= str %>, <%= dex %>, <%= int %> and <%= fai %>. Each stat is one dice type of the following: d4, d6, d8, d10 or d12 which determines what type of dice will be rolled when performing a skill check.</p>
+<p>Characters in the Wolf System have four Stats: <%= strength %>, <%= dexterity %>, <%= intelligence %> and <%= faith %>. Each stat is one dice type of the following: d4, d6, d8, d10 or d12 which determines what type of dice will be rolled when performing a skill check.</p>
 <p>Skill checks are performed by rolling a number of dice determined by the level of the skill of type determined by an associated Stat. The <em>Power</em> of a skill check is the number of dice rolled that are 4 or higher.</p>
 <p>The notation <%= check('Skill','stat') %> is used to mean a skill check with the skill for the given stat.</p>
 <p>Skill checks can have bonuses and penalties which add or remove dice from the roll. Skill checks can also have bonuses to dice type. For example: if a charcter would normally roll d8s but have their die type increased by one they will instead roll d10s. If a roll has a die type less d4s then they still roll d4s but have a penalty of 2 for each die type. If a roll has a die type greater than d12s then they still roll d12s but have a bonus of 2 for each die type. For example if someone has a roll of <em>6d4</em> but has their die type reduced by 2 they would instead roll <em>2d4</em>.</p>
-<p>The base <%= hp 'max' %> of a character is equal to their <%= str %> plus their <%= dex %>. The base <%= mp 'max' %> of a character is equal to their <%= int %> plus their <%= fai %>.</p>
+<p>The base <%= hp 'max' %> of a character is equal to their <%= strength %> plus their <%= dexterity %>. The base <%= mp 'max' %> of a character is equal to their <%= intelligence %> plus their <%= faith %>.</p>
 <p>Below is a table detailing the type of result given the power of a skill check.</p>
 
 <table class="table table-striped table-bordered table-condensed">

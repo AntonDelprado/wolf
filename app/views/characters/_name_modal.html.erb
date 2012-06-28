@@ -12,13 +12,16 @@
 			<%= f.label :race %>
 			<%= f.select(:race, %w[Wolf Dwarf Goblin Vampire], selected: @character.race) %>
 
-			<%= f.label :visibility %>
-			<%= f.select(:visibility, [['Public', 'public'], ['Private', 'private']], selected: @character.visibility) %>
+			<%= f.label :campaign_id, "Campaign" %>
+			<%= f.select :campaign_id, current_user.campaign_select, selected: @character.campaign_id %>
+
+			<%= f.label :privacy %>
+			<%= f.select(:privacy, [['Public', :public], ['Campaign', :campaign], ['Private', :private]], selected: @character.privacy) %>
 
 		</div>
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
-			<%= f.submit "Save Changes", class: "btn btn-small btn-primary" %>
+			<%= f.submit "Change Details", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>
 </div>

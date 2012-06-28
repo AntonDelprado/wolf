@@ -1,7 +1,13 @@
 Wolf::Application.routes.draw do
 
-  resources :users, except: :index
+  resources :users, except: [:index, :destroy]
   resources :sessions, only: [:new, :create, :destroy]
+  resources :campaigns do
+    member do
+      get :join
+      get :invite
+    end
+  end
   resources :characters do
     member do
       get :export
@@ -33,6 +39,7 @@ Wolf::Application.routes.draw do
   match '/rules/item', to: 'static_pages#item'
   match '/rules/monster', to: 'static_pages#monster'
   match '/setting', to: 'static_pages#setting'
+  match '/contact', to: 'static_pages#contact'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -87,34 +87,35 @@
 	</select>
 </p>
 
-<% ApplicationHelper::Skill.all.each do |skill| %>
-	<div class=<%= skill.synergy_css('skill-') %>>
+<% Skill.every.sort_by { |skill| skill.name }.each do |skill| %>
+	<%= content_tag :div, class: skill.synergy_css('skill-') do %>
 		<div class="row">
 			<div class="span2">
-				<%= "<img src=\"assets/attack.png\" alt=\"Attack\"/>".html_safe if skill.attack? %>
-				<%= "<img src=\"assets/defend.png\" alt=\"Defend\"/>".html_safe if skill.defend? %>
-				<%= "<img src=\"assets/invertible.png\" alt=\"Invertible\"/>".html_safe if skill.invertible? %>
-				<%= "<img src=\"assets/dividible.png\" alt=\"Dividible\"/>".html_safe if skill.dividible? %>
-				<%= "<img src=\"assets/str.png\" alt=\"Strength\"/>".html_safe if skill.stat == "Str" %>
-				<%= "<img src=\"assets/dex.png\" alt=\"Dexterity\"/>".html_safe if skill.stat == "Dex" %>
-				<%= "<img src=\"assets/int.png\" alt=\"Intelligence\"/>".html_safe if skill.stat == "Int" %>
-				<%= "<img src=\"assets/fai.png\" alt=\"Faith\"/>".html_safe if skill.stat == "Fai" %>
+				<%= tag(:img, src:'assets/attack.png', alt:'Attack') if skill.attack? %>
+				<%= tag(:img, src:'assets/defend.png', alt:'Defend') if skill.defend? %>
+				<%= tag(:img, src:'assets/invertible.png', alt:'Invertible') if skill.invertible? %>
+				<%= tag(:img, src:'assets/dividible.png', alt:'Dividible') if skill.dividible? %>
+				<%= tag(:img, src:'assets/str.png', alt:'Strength') if skill.stat == 'Str' %>
+				<%= tag(:img, src:'assets/dex.png', alt:'Dexterity') if skill.stat == 'Dex' %>
+				<%= tag(:img, src:'assets/int.png', alt:'Intelligence') if skill.stat == 'Int' %>
+				<%= tag(:img, src:'assets/fai.png', alt:'Faith') if skill.stat == 'Fai' %>
 				<br/>
 			</div>
 			<div class="span5 center">
-				<%= skill.full_name %>
-				<%= "Requires: #{skill skill.requires}<br/> ".html_safe if skill.requires %>
+				<h3><%= skill.full_name %></h3>
+				<%= content_tag(:p, "Requires: #{skill skill.required_skill}".html_safe) if skill.required_skill %>
 			</div>
 			<div class="" style="float:right">
-				<%= "<img src=\"assets/arthur.png\" alt=\"Arthur\"/>".html_safe if skill.spell == :arthur %>
-				<%= "<img src=\"assets/innodi.png\" alt=\"Innodi\"/>".html_safe if skill.spell == :innodi %>
-				<%= "<img src=\"assets/irdken.png\" alt=\"Ird'ken\"/>".html_safe if skill.spell == :irdken %>
-				<%= "<img src=\"assets/loreanna.png\" alt=\"Loreanna\"/>".html_safe if skill.spell == :loreanna %>
-				<%= "<img src=\"assets/oxdoro.png\" alt=\"Oxdoro\"/>".html_safe if skill.spell == :oxdoro %>
+				<%= tag(:img, src:'assets/arthur.png', alt:'Arthur') if skill.spell == 'Arthur' %>
+				<%= tag(:img, src:'assets/innodi.png', alt:'Innodi') if skill.spell == 'Innodi' %>
+				<%= tag(:img, src:'assets/irdken.png', alt:"Ird'ken" ) if skill.spell == "Ird'ken" %>
+				<%= tag(:img, src:'assets/oxdoro.png', alt:'Oxdoro') if skill.spell == 'Oxdoro' %>
+				<%= tag(:img, src:'assets/loreanna.png', alt:'Loreanna') if skill.spell == 'Loreanna' %>
+				<%= tag(:img, src:'assets/travaer.png', alt:'Travaer') if skill.spell == 'Travaer' %>
 			</div>
 		</div>
 
-		<%= skill.full_text %>
+		<%= parse_text_xml(skill.text).html_safe %>
 
 		<div class="row">
 			<div class="span2">
@@ -122,11 +123,11 @@
 			</div>
 			<div class="span5 center">
 				<%= link_to "Add Skill to: #{active_character.name}", character_path(active_character, add_skill: skill.name),
-					method: :put, class:"btn btn-mini btn-primary" if current_user_owns? active_character %>
+					method: :put, class:"btn btn-mini btn-primary" unless active_character.nil? %>
 			</div>
-			<div style="float:right">
-				<%= "Synergy: #{skill.synergy.name}" if skill.synergy %>
+			<div class='right'>
+				<%= "Synergy: #{skill.synergy_name}" if skill.has_synergy? %>
 			</div>
 		</div>
-	</div>
+	<% end %>
 <% end %>

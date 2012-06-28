@@ -2,31 +2,33 @@
 
 <script type="text/javascript">
 	skill_costs = {
-		<% ApplicationHelper::Skill.all.each do |skill| %>
-			<%= "\"#{skill.name}\": #{skill.cost},".html_safe %>
+		<% @character.skills.each do |skill| %>
+			<%= "'#{skill.name}': #{skill.cost},".html_safe %>
 		<% end %>
 	};
 	skill_requires = {
-		<% ApplicationHelper::Skill.all.each do |skill| %>
-			<%= "\"#{skill.name}\": \"#{skill.requires.name}\",".html_safe if skill.requires && skill.requires.class != String%>
+		<% Skill.raw_data.each do |skill_name, skill_data| %>
+			<%= "\"#{skill_name}\": \"#{skill_data[:required_skill]}\",".html_safe if skill_data[:required_skill] %>
 		<% end %>
 	};
 </script>
 
-<% if !signed_in? or current_user.id != @character.user_id %>
+<% unless current_user_owns? @character %>
 	<style type='text/css' media='all'>
 		.modify { display: none; }
 	</style>
 <% end %>
 
 <!-- Custom Forms !-->
-<%= render 'characters/name_modal' %>
-<%= render 'characters/stats_modal' %>
-<%= render 'characters/item_modal' %>
-<%= render 'characters/remove_modal' %>
-<%= render 'characters/remove_ability_modal' %>
-<%= render 'characters/add_modal' %>
-<%= render 'characters/add_ability_modal' %>
+<% if signed_in? and current_user_owns? @character %>
+	<%= render 'characters/name_modal' %>
+	<%= render 'characters/stats_modal' %>
+	<%= render 'characters/item_modal' %>
+	<%= render 'characters/remove_modal' %>
+	<%= render 'characters/remove_ability_modal' %>
+	<%= render 'characters/add_modal' %>
+	<%= render 'characters/add_ability_modal' %>
+<% end %>
 
 <!-- Error and Warning Messages -->
 <%= render 'shared/error_messages' %>
@@ -41,14 +43,18 @@
 			<% unless current_user_owns? @character %>
 				<h2>Player: <%= link_to User.find(@character.user_id).handle, user_path(@character.user_id) %></h2>
 			<% end %>
+			<% if @character.in_campaign? %>
+				<h2>Campaign: <%= link_to @character.campaign.name, @character.campaign %></h2>
+			<% end %>
 			<h2>Race: <%= @character.race %></h2>
-			<% if @character.visibility != 'public' %>
-				<h3><%= @character.visibility.capitalize %></h3>
+			<% unless @character.public? %>
+				<h3 class='dont-print'>Privacy: <%= @character.privacy.to_s.capitalize %></h3>
 			<% end %>
 			<p/>
 			<div class="center">
 				<a class="btn btn-small btn-primary disable-button dont-print modify" data-toggle="modal" href='#nameModal'>Modify</a>
 				<%= link_to "Export", export_character_path(@character), class: "btn btn-small btn-primary dont-print" %>
+				<%= link_to "Delete", @character, class: "btn btn-small btn-danger dont-print modify", confirm: "Are you sure you want to delete '#{@character.name}'?", method: :delete %>
 			</div>
 		</div>
 		<div class="row">
@@ -102,25 +108,25 @@
 					<tr>
 						<td>Strength<img src="/assets/str.png" class="small-right"/></td>
 						<td><%= @character.str %></td>
-						<td><%= @character.str_mod_s %></td>
+						<td><%= @character.str_mod < 0 ? @character.str_mod : "+#{@character.str_mod}" %></td>
 						<td><%= @character.str_final %></td>
 					</tr>
 					<tr>
 						<td>Dexterity<img src="/assets/dex.png" class="small-right"/></td>
 						<td><%= @character.dex %></td>
-						<td><%= @character.dex_mod_s %></td>
+						<td><%= @character.dex_mod < 0 ? @character.dex_mod : "+#{@character.dex_mod}" %></td>
 						<td><%= @character.dex_final %></td>
 					</tr>
 					<tr>
 						<td>Intelligence<img src="/assets/int.png" class="small-right"/></td>
 						<td><%= @character.int %></td>
-						<td><%= @character.int_mod_s %></td>
+						<td><%= @character.int_mod < 0 ? @character.int_mod : "+#{@character.int_mod}" %></td>
 						<td><%= @character.int_final %></td>
 					</tr>
 					<tr>
 						<td>Faith<img src="/assets/fai.png" class="small-right"/></td>
 						<td><%= @character.fai %></td>
-						<td><%= @character.fai_mod_s %></td>
+						<td><%= @character.fai_mod < 0 ? @character.fai_mod : "+#{@character.fai_mod}" %></td>
 						<td><%= @character.fai_final %></td>
 					</tr>
 				</tbody>
@@ -141,7 +147,7 @@
 				<tbody>
 					<% @character.synergies.each do |synergy_name, synergy| %>
 						<tr>
-							<td class=<%= ApplicationHelper::Synergy.css_class synergy_name %>><%= synergy_name %></td>
+							<%= content_tag(:td, synergy_name, class: synergy[:css_class]) %>
 							<td><%= "+#{synergy[:level]}" unless synergy_name == 'No Class' %></td>
 							<td><%= synergy[:spent] %></td>
 							<td><%= synergy[:remaining] %><%= " Total" if synergy_name == 'No Class' %></td>
@@ -153,7 +159,7 @@
 	</div>
 </div>
 
-<% unless @character.race == 'Wolf' %>
+<% unless @character.race == 'Wolf' and @character.items.empty? %>
 
 <!-- ########### Item Buttons ########### !-->
 
@@ -164,7 +170,7 @@
 	<p/>
 
 <!-- ########### Item Table ########### !-->
-	<% if @character.items.count.nonzero? %>
+	<% unless @character.items.empty? %>
 		<table class='table table-bordered table-condensed item-table'>
 			<col class="name-col"/>
 			<col class="small-col"/>
@@ -186,13 +192,13 @@
 			<tbody>
 				<% [@character.primary, @character.off_hand, @character.armour].compact.each do |item| %>
 					<tr>
-						<td><%= item[:name] %></td>
-						<td class="center"><%= "+#{item[:bonus]}" if item[:bonus] %></td>
-						<td><%= item[:type].to_s.capitalize if item[:type] %></td>
-						<td><%= item[:damage].to_s.capitalize if item[:damage] %></td>
-						<td class="center"><%= "+#{item[:range]}" if item[:range] %></td>
-						<td class="center"><%= item[:effect][:dr] if item[:effect] %></td>
-						<td><%= item[:quick] %></td>
+						<td><%= item.name %></td>
+						<td class="center"><%= "+#{item.bonus}" if item.bonus %></td>
+						<td><%= item.weapon_class %></td>
+						<td><%= item.damage %></td>
+						<td class="center"><%= "+#{item.range}" if item.range %></td>
+						<td class="center"><%= item.dr %></td>
+						<td><%= item.quick %></td>
 					</tr>
 				<% end %>
 			</tbody>
@@ -207,7 +213,11 @@
 <div class="row dont-print modify">
 	<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2 disable-button" %>
 	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addModal'>Add Skills</a>
-	<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeModal'>Remove Skills</a>
+	<% if @character.skills.count == 4 # only base skills %>
+		<a class='btn btn-large btn-danger span2' disabled='true'>Remove Skills</a>
+	<% else %>
+		<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeModal'>Remove Skills</a>
+	<% end %>
 	<a class="btn btn-large btn-warning span2 skill-level" onClick="show_skill_levels()">Change Skill Levels</a>
 	<div class="skill-level-select span2">
 		<%= f.submit "Save Changes", class: "btn btn-large btn-warning span2" %>
@@ -237,27 +247,26 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% @character.skills.sort.map.each do |skill_name, level| %>
-			<% skill = ApplicationHelper::Skill.find_by_name(skill_name) %>
+		<% @character.skills.sort_by{ |skill| skill.name }.each do |skill| %>
 			<tr>
-				<td rowspan=<%= skill.effects.count.to_s %> class=<%= skill.synergy_css('name-') %>>
+				<%= content_tag :td, class: skill.synergy_css('name-'), rowspan: skill.effects.count do %>
 					<%= skill.name %>
-					<span style="float:right"><%= skill.icons %></span>
-				</td>
-				<td rowspan=<%= skill.effects.count.to_s %> class='center dont-print'>
-					<span class="skill-level"><%= level %></span>
+					<%= skill.icons.collect { |src| tag(:img, src: src, class: 'skill-icons right') }.join.html_safe %>
+				<% end %>
+				<%= content_tag :td, class: 'center dont-print', rowspan: skill.effects.count do %>
+					<span class="skill-level"><%= skill.level %></span>
 					<span class="skill-level-select">
-						<%= select_tag :"level_#{skill_name.sub(' ','_')}", options_for_select(@character.min_skill_level(skill_name) .. 20, level), class:"skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
+						<%= select_tag :"level_#{skill.name.sub(' ','_')}", options_for_select(@character.min_skill_level(skill.name) .. 20, skill.level), class:"skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
 					</span>
-				</td>
-				<td rowspan="<%= skill.effects.count %>" class="center dont-print"><%= skill.cost %></td>
+				<% end %>
+				<%= content_tag :td, skill.cost, class: 'center dont-print', rowspan: skill.effects.count %>
 				<% unless skill.effects.empty? %>
 					<% skill.effects.each_with_index do |effect, index| %>
 						<%= "<tr>".html_safe unless index.zero? %>
-							<td class="mp center"><%= effect.mana %></td>
+							<td class="mp center"><%= effect[:mana] %></td>
 							<td class="power center"><%= @character.power(skill, effect) %></td>
 							<td class="power center"><%= @character.duration(skill, effect) %></td>
-							<td><%= effect.quick %></td>
+							<td><%= parse_text_xml(effect[:quick], type: :quick).html_safe %></td>
 						</tr>
 					<% end %>
 				<% else %>
@@ -275,7 +284,11 @@
 <div class="row dont-print modify">
 	<%= link_to "Abilities Page", '/rules#tab-abilities', class: "btn btn-primary btn-large span2 disable-button" %>
 	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addAbilityModal'>Add Abilities</a>
-	<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>
+	<% if @character.abilities.empty? %>
+		<a class='btn btn-large btn-danger span2' disabled='true'>Remove Abilities</a>
+	<% else %>
+		<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>
+	<% end %>
 </div>
 <p/>
 
@@ -290,11 +303,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% @character.abilities.each do |ability_name| %>
-		<% ability = ApplicationHelper::Ability.find_by_name(ability_name) %>
+		<% @character.abilities.sort_by{ |ability| ability.name }.each do |ability| %>
 			<tr>
-				<td class=<%= ability.synergy_css("name-") %>><%= ability.name %></td>
-				<td><%= ability.quick %></td>
+				<%= content_tag :td, ability.name, class: ability.synergy_css('name-') %>
+				<td><%= parse_text_xml(ability.quick, type: :quick) %></td>
 			</tr>
 		<% end %>
 	</tbody>

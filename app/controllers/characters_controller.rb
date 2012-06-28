@@ -1,6 +1,7 @@
 class CharactersController < ApplicationController
 	# helper ApplicationHelper
 	before_filter :signed_in_user, except: [:show, :index, :export]
+	before_filter :visible_to_user, only: [:show, :export]
 	before_filter :correct_user, only: [:edit, :update, :destroy]
 
 	def new
@@ -9,8 +10,14 @@ class CharactersController < ApplicationController
 
 	def create
 		@character = Character.new(params[:character])
+		if @character.campaign_id.nil?
+			@character.privacy = :public
+		else
+			@character.privacy = :campaign
+		end
+
 		if @character.save
-			activate @character
+			current_user.push_active_character @character if signed_in?
 			redirect_to @character, flash: { success: "Successfully Created #{@character.name}" }
 		else
 			render 'new'
@@ -19,16 +26,12 @@ class CharactersController < ApplicationController
 
 	def show
 		@character = Character.find(params[:id])
-		if @character.public? or current_user_owns? @character
-			activate @character
-		else
-			redirect_to characters_path, flash: { error: "Unable to access character" }
-		end
+		current_user.push_active_character(@character) if signed_in?
 	end
 
 	def index
 		@owned_characters = Character.find_all_by_user_id(current_user.id) if signed_in?
-		@other_characters = Character.find_all_by_visibility('public').reject { |character| current_user_owns? character }
+		@other_characters = Character.all.reject { |character| current_user_owns? character }
 	end
 
 	def export
@@ -44,14 +47,12 @@ class CharactersController < ApplicationController
 			return
 		end
 
-		@character = Character.import_xml(xml_doc.root)
+		@character = Character.import_xml(xml_doc.root, current_user.id)
 
 		if @character.nil?
 			redirect_to new_character_path, flash: { error: "Invalid Character XML" }
-		elsif @character.save
-			redirect_to @character, flash: { success: "'#{@character.name}' sucessfully imported." }
 		else
-			redirect_to new_character_path, flash: { error: "'#{@character.name}' failed to import." }
+			redirect_to @character, flash: { success: "'#{@character.name}' sucessfully imported." }
 		end
 	end
 
@@ -69,7 +70,7 @@ class CharactersController < ApplicationController
 			@character.update_attributes(str: stats[0], dex: stats[1], int: stats[2], fai: stats[3])
 			@character.update_base_skills
 			if @character.save
-				redirect_to @character, flash: { success: "Chaged Stats" }
+				redirect_to @character, flash: { success: "Changed Stats" }
 			else
 				@character = Character.find(@character.id)
 				redirect_to @character, flash: { error: "Failed to Change Stats" }
@@ -77,13 +78,10 @@ class CharactersController < ApplicationController
 
 		elsif params[:change_items]
 			flash[:success] = "Changed Items to: Weapon:#{params[:primary]}, Off:#{params[:off_hand]}, Armour:#{params[:armour]}"
+
 			equiped = @character.equip primary: params[:primary], off_hand: params[:off_hand], armour: params[:armour]
 
-			if @character.save
-				redirect_to @character, flash: { success: "Equiped: #{equiped.collect{ |item| item[:name] }.join(', ')}" }
-			else
-				redirect_to @character, flash: { error: "Equip failed." }
-			end
+			redirect_to @character, flash: { success: "Equiped: #{equiped.join(', ')}" }
 
 		elsif params[:add_skill]
 			added_skills = @character.add_skill params[:add_skill]
@@ -109,10 +107,10 @@ class CharactersController < ApplicationController
 				removed.concat @character.remove_skill(skill_name) if param_value == "skill to remove"
 			end
 
-			if @character.save and not removed.empty?
-				redirect_to @character, flash: { success: "Removed: #{removed.join(', ')}" }
-			else
+			if removed.empty?
 				redirect_to @character, flash: { error: "Removing Skills Failed" }
+			else
+				redirect_to @character, flash: { success: "Removed: #{removed.join(', ')}" }
 			end
 
 		elsif params[:remove_abilities]
@@ -132,13 +130,13 @@ class CharactersController < ApplicationController
 		elsif params[:add_skills]
 			added = []
 			params.each do |skill_name, param_value|
-				added.concat @character.add_skill(skill_name) if param_value == "skill to add"
+				added.concat(@character.add_skill(skill_name)) if param_value == "skill to add"
 			end
 
-			if @character.save and not added.empty?
-				redirect_to @character, flash: { success: "Added: #{added.join(', ')}" }
-			else
+			if added.empty?
 				redirect_to @character, flash: { error: "Adding Skills Failed" }
+			else
+				redirect_to @character, flash: { success: "Added: #{added.join(', ')}" }
 			end
 
 		elsif params[:add_abilities]
@@ -160,25 +158,18 @@ class CharactersController < ApplicationController
 			params.each do |key, value|
 				if key.class == String && key[0,5] == "level"
 					skill_name = key.sub('level_', '').gsub('_', ' ')
-					unless @character.skills[skill_name] == value.to_i
-						changed << skill_name
-						@character.skills[skill_name] = value.to_i
-					end
+					changed.concat @character.set_skill_level(skill_name, value.to_i)
 				end
 			end
 
-			if @character.save and not changed.empty?
-				redirect_to @character, flash: { success: "Changed Levels: #{changed.join(', ')}" }
-			else
-				redirect_to @character, flahs: { error: "Failed to Change Levels" }
-			end
+			redirect_to @character, flash: { success: "Changed Levels: #{changed.uniq.join(', ')}" }
 
 		else
 			if @character.update_attributes(params[:character])
 				redirect_to @character, flash: { success: "Changed Character Attributes" }
 			else
 				flash.now[:error] = "Error: #{@character.errors.full_messages.join(', ')}"
-				@character = Character.find(params[:id]) # undo the damage
+				@character.reload
 				render 'show'
 			end
 
@@ -187,9 +178,8 @@ class CharactersController < ApplicationController
 
 	def destroy
 		character = Character.find(params[:id])
-		deactivate
 		character.destroy
-		redirect_to characters_path, flash: { success: "Successfully destroyed: #{character.name}" }
+		redirect_to characters_path, flash: { success: "Successfully Destroyed: #{character.name}" }
 	end
 
 	private
@@ -198,8 +188,13 @@ class CharactersController < ApplicationController
 		redirect_to signin_path, notice: 'To do this action you must sign in' unless signed_in?
 	end
 
+	def visible_to_user
+		@character = Character.find(params[:id])
+		redirect_to characters_path, flash: { error: "Unable to access character" } unless visible? @character
+	end
+
 	def correct_user
 		@character = Character.find(params[:id])
-		redirect_to characters_path, "You do not own that Character" unless current_user_owns? @character
+		redirect_to characters_path, flash: { error: "You do not own that Character" } unless current_user_owns? @character
 	end
 end
