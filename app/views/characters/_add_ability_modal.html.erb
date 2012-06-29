@@ -1,5 +1,5 @@
 <div id="addAbilityModal" class="modal hide fade" style="display: none;">
-	<%= form_for(@character, url: { action: "update", add_abilities: true }) do |f| %>
+	<%= form_for(@character, url: { action: :abilities }) do |f| %>
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
 			<h3>Add Abilities</h3>
@@ -12,7 +12,7 @@
 					<% abilities = @character.can_add_abilities %>
 					<% abilities.each_with_index do |ability, index| %>
 						<%= content_tag :p, class: ability.synergy_css('name-') do %>
-							<%= check_box_tag(ability.name, 'ability to add', false, id: "add_#{ability.name}".gsub(' ','_'), class: 'add_ability') %>
+							<%= check_box_tag ability.name_tag('add'), 'ability to add', false %>
 							<%= ability.name %>
 						<% end %>
 

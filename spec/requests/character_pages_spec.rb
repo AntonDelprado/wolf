@@ -269,8 +269,8 @@ describe 'Character Pages' do
 
 		describe 'base stats' do
 			before do
-				select '10, 10, 4, 4',	from: 'statsBase'
-				select '4 Str, 10 Dex, 10 Int, 4 Fai', from: 'statsRaw1'
+				select '10, 10, 4, 4',	from: 'Base Stats'
+				select '4 Str, 10 Dex, 10 Int, 4 Fai', from: 'raw_stats1'
 				click_button 'Change Stats'
 				character.reload
 			end
@@ -296,7 +296,7 @@ describe 'Character Pages' do
 			it 'should update' do
 				should have_selector('title', text: character.name)
 				should have_selector('div.alert.alert-success', text: 'Add')
-				should have_selector('div.alert.alert-success', text: 'Attack')
+				should have_selector('div.alert.alert-success', text: 'Added Skill: Attack')
 				character.should have_skill('Attack')
 			end
 
@@ -310,7 +310,7 @@ describe 'Character Pages' do
 				it 'should update' do
 					should have_selector('title', text: character.name)
 					should have_selector('div.alert.alert-success', text: 'Remove')
-					should have_selector('div.alert.alert-success', text: 'Attack')
+					should have_selector('div.alert.alert-success', text: 'Removed Skill: Attack')
 					character.should_not have_skill('Attack')
 				end
 			end
@@ -325,8 +325,7 @@ describe 'Character Pages' do
 
 				it 'should update' do
 					should have_selector('title', text: character.name)
-					should have_selector('div.alert.alert-success', text: 'Levels')
-					should have_selector('div.alert.alert-success', text: 'Attack')
+					should have_selector('div.alert.alert-success', text: 'Changed Skill Levels: Attack, Endurance')
 					character.skill('Attack').level.should == 13
 				end
 			end
@@ -342,7 +341,7 @@ describe 'Character Pages' do
 
 			it 'should update' do
 				should have_selector('title', text: character.name)
-				should have_selector('div.alert.alert-success', text: 'Added: Acrobatic')
+				should have_selector('div.alert.alert-success', text: 'Added Ability: Acrobatic')
 				character.should have_ability('Acrobatic')
 			end
 
@@ -355,7 +354,7 @@ describe 'Character Pages' do
 
 				it 'should update' do
 					should have_selector('title', text: character.name)
-					should have_selector('div.alert.alert-success', text: 'Removed: Acrobatic')
+					should have_selector('div.alert.alert-success', text: 'Removed Ability: Acrobatic')
 					character.should_not have_ability('Acrobatic')
 				end
 			end

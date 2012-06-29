@@ -1,5 +1,5 @@
 <div id="removeModal" class="modal hide fade" style="display: none;">
-	<%= form_for(@character, url: { action: "update", remove_skills: true }) do |f| %>
+	<%= form_for(@character, url: { action: :skills }) do |f| %>
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
 			<h3>Remove Skills</h3>
@@ -13,8 +13,8 @@
 					<% skills.sort_by{ |skill| skill.name }.each_with_index do |skill, index| %>
 
 						<%= content_tag :p, class: skill.synergy_css('name-') do %>
-							<%= check_box_tag(skill.name, "skill to remove", false,
-								onChange: "remove_selected('#{skill.name}')", id: "remove_#{skill.name}".sub(" ", "_")) %>
+							<%= check_box_tag skill.name_tag('remove'), 'skill to remove', onChange: "remove_selected('#{skill.name}')" %>
+							<%#= f.check_box skill.name_tag('remove'), 'skill to remove', false, onChange: "remove_selected('#{skill.name}')" %>
 							<%= skill.name %>
 						<% end %>
 

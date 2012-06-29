@@ -15,6 +15,10 @@ Wolf::Application.routes.draw do
   resources :characters do
     member do
       get :export
+      put :stats
+      put :items
+      put :skills
+      put :abilities
     end
 
     collection do

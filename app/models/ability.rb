@@ -33,6 +33,10 @@ class Ability < ActiveRecord::Base
 		"#{prefix}#{Skill.synergy_css_for self.synergy_name}"
 	end
 
+	def name_tag(prefix)
+		"#{prefix}_#{self.name.gsub(' ', '_')}"
+	end
+
 	def requirements
 		self.class.raw_data[self.name][:require]
 	end
@@ -52,7 +56,7 @@ class Ability < ActiveRecord::Base
 				required << case type
 				when :xp then "#{value} XP Spent"
 				when :spell_xp then "#{value} XP Spent in Spells"
-				when :ability then ApplicationHelper::skill value
+				when :ability then value
 				else value
 				end
 			end

@@ -105,6 +105,10 @@ class Skill < ActiveRecord::Base
 		"#{prefix}#{SYNERGY_TAGS[self.synergy_name]}"
 	end
 
+	def name_tag(prefix)
+		"#{prefix}_#{self.name.gsub(' ', '_')}"
+	end
+
 	def spell
 		self.class.raw_data[self.name][:spell]
 	end

@@ -112,11 +112,11 @@ function follower_selected (this_obj)
 
 function stats_change()
 {
-	for (var i=0; i<$('#statsBase option').length; i+=1)
-		if ($('#statsBase').val() == i)
-			$('#statsRaw'+i).css('display', 'block');
+	for (var i=0; i<$('#base_stats option').length; i+=1)
+		if ($('#base_stats').val() == i)
+			$('#raw_stats'+i).css('display', 'block');
 		else
-			$('#statsRaw'+i).css('display', 'none')
+			$('#raw_stats'+i).css('display', 'none')
 }
 
 function remove_selected(skill_name)

@@ -1,5 +1,5 @@
 <div id="removeAbilityModal" class="modal hide fade" style="display: none;">
-	<%= form_for(@character, url: { action: "update", remove_abilities: true }) do |f| %>
+	<%= form_for(@character, url: { action: :abilities }) do |f| %>
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
 			<h3>Remove Abilities</h3>
@@ -12,7 +12,7 @@
 					<% @character.abilities.reject { |ability| %w[Atheist Literate].include? ability.name and @character.race == 'Vampire' }.each_with_index do |ability, index| %>
 
 						<%= content_tag :p, class: ability.synergy_css('name-') do %>
-							<%= check_box_tag(ability.name, "ability to remove", false, id: "remove_#{ability.name}".sub(" ", "_")) %>
+							<%= check_box_tag ability.name_tag('remove'), 'ability to remove', false %>
 							<%= ability.name %>
 						<% end %>
 
@@ -27,7 +27,6 @@
 		</div>
 		<div class="modal-footer">
 			<a href='#' class="btn" data-dismiss="modal">Cancel</a>
-			<%= f.hidden_field(:remove_abilities, value: true, name: 'remove_abilities') %>
 			<%= f.submit "Remove Abilities", class: "btn btn-small btn-primary" %>
 		</div>
 	<% end %>

@@ -208,7 +208,7 @@
 
 <!-- ########### Skills Buttons ########### !-->
 
-<%= form_for(@character, url: { action: :update, skill_level: true }) do |f| %>
+<%= form_for(@character, url: { action: :skills }) do |f| %>
 
 <div class="row dont-print modify">
 	<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2 disable-button" %>
@@ -256,13 +256,13 @@
 				<%= content_tag :td, class: 'center dont-print', rowspan: skill.effects.count do %>
 					<span class="skill-level"><%= skill.level %></span>
 					<span class="skill-level-select">
-						<%= select_tag :"level_#{skill.name.sub(' ','_')}", options_for_select(@character.min_skill_level(skill.name) .. 20, skill.level), class:"skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
+						<%= select_tag skill.name_tag('level'), options_for_select(@character.min_skill_level(skill.name)..20, skill.level), class: "skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
 					</span>
 				<% end %>
 				<%= content_tag :td, skill.cost, class: 'center dont-print', rowspan: skill.effects.count %>
 				<% unless skill.effects.empty? %>
 					<% skill.effects.each_with_index do |effect, index| %>
-						<%= "<tr>".html_safe unless index.zero? %>
+						<%= tag(:tr, nil, true) unless index.zero? %>
 							<td class="mp center"><%= effect[:mana] %></td>
 							<td class="power center"><%= @character.power(skill, effect) %></td>
 							<td class="power center"><%= @character.duration(skill, effect) %></td>

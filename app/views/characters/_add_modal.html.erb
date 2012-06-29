@@ -1,5 +1,5 @@
 <div id="addModal" class="modal hide fade" style="display: none;">
-	<%= form_for(@character, url: { action: "update", add_skills: true }) do |f| %>
+	<%= form_for(@character, url: { action: :skills }) do |f| %>
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">×</button>
 			<h3>Add Skills</h3>
@@ -14,8 +14,7 @@
 					<% skills = @character.can_add_skills %>
 					<% skills.each_with_index do |skill, index| %>
 						<%= content_tag :p, class: skill.synergy_css('add-') do %>
-							<%= check_box_tag(skill.name, 'skill to add', false,
-								onChange: "add_selected('#{skill.name}')", id: "add_#{skill.name}".gsub(' ','_')) %>
+							<%= check_box_tag skill.name_tag('add'), 'skill to add', false, onChange: "add_selected('#{skill.name}')" %> 
 							<%= skill.name %>
 						<% end %>
 
