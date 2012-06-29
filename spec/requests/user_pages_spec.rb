@@ -105,6 +105,97 @@ describe 'User Pages' do
 		describe 'to own edit path' do
 			before { visit edit_user_path(other_user) }
 
+			it 'should display correctly' do
+				should have_selector('title', text: 'Modify')
+				should have_selector('h1', text: 'Change Account Settings')
+			end
+
+			describe 'without incorrect password' do
+				before do
+					fill_in 'Password', with: 'bad pass'
+					click_button 'Save Changes'
+				end
+
+				it 'should show error' do
+					should have_selector('title', text: 'Modify')
+					should have_selector('h1', text: 'Change Account Settings')
+					should have_selector('div.alert.alert-error', text: 'Incorrect Password')
+				end
+			end
+
+			describe 'supplying invalid information' do
+				before do
+					fill_in 'Email', with: 'not an email address'
+					fill_in 'Password', with: other_user.password
+					click_button 'Save Changes'
+				end
+
+				it 'should show error' do
+					should have_selector('title', text: 'Modify')
+					should have_selector('h1', text: 'Change Account Settings')
+					should have_selector('div.alert.alert-error', text: 'Email is invalid')
+				end
+			end
+
+			describe 'supplying valid information' do
+				let(:new_email) { 'new@email.com' }
+				let(:new_handle) { 'Handlicious' }
+				let(:new_name) { 'Mr New Name' }
+				before do
+					fill_in 'Email', with: new_email
+					fill_in 'User Name', with: new_handle
+					fill_in 'Real Name', with: new_name
+					fill_in 'Password', with: other_user.password
+					click_button 'Save Changes'
+				end
+
+				it 'should show correctly' do
+					should have_selector('title', text: 'Profile')
+					should have_selector('h1', text: new_handle)
+					should have_selector('h2', text: new_email)
+					should have_selector('h2', text: new_name)
+				end
+			end
+
+			describe 'changing password' do
+				let(:new_pass) { 'PassAnew' }
+				before do
+					fill_in 'New Password', with: new_pass
+					fill_in 'Confirm New Password', with: new_pass
+				end
+
+				describe 'with correct authentication' do
+					before do
+						fill_in 'New Password', with: new_pass
+						fill_in 'Confirm New Password', with: new_pass
+						fill_in 'Old Password', with: other_user.password
+						click_button 'Update'
+						other_user.reload
+					end
+
+					it 'should change password' do
+						should have_selector('title', text: 'Profile')
+						should have_selector('h1', text: other_user.handle)
+						should have_selector('div.alert.alert-success', text: 'Password Changed' )
+						other_user.authenticate(new_pass).should_not == false
+					end
+				end
+
+				describe 'with incorrect authentication' do
+					before do
+						fill_in 'Old Password', with: 'bad pass'
+						click_button 'Update'
+						user.reload
+					end
+
+					it 'should show error' do
+						should have_selector('title', text: 'Modify' )
+						should have_selector('div.alert.alert-error', text: 'Incorrect Password' )
+						other_user.authenticate(other_user.password).should_not == false
+						# user.authenticate(new_pass).should == false
+					end
+				end
+			end
 
 		end
 	end

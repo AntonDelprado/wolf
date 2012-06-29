@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
 
 
 	def campaigns
-		@campaigns ||= CampaignMember::CampaignMember.find_all_by_user_id(self.id).collect { |membership| membership.member? ? Campaign.find(membership.campaign_id) : nil }.compact
+		@campaigns ||= CampaignMember.find_all_by_user_id(self.id).collect { |membership| membership.member? ? Campaign.find(membership.campaign_id) : nil }.compact
 	end
 
 	def characters

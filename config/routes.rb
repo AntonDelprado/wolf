@@ -1,7 +1,11 @@
 Wolf::Application.routes.draw do
 
-  resources :users, except: [:index, :destroy]
   resources :sessions, only: [:new, :create, :destroy]
+  resources :users do
+    member do
+      put :password
+    end
+  end
   resources :campaigns do
     member do
       get :join
