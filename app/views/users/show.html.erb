@@ -3,6 +3,20 @@
 <div class="span10">
 	<div class="hero-unit">
 		<h1><%= @user.handle %></h1>
+		<% unless @campaigns_to_invite.empty? %>
+			<div class="center">
+				<div class='btn-group' style='display:inline-block; padding-top:15px;'>
+					<a class='btn btn-large btn-primary span2 dropdown-toggle' data-toggle='dropdown' href='#'>
+						Invite to Campaign<span class='caret'/>
+					</a>
+					<ul class='dropdown-menu'>
+						<% @campaigns_to_invite.each do |campaign| %>
+							<li><%= link_to campaign.name, invite_campaign_path(campaign, user_id: @user.id) %></li>
+						<% end %>
+					</ul>
+				</div>
+			</div>
+		<% end %>
 		<div style="float:left;">
 			Email:
 			<h2><%= @user.email %></h2>
@@ -15,13 +29,38 @@
 	</div>
 </div>
 
-<% @campaign_list = @user.campaigns %>
-<% unless @campaign_list.empty? %>
-	<h1 class="span10">Campaigns</h1>
+<% unless @invitations.empty? %>
+	<h1>Invitations</h1>
+
+	<table class='table table-striped table-bordered'>
+		<col/>
+		<col/>
+		<col width='10%'/>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @invitations.collect { |invite| Campaign.find(invite.campaign_id) }.each do |campaign| %>
+				<tr>
+					<td><%= campaign.name %></td>
+					<td><%= campaign.description %></td>
+					<td><%= link_to 'Join', join_campaign_path(@campaign), class: 'btn btn-small btn-primary span1' %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+
 <% end %>
 
-<%= render 'shared/campaign_list' %>
+<% unless @user.campaigns.empty? %>
+	<h1 class="span10">Campaigns</h1>
+	<%= render @user.campaigns.sort_by { |campaign| campaign.name } %>
+<% end %>
 
-<h1 class="span10">Characters</h1>
-
-<%= render 'shared/character_list' %>
+<% unless @user.characters.empty? %>
+	<h1 class="span10">Characters</h1>
+	<%= render @user.characters.sort_by { |character| character.name } %>
+<% end %>

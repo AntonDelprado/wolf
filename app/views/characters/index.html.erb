@@ -1,36 +1,33 @@
 <% provide(:title, "Characters") %>
 
-<% if signed_in? %>
-	<h1 class="span10">Your Characters</h1>
-
-	<% @character_list = current_user.characters %>
-	<%= render 'shared/character_list' %>
-
-	<div class="row span10 center" style="padding-bottom: 20px;">
-		<%= link_to "Create Character", new_character_path, class: "btn btn-large btn-primary" %>
+<div class="hero-unit">
+	<h1>Character List</h1>
+	<div class='center'>
+		<%= link_to "Create Character", new_character_path, class: "btn btn-large btn-primary" if signed_in? %>
 	</div>
+</div>
 
-	<h1 class="span10">Campaign Characters</h1>
-
-	<% current_user.campaigns.each do |campaign| %>
-		<h2 class="span10"><%= campaign.name %></h2>
-
-		<% @character_list = campaign.characters.reject { |character| current_user_owns? character } %>
-
-		<%= render 'shared/character_list' %>
+<% if signed_in? %>
+	<% unless @owned_characters.empty? %>
+		<h1 class="span10">Your Characters</h1>
+		<%= render @owned_characters %>
 	<% end %>
 
+	<% unless @campaign_characters.empty? %>
+		<h1 class="span10">Campaign Characters</h1>
+
+		<% @campaign_characters.each do |campaign_id, characters| %>
+			<% campaign = Campaign.find campaign_id %>
+			<%= content_tag(:h2, link_to(campaign.name, campaign), class: 'span10') %>
+
+			<%= render characters %>
+
+		<% end %>
+	<% end %>
+<% end %>
+
+<% unless @other_characters.empty? %>
 	<h1 class="span10">Public Characters</h1>
 
-	<% @character_list = Character.all.reject { |character| current_user_owns?(character) or (character.in_campaign? and current_user_owns? character.campaign) } %>
-
-	<%= render 'shared/character_list' %>
-
-<% else %>
-	<h1 class="span10">Public Characters</h1>
-
-	<% @character_list = Character.all %>
-
-	<%= render 'shared/character_list' %>
-
+	<%= render @other_characters %>
 <% end %>

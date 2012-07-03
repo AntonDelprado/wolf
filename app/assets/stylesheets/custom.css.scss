@@ -21,12 +21,22 @@ h1 {
 	margin-bottom: 10px;
 }
 
+.hero-unit {
+	h1 {
+		padding-bottom: 15px;
+	}
+}
+
 .center {
 	text-align: center;
 }
 
 .right {
 	float: right;
+}
+
+.clear {
+	clear: both;
 }
 
 footer {
@@ -318,6 +328,12 @@ table.item-table {
 
 table.cost-table{
 	td:first-child {
+		vertical-align: middle;
+	}
+}
+
+table.vcenter {
+	td {
 		vertical-align: middle;
 	}
 }

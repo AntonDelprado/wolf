@@ -39,6 +39,11 @@ describe 'User Pages' do
 			end
 		end
 
+		describe 'to users path' do
+			pending 'complete users'
+			pending 'check for pagination'
+		end
+
 		describe 'to edit user path' do
 			before { visit edit_user_path(user) }
 
@@ -90,6 +95,10 @@ describe 'User Pages' do
 					should have_link(closed_campaign.name)
 				end
 			end
+		end
+
+		describe 'to user path when owning campaigns' do
+			pending 'should be able to invite to campaigns'
 		end
 
 		describe 'to edit path' do
@@ -192,7 +201,6 @@ describe 'User Pages' do
 						should have_selector('title', text: 'Modify' )
 						should have_selector('div.alert.alert-error', text: 'Incorrect Password' )
 						other_user.authenticate(other_user.password).should_not == false
-						# user.authenticate(new_pass).should == false
 					end
 				end
 			end

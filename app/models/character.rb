@@ -179,6 +179,16 @@ class Character < ActiveRecord::Base
 		PRIVACY.invert[read_attribute :privacy]
 	end
 
+	def visible_to?(user)
+		return true if self.user_id == (user.is_a?(User) ? user.id : user.to_i)
+
+		case self.privacy
+		when :public then true
+		when :campaign then self.in_campaign? and self.campaign.has_member? user
+		when :private then false
+		end
+	end
+
 	def stats
 		[self.str, self.dex, self.int, self.fai]
 	end

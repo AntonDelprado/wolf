@@ -1,12 +1,10 @@
-<% provide(:title, "Campaign") %>
+<% provide(:title, "Campaigns") %>
 
 <div class="hero-unit">
 	<h1>Campaign List</h1>
-	<div class="center" style="padding-top: 25px">
-		<%= link_to "Create Campaign", new_campaign_path, class: 'btn btn-large btn-primary' %>
+	<div class="center">
+		<%= link_to "Create Campaign", new_campaign_path, class: 'btn btn-large btn-primary' if signed_in? %>
 	</div>
 </div>
 
-<% @campaign_list = Campaign.all %>
-
-<%= render 'shared/campaign_list' %>
+<%= render @campaigns %>

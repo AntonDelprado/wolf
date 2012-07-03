@@ -18,7 +18,26 @@ class UsersController < ApplicationController
 
 	def show
 		@user = User.find(params[:id])
-		@character_list =  Character.find_all_by_user_id(@user.id)
+
+		if @user == current_user
+			@invitations = CampaignMember.find_all_by_user_id_and_membership(@user.id, CampaignMember.membership(:invite))
+			@campaigns_to_invite = []
+		else
+			@invitations = []
+			@campaigns_to_invite = current_user.campaigns.reject { |campaign| [:member, :admin, :invite].include? campaign.member_type(@user) } if signed_in?
+			@campaigns_to_invite ||= []
+		end
+	end
+
+	def index
+		@users = User.paginate(page: params[:page])
+		@characters = {}
+		@campaigns = {}
+
+		@users.each do |user|
+			@characters[user.id] = user.characters.select { |character| character.visible_to? current_user }
+			@campaigns[user.id] = user.campaigns.select { |campaign| campaign.visible_to? current_user }
+		end
 	end
 
 	def edit

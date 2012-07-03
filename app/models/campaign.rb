@@ -18,6 +18,11 @@ class Campaign < ActiveRecord::Base
 	validates :name, presence: true
 	validates :visibility, inclusion: VISIBILITY.keys
 
+	def reload(options = nil)
+		super
+		@characters = @members = @requests = nil
+	end
+
 	def self.visibility(vis)
 		VISIBILITY[vis]
 	end
@@ -27,13 +32,15 @@ class Campaign < ActiveRecord::Base
 	end
 
 	def add_member(member, membership_type=:member)
-		if member.is_a? User
-			new_membership = CampaignMember.new campaign_id: self.id, user_id: member.id
-			new_membership.membership = membership_type
-			new_membership.save
-
-			@members = nil # clear cached members
+		case member
+		when User then new_membership = CampaignMember.new campaign_id: self.id, user_id: member.id
+		when Integer then new_membership = CampaignMember.new campaign_id: self.id, user_id: member
 		end
+
+		new_membership.membership = membership_type
+		new_membership.save
+
+		@members = nil if membership_type == :member or membership_type == :admin # clear cached members
 	end
 
 	def members
@@ -45,18 +52,43 @@ class Campaign < ActiveRecord::Base
 	end
 
 	def has_member?(member)
-		if member.is_a? User
-			membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id)
-			!membership.nil? and membership.member?
+		case member
+		when User then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id)
+		when Integer then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member)
+		else return false
 		end
+
+		return (!membership.nil? and membership.member?)
 	end
 
 	def has_admin?(member)
-		CampaignMember.exists?(campaign_id: self.id, user_id: member.id, membership: 1) if member.is_a? User
+		case member
+		when User then return CampaignMember.exists? campaign_id: self.id, user_id: member.id, membership: CampaignMember.membership(:admin)
+		when Integer then return CampaignMember.exists? campaign_id: self.id, user_id: member, membership: CampaignMember.membership(:admin)
+		else return false
+		end
 	end
 
 	def member_type(member)
-		CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id).membership if member.is_a? User
+		case member
+		when User then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id)
+		when Integer then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member)
+		else return nil
+		end
+
+		membership.membership unless membership.nil?
+	end
+
+	def membership_for(member)
+		case member
+		when User
+			( CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id) ||
+				CampaignMember.new(campaign_id: self.id, user_id: member.id, membership: :none) )
+	
+		when Integer
+			( CampaignMember.find_by_campaign_id_and_user_id(self.id, member) ||
+				CampaignMember.new(campaign_id: self.id, user_id: member, membership: :none) )
+		end
 	end
 
 	def visibility=(vis)
@@ -65,6 +97,18 @@ class Campaign < ActiveRecord::Base
 
 	def visibility
 		VISIBILITY.invert[read_attribute :visibility]
+	end
+
+	def visible_to?(user)
+		return true if self.visibility == :open
+
+		case user
+		when User then type = CampaignMember.find_by_campaign_id_and_user_id(self.id, user.id)
+		when Integer then type = CampaignMember.find_by_campaign_id_and_user_id(self.id, user)
+		else return false
+		end
+
+		return (type and [:member, :admin, :invite].include? type.membership)
 	end
 
 	def open?

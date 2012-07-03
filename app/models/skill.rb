@@ -33,11 +33,18 @@ class Skill < ActiveRecord::Base
 	}
 
 	SYNERGIES_NAMES = ['Warrior', 'Rogue', 'Channeller', 'Mechanist', 'Trickster', 'Battle Mage', 'Necromancer', 'Lore', 'No Class']
+	STATLESS = {
+		name: 'Statless',
+	}
 
 	after_initialize do
 		if self.required_skill.nil? and self.class.raw_data[self.name].has_key?(:required_skill)
 			self.required_skill = self.class.raw_data[self.name][:required_skill] if self.class.raw_data[self.name][:required_skill][0..7] != 'Will of'
 		end
+	end
+
+	def self.statless
+		STATLESS
 	end
 
 	def self.base_skills
@@ -56,8 +63,12 @@ class Skill < ActiveRecord::Base
 
 	def self.required_by(skill_name)
 		required_by = []
-		self.raw_data.each { |name, data| required_by << name if data[:required_skill] == skill_name }
-		return required_by
+		if skill_name == 'Statless'
+			self.raw_data.each { |name, data| required_by << name if data[:stat].nil? }
+		else
+			self.raw_data.each { |name, data| required_by << name if data[:required_skill] == skill_name }
+		end
+		required_by
 	end
 
 	def self.required_size(skill_name)
@@ -85,7 +96,7 @@ class Skill < ActiveRecord::Base
 	end
 
 	def self.every
-		self.raw_data.collect { |name, data| self.new name: name }
+		self.raw_data.collect { |name, data| self.new name: name unless name == 'statless' }.compact
 	end
 
 	def full_name
@@ -228,6 +239,10 @@ class Skill < ActiveRecord::Base
 				@@raw_data[skill[:name]] = skill
 			end
 		end
+		# @@raw_data['statless'] = {
+		# 	name: 'statless',
+		# 	effects: [],
+		# }
 		@@raw_data
 	end
 end

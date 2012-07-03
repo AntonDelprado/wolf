@@ -9,28 +9,26 @@ describe 'Character Pages' do
 
 	subject { page }
 
-	before do
-		user.save
-		other_user.save
-		open_campaign.save
-		closed_campaign.save
-		character.save
-	end
+	before { character.save }
 
 	describe 'public access' do
 
 		describe 'to new character page' do
 			before { visit new_character_path }
 
-			it { should have_selector('title', text: 'Sign In') }
-			it { should have_selector('div.alert.alert-notice', text: 'sign in') }
+			it 'should redirect to Sign In' do
+				should have_selector('title', text: 'Sign In')
+				should have_selector('div.alert.alert-notice', text: 'sign in')
+			end
 		end
 
 		describe 'to edit character page' do
 			before { visit edit_character_path(character) }
 
-			it { should have_selector('title', text: 'Sign In') }
-			it { should have_selector('div.alert.alert-notice', text: 'sign in') }
+			it 'should redirect to Sign In' do
+				should have_selector('title', text: 'Sign In')
+				should have_selector('div.alert.alert-notice', text: 'sign in')
+			end
 		end
 
 		describe 'to characters page' do 
@@ -96,8 +94,10 @@ describe 'Character Pages' do
 				visit character_path(character)
 			end
 
-			it { should have_selector('title', text: 'Characters') }
-			it { should have_selector('div.alert.alert-error', text: 'Unable to access character') }
+			it 'should redirect to characters page' do
+				should have_selector('title', text: 'Characters')
+				should have_selector('div.alert.alert-error', text: 'Unable to access character')
+			end
 		end
 
 		describe 'to campaign character page' do 
@@ -107,8 +107,10 @@ describe 'Character Pages' do
 				visit character_path(character)
 			end
 
-			it { should have_selector('title', text: 'Characters') }
-			it { should have_selector('div.alert.alert-error', text: 'Unable to access character') }
+			it 'should redirect to characters page' do
+				should have_selector('title', text: 'Characters')
+				should have_selector('div.alert.alert-error', text: 'Unable to access character')
+			end
 		end
 
 	end
@@ -128,8 +130,6 @@ describe 'Character Pages' do
 			it { should have_selector('title', text: 'New Character') }
 
 			describe 'creating new invalid character' do
-				before { click_button submit }
-
 				it "should not create a user" do
 					expect { click_button submit }.not_to change(Character, :count)
 					should have_selector('title', text: 'New Character')
@@ -161,15 +161,19 @@ describe 'Character Pages' do
 			describe 'at character path' do
 				before { visit character_path(character) }
 
-				it { should have_selector('title', text: character.name) }
-				it { should have_selector('style') } # hides modify tags
+				it 'should display without modify interface' do
+					should have_selector('title', text: character.name)
+					should have_selector('div.modify', visible: false)
+				end
 			end
 
 			describe 'at characters path' do
 				before { visit characters_path }
 
-				it { should have_selector('title', text: 'Characters') }
-				it { should have_link(character.name) }
+				it 'should display' do
+					should have_selector('title', text: 'Characters')
+					should have_link(character.name)
+				end
 			end
 
 		end
@@ -183,15 +187,19 @@ describe 'Character Pages' do
 			describe 'at character path' do
 				before { visit character_path(character) }
 
-				it { should have_selector('title', text: 'Characters') }
-				it { should have_selector('div.alert.alert-error', text: 'Unable to access character') }
+				it 'should redirect to characters page' do
+					should have_selector('title', text: 'Characters')
+					should have_selector('div.alert.alert-error', text: 'Unable to access character')
+				end
 			end
 
 			describe 'at characters path' do
 				before { visit characters_path }
 
-				it { should have_selector('title', text: 'Characters') }
-				it { should_not have_link(character.name) }
+				it 'should not show character' do
+					should have_selector('title', text: 'Characters')
+					should_not have_link(character.name)
+				end
 			end
 		end
 
@@ -205,15 +213,19 @@ describe 'Character Pages' do
 				describe 'at character path' do
 					before { visit character_path(character) }
 
-					it { should have_selector('title', text: 'Characters') }
-					it { should have_selector('div.alert.alert-error', text: 'Unable to access character') }
+					it 'should redirect to characters page' do
+						should have_selector('title', text: 'Characters')
+						should have_selector('div.alert.alert-error', text: 'Unable to access character')
+					end
 				end
 
 				describe 'at characters path' do
 					before { visit characters_path }
 
-					it { should have_selector('title', text: 'Characters') }
-					it { should_not have_link(character.name) }
+					it 'should not show character' do
+						should have_selector('title', text: 'Characters')
+						should_not have_link(character.name)
+					end
 				end
 			end
 
@@ -229,8 +241,10 @@ describe 'Character Pages' do
 				describe 'at characters path' do
 					before { visit characters_path }
 
-					it { should have_selector('title', text: 'Characters') }
-					it { should have_link(character.name) }
+					it 'should show character' do
+						should have_selector('title', text: 'Characters')
+						should have_link(character.name)
+					end
 				end
 
 			end
@@ -296,7 +310,7 @@ describe 'Character Pages' do
 			it 'should update' do
 				should have_selector('title', text: character.name)
 				should have_selector('div.alert.alert-success', text: 'Add')
-				should have_selector('div.alert.alert-success', text: 'Added Skill: Attack')
+				should have_selector('div.alert.alert-success', text: 'Added 1 Skill: Attack')
 				character.should have_skill('Attack')
 			end
 
@@ -310,7 +324,7 @@ describe 'Character Pages' do
 				it 'should update' do
 					should have_selector('title', text: character.name)
 					should have_selector('div.alert.alert-success', text: 'Remove')
-					should have_selector('div.alert.alert-success', text: 'Removed Skill: Attack')
+					should have_selector('div.alert.alert-success', text: 'Removed 1 Skill: Attack')
 					character.should_not have_skill('Attack')
 				end
 			end
@@ -325,7 +339,7 @@ describe 'Character Pages' do
 
 				it 'should update' do
 					should have_selector('title', text: character.name)
-					should have_selector('div.alert.alert-success', text: 'Changed Skill Levels: Attack, Endurance')
+					should have_selector('div.alert.alert-success', text: 'Changed 2 Skill Levels: Attack, Endurance')
 					character.skill('Attack').level.should == 13
 				end
 			end
@@ -341,7 +355,7 @@ describe 'Character Pages' do
 
 			it 'should update' do
 				should have_selector('title', text: character.name)
-				should have_selector('div.alert.alert-success', text: 'Added Ability: Acrobatic')
+				should have_selector('div.alert.alert-success', text: 'Added 1 Ability: Acrobatic')
 				character.should have_ability('Acrobatic')
 			end
 
@@ -354,7 +368,7 @@ describe 'Character Pages' do
 
 				it 'should update' do
 					should have_selector('title', text: character.name)
-					should have_selector('div.alert.alert-success', text: 'Removed Ability: Acrobatic')
+					should have_selector('div.alert.alert-success', text: 'Removed 1 Ability: Acrobatic')
 					character.should_not have_ability('Acrobatic')
 				end
 			end

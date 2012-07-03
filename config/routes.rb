@@ -10,6 +10,9 @@ Wolf::Application.routes.draw do
     member do
       get :join
       get :invite
+      get :deny
+      get :clear
+      get :admin
     end
   end
   resources :characters do

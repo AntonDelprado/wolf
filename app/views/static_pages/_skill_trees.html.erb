@@ -1,25 +1,29 @@
 <h2>Skill Trees</h2>
 
 <p>Below are all the skills arranged by requirements.</p>
-
+<% statless = Skill.statless %>
 <% endurance = Skill.raw_data['Endurance'] %>
 <% sprint = Skill.raw_data['Sprint'] %>
 <% observation = Skill.raw_data['Observation'] %>
 <% sense = Skill.raw_data['Sense'] %>
-<% [endurance,sprint,observation,sense].each_with_index do |base_skill, index| %>
-<h2><%= "#{%w[Statless Strength Dexterity Intelligence, Faith][index]} Based Skills " %></h2>
+<% [statless,endurance,sprint,observation,sense].each_with_index do |base_skill, index| %>
+<h2><%= "#{%w[Statless Strength Dexterity Intelligence Faith][index]} Based Skills " %></h2>
 <table>
 	<% (0..Skill.required_size(base_skill[:name])-1).each do |row| %>
 		<tr>
 			<td>&nbsp;</td>	
 			<% Skill.required_row(base_skill[:name], row).each do |skill_name| %>
-				<% skill = Skill.raw_data[skill_name] %>
-				<%= content_tag :td, class: (skill == base_skill ? '' : 'synergy-row'), rowspan: Skill.required_size(skill[:name]) do %>
-					<%= content_tag :div, class: "synergy span2 @{skill[:synergy_css]}", style: 'margin-bottom:0px;' do %>
+				<% skill = Skill.raw_data[skill_name] || Skill.statless %>
+				<%= content_tag :td, class: (base_skill == skill ? '' : 'synergy-row'), rowspan: Skill.required_size(skill_name) do %>
+					<%= content_tag :div, class: "synergy span2 #{skill[:synergy_css]}", style: 'margin-bottom:0px;' do %>
 						<%= tag(:img, src: 'assets/attack.png', class: 'small-left') if skill[:attack] %>
 						<%= tag(:img, src: 'assets/attack.png', class: 'small-left') if skill[:defend] %>
 
-						<%= skill[:name] %>
+						<% if (skill[:name].length > 11 and skill[:spell] and skill[:attack]) or skill[:name].length > 14 %>
+							<%= content_tag :span, skill[:name], style: 'font-size:85%;' %>
+						<% else %>
+							<%= skill[:name] %>
+						<% end %>
 
 						<%= tag(:img, src: 'assets/arthur.png', class: 'small-right') if skill[:spell] == 'Arthur' %>
 						<%= tag(:img, src: 'assets/innodi.png', class: 'small-right') if skill[:spell] == 'Innodi' %>

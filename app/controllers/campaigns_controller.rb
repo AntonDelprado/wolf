@@ -1,6 +1,6 @@
 class CampaignsController < ApplicationController
 	before_filter :signed_in_user, except: [:show, :index]
-	before_filter :correct_user, only: [:edit, :update, :destroy]
+	before_filter :correct_user, except: [:show, :index, :new, :create, :join]
 
 	def new
 		@campaign = Campaign.new
@@ -21,79 +21,110 @@ class CampaignsController < ApplicationController
 	def show
 		@campaign = Campaign.find(params[:id])
 
-		if @campaign.open? or @campaign.has_member? current_user
+		if @campaign.visible_to? current_user
 			current_user.push_active_campaign(@campaign) if signed_in?
-			@character_list = Character.find_all_by_campaign_id(@campaign.id)
+			@characters = Character.find_all_by_campaign_id(@campaign.id)
 		else
 			redirect_to campaigns_path, flash: { error: "Cannot access Campaign" }
 		end
 	end
 
 	def index
+		@campaigns = Campaign.all.sort_by { |campaign| campaign.name }
 	end
 
 	def join
 		@campaign = Campaign.find(params[:id])
-		member = CampaignMember.find_by_campaign_id_and_user_id(@campaign.id, current_user.id)
+		@membership = @campaign.membership_for current_user
 
-		if member.nil?
-			member = CampaignMember.new campaign_id: @campaign.id, user_id: current_user.id, membership: :request
-			member.save
-			redirect_to @campaign, flash: { success: "Request Pending" }
-		elsif member.membership == :invite
-			member.membership = :member
-			member.save
-			redirect_to @campaign, flash: { success: "Successfully Joined Campaign" }
-		else
-			redirect_to @campaign, flash: { error: "Unknown Request" }
+		case @membership.membership
+		when :none
+			@membership.membership = :request
+			@membership.save
+			redirect_to @campaign, flash: { success: 'Requested to Join' }
+		when :invite
+			@membership.membership = :member
+			@membership.save
+			redirect_to @campaign, flash: { success: "Joined Campaign" }
+		when :member, :admin
+			redirect_to @campaign, flash: { error: "Already a Member" }
+		when :request
+			redirect_to @campaign, flash: { warning: "Already Requested Membership" }
+		when :denied
+			redirect_to @campaign, flash: { error: "Denied Membership" }
 		end
 	end
 
 	def invite
 		@campaign = Campaign.find(params[:id])
+		@membership = @campaign.membership_for params[:user_id].to_i
+		@user = User.find params[:user_id]
 
-		if params.has_key? :request_id
-			request = CampaignMember.find(params[:request_id])
-			if request and (request.membership == :request or request.membership == :denied)
-				request.membership = :member
-				request.save
-				redirect_to @campaign, flash: { success: "Successfully added: #{request.user.handle}" }
-			else
-				redirect_to @campaign, flash: { error: "Invalid Request ID"}
-			end
-		elsif params.has_key? :deny_id
-			request = CampaignMember.find(params[:deny_id])
-			if request
-				request.membership = :denied
-				request.save
-				redirect_to @campaign, flash: { warning: "Denied: #{request.user.handle}" }
-			else
-				redirect_to @campaign, flash: { error: "Invalid Request ID"}
-			end
-		elsif params.has_key? :invite_id
-			user = User.find(params[:invite_id])
-			if user
-				new_member = CampaignMember.find_by_campaign_id_and_user_id(@campaign.id, new_user.id)
-				if new_member and new_member.membership == :request
-					new_member.membership = :member
-					new_member.save
-					redirect_to @campaign, flash: { success: "Successfully added: #{user.handle}" }
-				elsif new_member and new_member.membership == :deny
-					new_member.membership = :invite
-					new_member.save
-					redirect_to @campaign, flash: { success: "Successfully invited: @{user.handle}"}
-				elsif new_member.nil?
-					new_member = CampaignMember.new campaign_id: @campaign.id, user_id: user.id, membership: :invite
-					new_member.save
-					redirect_to @campaign, flash: { success: "Successfully invited: @{user.handle}"}
-				else
-					redirect_to @campaign, flash: { error: "Invalid Request"}
-				end
-			else
-				redirect_to @campaign, flash: { error: "Invalid User ID" }
-			end
+		case @membership.membership
+		when :request
+			@membership.membership = :member
+			@membership.save
+			redirect_to @campaign, flash: { success: "Added Member: #{@user.handle}" }
+		when :none, :denied
+			@membership.membership = :invite
+			@membership.save
+			redirect_to @campaign, flash: { success: "Invited Member: #{@user.handle}" }
+		when :member, :admin
+			redirect_to @campaign, flash: { error: "Already a Member: #{@user.handle}" }
+		when :invite
+			redirect_to @campaign, flash: { warning: "Already Invited: #{@user.handle}" }
+		end
+	end
+
+	def deny
+		@campaign = Campaign.find(params[:id])
+		@user = User.find params[:user_id]
+		@membership = @campaign.membership_for params[:user_id].to_i
+
+		case @membership.membership
+		when :none, :request, :invite
+			@membership.membership = :denied
+			@membership.save
+			redirect_to @campaign, flash: { success: "Denied Member: #{@user.handle}" }
+		when :member
+			@membership.membership = :denied
+			@membership.save
+			redirect_to @campaign, flash: { success: "Kicked Member: #{@user.handle}" }
+		when :admin
+			redirect_to @campaign, flash: { error: "Cannot Kick Admin: #{@user.handle}" }
+		when :denied
+			redirect_to @campaign, flash: { warning: "Already Denied: #{@user.handle}" }
+		end
+	end
+
+	def clear
+		@campaign = Campaign.find(params[:id])
+		@user = User.find params[:user_id]
+		@membership = @campaign.membership_for params[:user_id].to_i
+
+		case @membership.membership
+		when :invite, :request, :denied
+			@membership.delete
+			redirect_to @campaign, flash: { success: "Cleared Member: #{@user.handle}" }
+		when :member, :admin
+			redirect_to @campaign, flash: { error: "Cannot Clear Full Member: #{@user.handle}" }
+		when :none
+			redirect_to @campaign, flash: { warning: "Alread Cleared: #{@user.handle}" }
+		end
+	end
+
+	def admin
+		@campaign = Campaign.find(params[:id])
+		@user = User.find params[:user_id]
+		@membership = @campaign.membership_for params[:user_id].to_i
+
+		case @membership.membership
+		when :admin
+			redirect_to @campaign, flash: { warning: "Already Admin: #{@user.handle}" }
 		else
-			redirect_to @campaign, flash: { error: "Unknown Request" }
+			@membership.membership = :admin
+			@membership.save
+			redirect_to @campaign, flash: { success: "Added Admin: #{@user.handle}" }
 		end
 	end
 

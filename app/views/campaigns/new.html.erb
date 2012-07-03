@@ -1,10 +1,22 @@
 <% provide(:title, "Create Campaign") %>
 
-<h1>Create new campaign</h1>
+<h1>Create New Campaign</h1>
 
 <div class="row">
 	<div class="span6 offset3">
 		<%= form_for(@campaign) do |f| %>
+			<% if @campaign.errors.any?  %>
+				<div id="form_error_explanation" class="dont-print">
+					<div class="alert alert-error">
+						The form contains <%= pluralize(@campaign.errors.count, "error") %>.
+					</div>
+					<ul class="dont-print" id="form_error_explanation">
+						<% @campaign.errors.full_messages.each do |msg| %>
+							<li>* <%= msg %></li>
+						<% end %>
+					</ul>
+				</div>
+			<% end %>
 
 			<%= f.label :name %>
 			<%= f.text_field :name %>

@@ -122,8 +122,18 @@
 				<span style="float:left">Cost: <span class="badge badge-inverse"><%= skill.cost %></span></span>
 			</div>
 			<div class="span5 center">
-				<%= link_to "Add Skill to: #{active_character.name}", character_path(active_character, add_skill: skill.name),
-					method: :put, class:"btn btn-mini btn-primary" unless active_character.nil? %>
+				<% if signed_in? and not current_user.characters.empty? %>
+					<div class='btn-group' style='display:inline-block;'>
+						<a class='btn btn-small btn-primary span2 dropdown-toggle' data-toggle='dropdown' href='#'>
+							Add Skill to: &nbsp;<span class='caret'/>
+						</a>
+						<ul class='dropdown-menu'>
+							<% current_user.characters.each do |character| %>
+								<li><%= link_to character.name, skills_character_path(character, skill.name_tag('add') => 'skill to add'), method: :put %></li>
+							<% end %>
+						</ul>
+					</div>
+				<% end %>
 			</div>
 			<div class='right'>
 				<%= "Synergy: #{skill.synergy_name}" if skill.has_synergy? %>

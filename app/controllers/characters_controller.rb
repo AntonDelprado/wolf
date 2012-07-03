@@ -1,4 +1,5 @@
 class CharactersController < ApplicationController
+	include ActionView::Helpers::TextHelper
 	# helper ApplicationHelper
 	before_filter :signed_in_user, except: [:show, :index, :export]
 	before_filter :visible_to_user, only: [:show, :export]
@@ -30,8 +31,23 @@ class CharactersController < ApplicationController
 	end
 
 	def index
-		@owned_characters = Character.find_all_by_user_id(current_user.id) if signed_in?
-		@other_characters = Character.all.reject { |character| current_user_owns? character }
+		@owned_characters = []
+		@campaign_characters = {}
+		@other_characters = []
+
+		Character.all.each do |character|
+			if current_user_owns? character
+				@owned_characters << character
+			elsif character.campaign_id and Campaign.find(character.campaign_id).has_member? current_user
+				(@campaign_characters[character.campaign_id] ||= []) << character
+			elsif character.visible_to? current_user
+				@other_characters << character
+			end
+		end
+
+		@owned_characters.sort_by! { |character| character.name }
+		@campaign_characters.each { |campaign_id, characters| characters.sort_by! { |character| character.name } }
+		@other_characters.sort_by! { |character| character.name }
 	end
 
 	def export
@@ -99,18 +115,14 @@ class CharactersController < ApplicationController
 			end
 		end
 
+		added.uniq!
+		removed.uniq!
+		changed.uniq!
+
 		messages = []
-		if added.count > 1
-			messages << "Added Skills: #{added.sort.join(', ')}"
-		elsif added.count == 1
-			messages << "Added Skill: #{added[0]}"
-		end
-		if removed.count > 1
-			messages << "Removed Skills: #{removed.sort.join(', ')}"
-		elsif removed.count == 1
-			messages << "Removed Skill: #{removed[0]}"
-		end
-		messages << "Changed Skill Levels: #{changed.sort.join(', ')}" unless changed.empty?
+		messages << "Added #{pluralize(added.count, 'Skill')}: #{added.sort.join(', ')}" unless added.empty?
+		messages << "Removed #{pluralize(removed.count, 'Skill')}: #{removed.sort.join(', ')}" unless removed.empty?
+		messages << "Changed #{pluralize(changed.count, 'Skill Level')}: #{changed.sort.join(', ')}" unless changed.empty?
 
 		if messages.empty?
 			redirect_to @character, flash: { warning: 'No Skills Changed' }
@@ -133,17 +145,12 @@ class CharactersController < ApplicationController
 			end
 		end
 
+		added.uniq!
+		removed.uniq!
+
 		messages = []
-		if added.count > 1
-			messages << "Added Abilities: #{added.sort.join(', ')}"
-		elsif added.count == 1
-			messages << "Added Ability: #{added[0]}"
-		end
-		if removed.count > 1
-			messages << "Removed Abilities: #{removed.sort.join(', ')}"
-		elsif removed.count == 1
-			messages << "Removed Ability: #{removed[0]}"
-		end
+		messages << "Added #{pluralize(added.count, 'Ability')}: #{added.sort.join(', ')}" unless added.empty?
+		messages << "Removed #{pluralize(removed.count, 'Ability')}: #{removed.sort.join(', ')}" unless removed.empty?
 
 		if messages.empty?
 			redirect_to @character, flash: { warning: 'No Abilities Changed' }

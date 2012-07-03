@@ -19,8 +19,18 @@
 
 		<div class="row">
 			<div class="span5 offset2 center">
-					<%= link_to "Add Ability to: #{active_character.name}", character_path(active_character, add_ability: ability.name),
-					method: :put, class:"btn btn-mini btn-primary" if current_user_owns? active_character %>
+				<% if signed_in? and not current_user.characters.empty? %>
+					<div class='btn-group' style='display:inline-block;'>
+						<a class='btn btn-small btn-primary span2 dropdown-toggle' data-toggle='dropdown' href='#'>
+							Add Ability to: &nbsp;<span class='caret'/>
+						</a>
+						<ul class='dropdown-menu'>
+							<% current_user.characters.each do |character| %>
+								<li><%= link_to character.name, abilities_character_path(character, ability.name_tag('add') => 'ability to add'), method: :put %></li>
+							<% end %>
+						</ul>
+					</div>
+				<% end %>
 			</div>
 			<span style="float:right"><%= "Synergy: #{ability.synergy_name}" if ability.has_synergy? %></span>
 		</div>

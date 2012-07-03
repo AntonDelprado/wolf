@@ -13,8 +13,7 @@
 					<% skills.sort_by{ |skill| skill.name }.each_with_index do |skill, index| %>
 
 						<%= content_tag :p, class: skill.synergy_css('name-') do %>
-							<%= check_box_tag skill.name_tag('remove'), 'skill to remove', onChange: "remove_selected('#{skill.name}')" %>
-							<%#= f.check_box skill.name_tag('remove'), 'skill to remove', false, onChange: "remove_selected('#{skill.name}')" %>
+							<%= check_box_tag skill.name_tag('remove'), 'skill to remove', false, onChange: "remove_selected('#{skill.name}')" %>
 							<%= skill.name %>
 						<% end %>
 
