@@ -7,4 +7,18 @@
 	</div>
 </div>
 
-<%= render @campaigns %>
+<% unless @user_campaigns.nil? or @user_campaigns.empty? %>
+	<h1>Your Campaigns</h1>
+
+	<%= render @user_campaigns %>
+	<div class="clear"></div>
+	<%= will_paginate @user_campaigns, param_name: 'user_page' %>
+<% end %>
+
+<% unless @open_campaigns.empty? %>
+	<h1>Open Campaigns</h1>
+
+	<%= render @open_campaigns %>
+	<div class='clear'></div>
+	<%= will_paginate @open_campaigns, param_name: 'other_campaigns' %>
+<% end %>

@@ -23,14 +23,18 @@ class CampaignsController < ApplicationController
 
 		if @campaign.visible_to? current_user
 			current_user.push_active_campaign(@campaign) if signed_in?
-			@characters = Character.find_all_by_campaign_id(@campaign.id)
+			@characters = Character.where(campaign_id: @campaign.id).paginate(page: params[:character_page], per_page: 12)
 		else
 			redirect_to campaigns_path, flash: { error: "Cannot access Campaign" }
 		end
 	end
 
 	def index
-		@campaigns = Campaign.all.sort_by { |campaign| campaign.name }
+		user_ids = current_user.campaign_ids if signed_in?
+		user_ids ||= []
+
+		@user_campaigns = Campaign.where(id: user_ids).order('name').paginate(page: params[:user_page], per_page: 10) if signed_in?
+		@open_campaigns = Campaign.where('visibility = ? AND id NOT IN (?)', Campaign.visibility(:open), user_ids).order('name').paginate(page: params[:open_page], per_page: 10)
 	end
 
 	def join

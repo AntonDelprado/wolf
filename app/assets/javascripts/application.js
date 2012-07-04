@@ -30,6 +30,17 @@ $(document).ready(function() {
 			$(this).change(function () { follower_selected($(this)) });
 	});
 
+	$('.skill-popover').popover({
+		html : true,
+		trigger : 'manual'
+	}).mouseenter(function () {
+		$(this).popover('show');
+	}).mouseleave(function () {
+		$(this).popover('hide');
+	}).click(function () {
+		$(this).popover('toggle');
+	});
+
 	recalculate_xp();
 });
 

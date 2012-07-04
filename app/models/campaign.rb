@@ -12,83 +12,49 @@
 
 class Campaign < ActiveRecord::Base
 	attr_accessible :name, :description, :visibility
+	has_many :characters
+	has_many :campaign_members
+	has_many :users, through: :campaign_members
+	has_many :members, through: :campaign_members, source: :user, conditions: CampaignMember.member_sql
+	has_many :admins, through: :campaign_members, source: :user, conditions: CampaignMember.admin_sql
 
 	VISIBILITY = { :open => 1, :closed => 0 }
 
 	validates :name, presence: true
 	validates :visibility, inclusion: VISIBILITY.keys
 
-	def reload(options = nil)
-		super
-		@characters = @members = @requests = nil
-	end
-
 	def self.visibility(vis)
 		VISIBILITY[vis]
 	end
 
-	def characters
-		@characters ||= Character.find_all_by_campaign_id(self.id)
-	end
-
 	def add_member(member, membership_type=:member)
-		case member
-		when User then new_membership = CampaignMember.new campaign_id: self.id, user_id: member.id
-		when Integer then new_membership = CampaignMember.new campaign_id: self.id, user_id: member
-		end
-
-		new_membership.membership = membership_type
-		new_membership.save
-
-		@members = nil if membership_type == :member or membership_type == :admin # clear cached members
-	end
-
-	def members
-		@members ||= CampaignMember.find_all_by_campaign_id(self.id).collect { |membership| membership.member? ? User.find(membership.user_id) : nil }.compact
-	end
-
-	def requests
-		@requests ||= CampaignMember.find_all_by_campaign_id_and_membership(self.id, CampaignMember.membership(:request))
+		member_id = (member.is_a?(User) ? member.id : member.to_i)
+		self.campaign_members.create user_id: member_id, membership: membership_type
 	end
 
 	def has_member?(member)
-		case member
-		when User then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id)
-		when Integer then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member)
-		else return false
-		end
-
-		return (!membership.nil? and membership.member?)
+		member_id = (member.is_a?(User) ? member.id : member.to_i)
+		self.members.exists? id: member_id
 	end
 
 	def has_admin?(member)
-		case member
-		when User then return CampaignMember.exists? campaign_id: self.id, user_id: member.id, membership: CampaignMember.membership(:admin)
-		when Integer then return CampaignMember.exists? campaign_id: self.id, user_id: member, membership: CampaignMember.membership(:admin)
-		else return false
-		end
+		member_id = (member.is_a?(User) ? member.id : member.to_i)
+		self.admins.exists? id: member_id
 	end
 
 	def member_type(member)
-		case member
-		when User then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id)
-		when Integer then membership = CampaignMember.find_by_campaign_id_and_user_id(self.id, member)
-		else return nil
+		member_id = (member.is_a?(User) ? member.id : member.to_i)
+		membership = self.campaign_members.find_by_user_id(member_id)
+		if membership
+			return membership.membership
+		else
+			return nil
 		end
-
-		membership.membership unless membership.nil?
 	end
 
 	def membership_for(member)
-		case member
-		when User
-			( CampaignMember.find_by_campaign_id_and_user_id(self.id, member.id) ||
-				CampaignMember.new(campaign_id: self.id, user_id: member.id, membership: :none) )
-	
-		when Integer
-			( CampaignMember.find_by_campaign_id_and_user_id(self.id, member) ||
-				CampaignMember.new(campaign_id: self.id, user_id: member, membership: :none) )
-		end
+		member_id = (member.is_a?(User) ? member.id : member.to_i)
+		self.campaign_members.find_by_user_id(member_id) || self.campaign_members.build(user_id: member_id, membership: :none)
 	end
 
 	def visibility=(vis)
@@ -103,8 +69,8 @@ class Campaign < ActiveRecord::Base
 		return true if self.visibility == :open
 
 		case user
-		when User then type = CampaignMember.find_by_campaign_id_and_user_id(self.id, user.id)
-		when Integer then type = CampaignMember.find_by_campaign_id_and_user_id(self.id, user)
+		when User then type = self.campaign_members.find_by_user_id(user.id)
+		when Integer then type = self.campaign_members.find_by_user_id(user)
 		else return false
 		end
 

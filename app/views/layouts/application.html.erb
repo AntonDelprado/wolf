@@ -14,10 +14,10 @@
 			<% flash.each do |key, value| %>
 				<% if value.is_a? Array %>
 					<% value.each do |inner_value| %>
-						<div class="alert alert-<%= key %> dont-print"><%= inner_value %></div>
+						<div class="alert alert-<%= key %> dont-print"><%= alert_icon key.to_s %><%= inner_value %></div>
 					<% end %>
 				<% else %>
-					<div class="alert alert-<%= key %> dont-print"><%= value %></div>
+					<div class="alert alert-<%= key %> dont-print"><%= alert_icon key.to_s %><%= value %></div>
 				<% end %>
 			<% end %>
 			<%= yield %>

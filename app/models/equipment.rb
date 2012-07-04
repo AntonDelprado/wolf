@@ -13,6 +13,7 @@
 
 class Equipment < ActiveRecord::Base
 	attr_accessible :character_id, :slot, :name, :item_type
+	belongs_to :character, touch: true
 
 	validates :character_id, presence: true
 	validates :name, presence: true
@@ -34,7 +35,7 @@ class Equipment < ActiveRecord::Base
 	end
 
 	def self.equip(character, slot, name)
-		self.find_all_by_character_id_and_slot(character.id, slot).each { |item| item.delete }
+		Equipment.find_all_by_character_id_and_slot(character.id, slot).each(&:delete)
 
 		item_type = case
 		when armour_data.has_key?(name) then 'Armour'
@@ -42,8 +43,7 @@ class Equipment < ActiveRecord::Base
 		when shield_data.has_key?(name) then 'Shield'
 		end
 
-		item = self.new character_id: character.id, slot: slot, name: name, item_type: item_type
-		item.save
+		Equipment.create name: name, slot: slot, item_type: item_type, character_id: character.id
 	end
 
 	def requirements

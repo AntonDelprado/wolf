@@ -126,7 +126,7 @@ describe 'Campaign Pages' do
 				end
 
 				it 'should create campaign' do
-					expect { click_button 'Create Campaign' }.to change(Campaign, :count).by(1)
+					expect { click_button 'Create Campaign' }.to change { Campaign.count }.by(1)
 					should have_selector('title', text: campaign_name)
 					should have_selector('h1', text: campaign_name)
 					should have_selector('h3', text: description)

@@ -27,17 +27,13 @@ class UsersController < ApplicationController
 			@campaigns_to_invite = current_user.campaigns.reject { |campaign| [:member, :admin, :invite].include? campaign.member_type(@user) } if signed_in?
 			@campaigns_to_invite ||= []
 		end
+
+		@campaigns = Campaign.where(id: @user.campaigns.collect { |campaign| campaign.id }).paginate(page: params[:campaign_page], per_page: 10)
+		@characters = Character.where(user_id: @user.id).order('name').paginate(page: params[:character_page], per_page: 12)
 	end
 
 	def index
-		@users = User.paginate(page: params[:page])
-		@characters = {}
-		@campaigns = {}
-
-		@users.each do |user|
-			@characters[user.id] = user.characters.select { |character| character.visible_to? current_user }
-			@campaigns[user.id] = user.campaigns.select { |campaign| campaign.visible_to? current_user }
-		end
+		@users = User.paginate(page: params[:page], per_page: 30)
 	end
 
 	def edit

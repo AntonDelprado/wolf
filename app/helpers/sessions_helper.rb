@@ -6,7 +6,6 @@ module SessionsHelper
 
 	def sign_out
 		self.current_user = nil
-		# session.delete :current_user_id
 	end
 
 	def current_user=(user)

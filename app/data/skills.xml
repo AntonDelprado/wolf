@@ -199,7 +199,7 @@
         <Effect>
             <Action>Major</Action>
             <Mana>5,2</Mana>
-            <Power type="roll"><skill>Confuse</skill></Power>
+            <Power type="roll"><skill>Charm</skill></Power>
             <Quick>If 2X is at least target's MP they become confused, attacking characters randomly.</Quick>
         </Effect>
     </Skill>

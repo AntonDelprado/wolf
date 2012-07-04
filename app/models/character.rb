@@ -21,6 +21,11 @@ include SessionsHelper
 
 class Character < ActiveRecord::Base
 	attr_accessible :dex, :fai, :int, :name, :race, :str, :user_id, :privacy, :campaign_id
+	has_many :skills, dependent: :delete_all, uniq: true, class_name: 'Skill'
+	has_many :abilities, dependent: :delete_all, uniq: true, class_name: 'Ability'
+	has_many :items, dependent: :delete_all, uniq: true, class_name: 'Equipment'
+	belongs_to :campaign
+	belongs_to :user
 
 	PRIVACY = { public: 0, campaign: 1, private: 2 }
 
@@ -30,8 +35,15 @@ class Character < ActiveRecord::Base
 	VAMPIRE_STATS = [[12,12,12,4]]
 	NIL_STATS = [[0,0,0,0]]
 
+	BASE_STATS = {
+		'Wolf' => WOLF_STATS,
+		'Dwarf' => DWARF_STATS,
+		'Goblin' => GOBLIN_STATS,
+		'Vampire' => VAMPIRE_STATS,
+	}
+
 	validates :name, presence: true, length: { maximum: 100 }
-	validates :race, presence: true, inclusion: %w[Wolf Dwarf Goblin Vampire]
+	validates :race, presence: true, inclusion: BASE_STATS.keys
 	validates :str, presence: true, inclusion: [4,6,8,10,12]
 	validates :dex, presence: true, inclusion: [4,6,8,10,12]
 	validates :int, presence: true, inclusion: [4,6,8,10,12]
@@ -39,38 +51,20 @@ class Character < ActiveRecord::Base
 	validates :user_id, presence: true
 	validates :privacy, presence: true, inclusion: PRIVACY.keys
 
-	after_initialize :init_rest
-
-	def self.stats(race="Wolf")
-		case race
-		when "Wolf" then WOLF_STATS
-		when "Dwarf" then DWARF_STATS
-		when "Vampire" then VAMPIRE_STATS
-		when "Goblin" then GOBLIN_STATS
-		else NIL_STATS
+	after_create do
+		update_base_skills
+		if self.race == 'Vampire'
+			self.add_ability 'Atheist'
+			self.add_ability 'Lore'
 		end
+	end
+
+	def self.privacy(priv)
+		PRIVACY[priv.to_sym]
 	end
 
 	def self.join_stats(stats)
 		return "#{stats[0]} Str, #{stats[1]} Dex, #{stats[2]} Int, #{stats[3]} Fai"
-	end
-
-	def init_rest
-		unless self.race.nil? # ignore 'new'
-			if self.str.nil? # if there are no stats then this is a 'create'
-
-			else # otherwise this is a 'find'
-
-				self.update_base_skills
-
-			end
-		end
-	end
-
-	# reset instance variables on reload
-	def reload(options = nil)
-		super
-		@campaign = @skills = @abilities = nil
 	end
 
 	def self.import_xml(xml_root, user_id)
@@ -155,20 +149,11 @@ class Character < ActiveRecord::Base
 	end
 
 	def in_campaign?
-		# return true
-		not self.campaign.nil?
-	end
-
-	def campaign
-		@campaign ||= Campaign.find(campaign_id) unless campaign_id.nil?
+		not campaign_id.nil?
 	end
 
 	def public?
 		self.privacy == :public
-	end
-
-	def private?
-		self.privacy == :private
 	end
 
 	def privacy=(priv)
@@ -199,9 +184,7 @@ class Character < ActiveRecord::Base
 
 	# stats need to be reset if changing races, except dwarf <-> wolf
 	def race=(new_race)
-		unless Character.stats(new_race).include? self.stats.sort.reverse
-			self.str, self.dex, self.int, self.fai = Character.stats(new_race)[0]
-		end
+		self.str, self.dex, self.int, self.fai = BASE_STATS[new_race][0] unless BASE_STATS[new_race].include? self.stats.sort.reverse
 		write_attribute :race, new_race
 	end
 
@@ -235,145 +218,39 @@ class Character < ActiveRecord::Base
 
 	# Set all base skills to their minimum level
 	def update_base_skills
-		self.add_skill 'Endurance', self.str/2
-		self.add_skill 'Sprint', self.dex/2
-		self.add_skill 'Observation', self.int/2
-		self.add_skill 'Sense', self.fai/2
+		self.add_skill 'Endurance'
+		self.add_skill 'Sprint'
+		self.add_skill 'Observation'
+		self.add_skill 'Sense'
 	end
 
 	def has_skill?(skill_name)
-		# Skill.exists? character_id: self.id, name: skill_name
-		not self.skill(skill_name).nil?
+		self.skills.exists? name: skill_name
 	end
 
 	def skill(skill_name)
-		self.skills.detect { |skill| skill.name == skill_name }
-		# Skill.find_by_character_id_and_name(self.id, skill_name)
-	end
-
-	def skills
-		@skills ||= Skill.find_all_by_character_id(self.id)
-	end
-
-	def dependant_skills(skill_name)
-		Skill.find_all_by_character_id_and_required_skill(self.id, skill_name)
+		self.skills.find_by_name skill_name
 	end
 
 	def has_ability?(ability_name)
-		# Ability.exists? character_id: self.id, name: ability_name
-		not self.abilities.detect { |ability| ability.name == ability_name }.nil?
+		self.abilities.find_by_name ability_name
 	end
 
-	def abilities
-		@abilities ||= Ability.find_all_by_character_id(self.id)
-	end
-
-	# Add a skill to this character. If the skill already exists, set it 
-	def add_skill(skill_name, level=1)
-		skill = self.skill skill_name
-		added_skills = []
-
-		if skill.nil? or skill.level < level
-			skill ||= Skill.new(name: skill_name, character_id: self.id)
-			skill.level = level
-			added_skills << skill.name if skill.save
-
-			added_skills.concat(self.add_skill(skill.required_skill, level+1)) unless skill.required_skill.nil?
-		end
-
-		added_skills
-	end
-
-	# set skill level splits into raise and lower which then act on required or dependant skills respectively
-	# return value is all the skill that are changed
-	def set_skill_level(skill_name, level)
-		skill = self.skill skill_name
-		changed = []
-
-		changed.concat self.raise_skill_level(skill, level)
-		changed.concat self.lower_skill_level(skill, level)
-
-		return changed
-	end
-
-	# raise the level of a skill if it is lower than the level, if changed propagate to required
-	def raise_skill_level(skill, level)
-		if level > skill.level
-			skill.level = level
-			skill.save
-			changed = [skill.name]
-
-			required = self.skill skill.required_skill unless skill.required_skill.nil?
-			changed.concat(self.raise_skill_level(required, level+1)) unless required.nil?
-
-			return changed
-		else
-			[]
-		end
-	end
-
-	# lower the level of a skill if it is higher than the level, if changed propagate to dependant
-	def lower_skill_level(skill, level)
-		if level <= 0
-			skill.delete
-			return [skill.name]
-		elsif level < skill.level
-			skill.level = level
-			skill.save
-			changed = [skill.name]
-
-			self.dependant_skills(skill.name).each { |skill| changed.concat lower_skill_level(skill, level-1) }
-
-			return changed
-		else
-			[]
-		end
-	end
-
-	# What is the minimum level this skill can have given dependant skills and base skill requirements
-	def min_skill_level(skill_name)
-		skill = self.skill skill_name
-		return 0 if skill.nil?
-
-		min_level = case skill_name
-		when 'Endurance' then str/2
-		when 'Sprint' then dex/2
-		when 'Observation' then int/2
-		when 'Sense' then fai/2
-		else 1
-		end
-
-		self.dependant_skills(skill_name).each do |dependant_skill|
-			min_level = [min_level, self.min_skill_level(dependant_skill.name)+1].min
-		end
-
-		return min_level
+	def add_skill(skill_name)
+		self.skills.create(name: skill_name) unless self.has_skill? skill_name
 	end
 
 	# Remove a skill, plus dependants, and return an array of the skills that were removed
 	def remove_skill(skill_name)
-		skill = self.skill skill_name
-		if skill.nil?
-			[]
-		else
-			removed_skills = [skill.name]
-			skill.delete
-
-			self.dependant_skills(skill_name).each do |dependant_skill|
-				removed_skills.concat self.remove_skill(dependant_skill)
-			end
-			removed_skills
-		end
+		self.skill(skill_name).destroy if self.skill(skill_name)
 	end
 
 	def add_ability(ability_name)
-		ability = Ability.new(character_id: self.id, name: ability_name)
-		ability and ability.save
+		self.abilities.create name: ability_name
 	end
 
 	def remove_ability(ability_name)
-		ability = Ability.find_by_character_id_and_name(self.id, ability_name)
-		ability and ability.delete
+		self.abilities.find_by_name(ability_name).delete
 	end
 
 	def can_add_skill?(skill_name)
@@ -440,8 +317,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def unequip(slot)
-		item = Equipment.find_by_character_id_and_slot(self.id, slot)
-		item.delete if item
+		self.items.find_by_slot(slot).try(:delete)
 	end
 
 	def equip(equipment)
@@ -559,13 +435,13 @@ class Character < ActiveRecord::Base
 
 	# index1 represents which ba
 	def base_stats(index_base = nil, index_raw = nil)
-		return self.class.stats(self.race) if index_base.nil?
-		if self.class == 'Vampire'
+		return BASE_STATS[self.race] if index_base.nil?
+		if self.race == 'Vampire'
 			return [[12,12,12,4]] if index_raw.nil?
 			return [12,12,12,4]
 		else
-			return self.class.stats(self.race)[index_base].permutation.to_a.uniq if index_raw.nil?
-			return self.class.stats(self.race)[index_base].permutation.to_a.uniq[index_raw]
+			return BASE_STATS[self.race][index_base].permutation.to_a.uniq if index_raw.nil?
+			return BASE_STATS[self.race][index_base].permutation.to_a.uniq[index_raw]
 		end
 	end
 
@@ -612,7 +488,6 @@ class Character < ActiveRecord::Base
 
 	def stats_options(index = nil)
 		return self.base_stats.each_with_index.collect { |stat, index| [stat.join(", "), index]} if index.nil?
-		# return [["12, 12, 12, 4", 0]] if self.race == "Vampire"
 		return self.base_stats[index].permutation.to_a.uniq.each_with_index.collect { |stat, index| [self.class.join_stats(stat), index]}
 	end
 
@@ -736,7 +611,7 @@ class Character < ActiveRecord::Base
 
 			errors << "Overspent Abilities by #{-self.synergies['No Class'][:remaining]} Points." if self.synergies['No Class'][:remaining] < 0
 
-			errors << "Invalid Stats" unless Character.stats(self.race).include? self.stats.sort.reverse
+			errors << "Invalid Stats" unless BASE_STATS[self.race].include? self.stats.sort.reverse
 
 			errors << "May Only Follow One God" if self.abilities.select{ |ability| ability[:name][0..8] == "Follower" }.count > 1
 

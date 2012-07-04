@@ -1,0 +1,28 @@
+<div class="well ability <%= ability.synergy_css %>">
+	<div class="row">
+		<div class="offset2 span5 center">
+			<h3><%= ability.name %></h3>
+			<%= "Requires: #{ability.requires}<br/> ".html_safe if ability.requires %>
+		</div>
+	</div>
+
+	<%= parse_text_xml(ability.text).html_safe %>
+
+	<div class="row">
+		<div class="span5 offset2 center">
+			<% if signed_in? and not current_user.characters.empty? %>
+				<div class='btn-group' style='display:inline-block;'>
+					<a class='btn btn-small btn-primary span2 dropdown-toggle' data-toggle='dropdown' href='#'>
+						Add Ability to: &nbsp;<span class='caret'/>
+					</a>
+					<ul class='dropdown-menu'>
+						<% current_user.characters.each do |character| %>
+							<li><%= link_to character.name, abilities_character_path(character, ability.name_tag('add') => 'ability to add'), method: :put %></li>
+						<% end %>
+					</ul>
+				</div>
+			<% end %>
+		</div>
+		<span style="float:right"><%= "Synergy: #{ability.synergy_name}" if ability.has_synergy? %></span>
+	</div>
+</div>

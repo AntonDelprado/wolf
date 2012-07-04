@@ -11,6 +11,7 @@
 
 class Ability < ActiveRecord::Base
 	attr_accessible :character_id, :name
+	belongs_to :character, touch: true
 
 	validates :character_id, presence: true
 	validates :name, presence: true

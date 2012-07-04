@@ -12,6 +12,8 @@
 
 class CampaignMember < ActiveRecord::Base
 	attr_accessible :campaign_id, :user_id, :membership
+	belongs_to :user
+	belongs_to :campaign
 
 	MEMBERSHIP = 
 	{
@@ -43,19 +45,23 @@ class CampaignMember < ActiveRecord::Base
 		write_attribute :membership, MEMBERSHIP[value]
 	end
 
+	def self.member_sql
+		"membership IN (#{MEMBERSHIP[:member]},#{MEMBERSHIP[:admin]})"
+	end
+
+	def self.admin_sql
+		"membership = #{MEMBERSHIP[:admin]}"
+	end
+
+	def self.request_sql
+		"membership = #{MEMBERSHIP[:request]}"
+	end
+
 	def admin?
 		1 == read_attribute(:membership)
 	end
 
 	def member?
 		read_attribute(:membership) == 1 or read_attribute(:membership) == 2
-	end
-
-	def user
-		@user ||= User.find(user_id)
-	end
-
-	def campaign
-		@campaign ||= Campaign.find(campaign_id)
 	end
 end

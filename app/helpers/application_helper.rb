@@ -2,6 +2,44 @@ require 'xml'
 
 module ApplicationHelper
 
+	def alert_icon(alert_type)
+		return "<i class='icon-exclamation-sign'></i> ".html_safe if alert_type == 'error'
+		return "<i class='icon-ok icon-white'></i> ".html_safe if alert_type == 'success'
+		return "<i class='icon-warning-sign'></i> ".html_safe
+	end
+
+	def delete
+		"<i class='icon-trash icon-white'></i> Delete".html_safe
+	end
+
+	def modify
+		"<i class='icon-pencil icon-white'></i> Modify".html_safe
+	end
+
+	def export
+		"<i class='icon-download-alt icon-white'></i> Export".html_safe
+	end
+
+	def page(type)
+		"<i class='icon-book icon-white'></i> #{type} Page".html_safe
+	end
+
+	def add(type)
+		"<i class='icon-plus icon-white'></i> Add #{type}".html_safe
+	end
+
+	def remove(type)
+		"<i class='icon-minus icon-white'></i> Remove #{type}".html_safe
+	end
+
+	def change(type)
+		"<i class='icon-resize-vertical icon-white'></i> Change #{type}".html_safe
+	end
+
+	def save_changes
+		"<i class='icon-ok icon-white'></i> Save Changes".html_safe
+	end
+
 	def full_title(page_title = nil)
 		base_title = "Wolf RPG"
 		return "#{base_title} | #{page_title}" if page_title
@@ -60,7 +98,7 @@ module ApplicationHelper
 	end
 
 	def check(skill_name, stat_name)
-		content_tag :span, "#{skill_name.capitalize}:#{stat_name.capitalize}", class: 'label label-warning'
+		content_tag :span, "#{skill_name.capitalize}:#{stat_name.capitalize}".html_safe, class: 'label label-warning'
 	end
 
 	def parse_text_xml(xml_text, type=:full)
@@ -109,6 +147,22 @@ module ApplicationHelper
 		end
 
 		return text.gsub(/<\/?p>/, '') unless type == :full
-		return text + "</p>"
+		return text + '</p>'
+	end
+
+	def popover_content(skill)
+		return "<p class='bold'>Requires: #{skill.required_skill.name} #{parse_text_xml(skill.text)}" unless skill.required_skill.nil?
+		return parse_text_xml(skill.text)
+	end
+
+	def popover_title(skill)
+		case skill.spell
+		when 'Arthur' then "#{skill.full_name} #{tag :img, src: '/assets/arthur.png', class: 'popover-spell'}"
+		when 'Innodi' then "#{skill.full_name} #{tag :img, src: '/assets/innodi.png', class: 'popover-spell'}"
+		when "Ird'ken" then "#{skill.full_name} #{tag :img, src: '/assets/irdken.png', class: 'popover-spell'}"
+		when 'Oxdoro' then "#{skill.full_name} #{tag :img, src: '/assets/oxdoro.png', class: 'popover-spell'}"
+		when 'Loreanna' then "#{skill.full_name} #{tag :img, src: '/assets/loreanna.png', class: 'popover-spell'}"
+		else skill.name
+		end
 	end
 end

@@ -10,12 +10,9 @@ class CharactersController < ApplicationController
 	end
 
 	def create
-		@character = Character.new(params[:character])
-		if @character.campaign_id.nil?
-			@character.privacy = :public
-		else
-			@character.privacy = :campaign
-		end
+		@character = current_user.characters.build params[:character]
+		@character.privacy ||= :campaign if @character.in_campaign?
+		@character.privacy ||= :public
 
 		if @character.save
 			current_user.push_active_character @character if signed_in?
@@ -31,23 +28,28 @@ class CharactersController < ApplicationController
 	end
 
 	def index
-		@owned_characters = []
-		@campaign_characters = {}
-		@other_characters = []
+		if signed_in?
+			campaign_ids = current_user.campaigns.collect { |campaign| campaign.id }
 
-		Character.all.each do |character|
-			if current_user_owns? character
-				@owned_characters << character
-			elsif character.campaign_id and Campaign.find(character.campaign_id).has_member? current_user
-				(@campaign_characters[character.campaign_id] ||= []) << character
-			elsif character.visible_to? current_user
-				@other_characters << character
-			end
+			owned = Character.where(user_id: current_user.id)
+			campaign = Character.where('user_id <> ? AND campaign_id IN (?) AND privacy IN (?)',
+				current_user.id, campaign_ids, [Character.privacy(:public), Character.privacy(:campaign)]).order('campaign_id, name')
+			other = Character.where('user_id <> ? AND (campaign_id NOT IN (?) OR campaign_id IS NULL) AND privacy = ?',
+				current_user.id, campaign_ids, Character.privacy(:public)).order('name')
+		else
+			other = Character.where('privacy = ?', Character.privacy(:public)).order('name')
 		end
 
-		@owned_characters.sort_by! { |character| character.name }
-		@campaign_characters.each { |campaign_id, characters| characters.sort_by! { |character| character.name } }
-		@other_characters.sort_by! { |character| character.name }
+		@owned_characters = owned.paginate(page: params[:owned_page], per_page: 12) if owned
+		@campaign_characters = campaign.paginate(page: params[:campaign_page], per_page: 12) if campaign
+		@other_characters = other.paginate(page: params[:other_page], per_page: 12)
+
+		if campaign
+			@campaigns = {}
+			@campaign_characters.each do |character|
+				(@campaigns[character.campaign_id] ||= []) << character
+			end
+		end
 	end
 
 	def export
@@ -81,9 +83,8 @@ class CharactersController < ApplicationController
 		@character = Character.find(params[:id])
 
 		stats = @character.base_stats(params[:base_stats].to_i, params[:"raw_stats#{params[:base_stats]}"].to_i)
-		@character.update_attributes(str: stats[0], dex: stats[1], int: stats[2], fai: stats[3])
-		@character.update_base_skills
-		if @character.save
+		if @character.update_attributes(str: stats[0], dex: stats[1], int: stats[2], fai: stats[3])
+			@character.update_base_skills
 			redirect_to @character, flash: { success: "Changed Stats" }
 		else
 			@character = Character.find(@character.id)
@@ -101,22 +102,24 @@ class CharactersController < ApplicationController
 
 	def skills
 		@character = Character.find(params[:id])
-		added,removed,changed = [],[],[]
 
-		flash[:warn] = []
+		changed = []
+		starting_skills = @character.skills.collect { |skill| skill.name }
 
 		params.each do |skill_name, value|
 			if value == 'skill to remove'
-				removed.concat @character.remove_skill(skill_name.sub('remove_','').gsub('_', ' '))
+				@character.remove_skill(skill_name.sub('remove_','').gsub('_', ' '))
 			elsif value == 'skill to add'
-				added.concat @character.add_skill(skill_name.sub('add_','').gsub('_', ' '))
+				@character.add_skill(skill_name.sub('add_','').gsub('_', ' '))
 			elsif skill_name[0..5] == 'level_'
-				changed.concat @character.set_skill_level(skill_name.sub('level_','').gsub('_',' '), value.to_i)
+				changed.concat @character.skill(skill_name.sub('level_','').gsub('_',' ')).set_level(value.to_i)
 			end
 		end
 
-		added.uniq!
-		removed.uniq!
+		ending_skills = @character.skills(true).collect { |skill| skill.name }
+
+		added = ending_skills - starting_skills
+		removed = starting_skills - ending_skills
 		changed.uniq!
 
 		messages = []

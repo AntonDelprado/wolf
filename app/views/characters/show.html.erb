@@ -52,9 +52,9 @@
 			<% end %>
 			<p/>
 			<div class="center">
-				<a class="btn btn-small btn-primary disable-button dont-print modify" data-toggle="modal" href='#nameModal'>Modify</a>
-				<%= link_to "Export", export_character_path(@character), class: "btn btn-small btn-primary dont-print" %>
-				<%= link_to "Delete", @character, class: "btn btn-small btn-danger dont-print modify", confirm: "Are you sure you want to delete '#{@character.name}'?", method: :delete %>
+				<a class="btn btn-small btn-primary disable-button dont-print modify" data-toggle="modal" href='#nameModal'><%= modify %></a>
+				<%= link_to export, export_character_path(@character), class: "btn btn-small btn-primary dont-print" %>
+				<%= link_to delete, @character, class: "btn btn-small btn-danger dont-print modify", confirm: "Are you sure you want to delete '#{@character.name}'?", method: :delete %>
 			</div>
 		</div>
 		<div class="row">
@@ -97,7 +97,7 @@
 						<th>
 							<div class="modify">
 								<% if @character.race != "Vampire" %>
-									<a class="btn btn-mini btn-primary disable-button dont-print" data-toggle="modal" href='#statsModal'>Modify</a>
+									<a class="btn btn-mini btn-primary disable-button dont-print" data-toggle="modal" href='#statsModal'><%= modify %></a>
 								<% end %>
 							</div>
 						</th>
@@ -163,9 +163,9 @@
 
 <!-- ########### Item Buttons ########### !-->
 
-	<div class="row dont-print modify">
-		<%= link_to 'Items Page', '/rules#tab-items', class: 'btn btn-primary btn-large span2 disable-button' %>
-		<a class='btn btn-large btn-warning span2 disable-button' data-toggle='modal' href='#itemModal'>Change Items</a>
+	<div class="dont-print modify">
+		<%= link_to page('Items'), '/rules#tab-items', class: 'btn btn-primary disable-button' %>
+		<a class='btn btn-warning disable-button' data-toggle='modal' href='#itemModal'><i class='icon-wrench icon-white'></i> Change Items</a>
 	</div>
 	<p/>
 
@@ -210,17 +210,17 @@
 
 <%= form_for(@character, url: { action: :skills }) do |f| %>
 
-<div class="row dont-print modify">
-	<%= link_to "Skills Page", '/rules#tab-skills', class: "btn btn-primary btn-large span2 disable-button" %>
-	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addModal'>Add Skills</a>
+<div class="dont-print modify">
+	<%= link_to page('Skills'), '/rules#tab-skills', class: "btn btn-primary disable-button" %>
+	<a class="btn btn-success disable-button" data-toggle="modal" href='#addModal'><%= add('Skills') %></a>
 	<% if @character.skills.count == 4 # only base skills %>
-		<a class='btn btn-large btn-danger span2' disabled='true'>Remove Skills</a>
+		<a class='btn btn-danger' disabled='true'><%= remove('Skills') %></a>
 	<% else %>
-		<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeModal'>Remove Skills</a>
+		<a class="btn btn-danger disable-button" data-toggle="modal" href='#removeModal'><%= remove('Skills') %></a>
 	<% end %>
-	<a class="btn btn-large btn-warning span2 skill-level" onClick="show_skill_levels()">Change Skill Levels</a>
+	<a class="btn btn-warning skill-level" onClick="show_skill_levels()"><%= change('Skill Levels') %></a>
 	<div class="skill-level-select span2">
-		<%= f.submit "Save Changes", class: "btn btn-large btn-warning span2" %>
+		<%= f.submit save_changes, class: "btn btn-large btn-warning span2" %>
 	</div>
 </div>
 <p/>
@@ -250,13 +250,13 @@
 		<% @character.skills.sort_by{ |skill| skill.name }.each do |skill| %>
 			<tr>
 				<%= content_tag :td, class: skill.synergy_css('name-'), rowspan: skill.effects.count do %>
-					<%= skill.name %>
+					<%= content_tag :span, skill.full_name, rel: 'popover', 'data-content' => popover_content(skill), 'data-original-title' => popover_title(skill), class: 'skill-popover' %>
 					<%= skill.icons.collect { |src| tag(:img, src: src, class: 'skill-icons right') }.join.html_safe %>
 				<% end %>
 				<%= content_tag :td, class: 'center dont-print', rowspan: skill.effects.count do %>
 					<span class="skill-level"><%= skill.level %></span>
 					<span class="skill-level-select">
-						<%= select_tag skill.name_tag('level'), options_for_select(@character.min_skill_level(skill.name)..20, skill.level), class: "skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
+						<%= select_tag skill.name_tag('level'), options_for_select(skill.min_level..20, skill.level), class: "skill-level-option", onChange: "update_required('#{skill.name}'); recalculate_xp();" %>
 					</span>
 				<% end %>
 				<%= content_tag :td, skill.cost, class: 'center dont-print', rowspan: skill.effects.count %>
@@ -281,13 +281,13 @@
 
 <!-- ########### Abilities Buttons ########### !-->
 
-<div class="row dont-print modify">
-	<%= link_to "Abilities Page", '/rules#tab-abilities', class: "btn btn-primary btn-large span2 disable-button" %>
-	<a class="btn btn-large btn-success span2 disable-button" data-toggle="modal" href='#addAbilityModal'>Add Abilities</a>
+<div class="dont-print modify">
+	<%= link_to page('Abilities'), '/rules#tab-abilities', class: "btn btn-primary disable-button" %>
+	<a class="btn btn-success disable-button" data-toggle="modal" href='#addAbilityModal'><%= add 'Abilities' %></a>
 	<% if @character.abilities.empty? %>
-		<a class='btn btn-large btn-danger span2' disabled='true'>Remove Abilities</a>
+		<a class='btn btn-danger' disabled='true'><%= remove('Abilities') %></a>
 	<% else %>
-		<a class="btn btn-large btn-danger span2 disable-button" data-toggle="modal" href='#removeAbilityModal'>Remove Abilities</a>
+		<a class="btn btn-danger disable-button" data-toggle="modal" href='#removeAbilityModal'><%= remove 'Abilities' %></a>
 	<% end %>
 </div>
 <p/>
@@ -305,7 +305,9 @@
 	<tbody>
 		<% @character.abilities.sort_by{ |ability| ability.name }.each do |ability| %>
 			<tr>
-				<%= content_tag :td, ability.name, class: ability.synergy_css('name-') %>
+				<%= content_tag :td, class: ability.synergy_css('name-') do %>
+					<%= content_tag :span, ability.name, rel: 'popover', 'data-content' => parse_text_xml(ability.text), 'data-original-title' => ability.name, class: 'skill-popover' %>
+				<% end %>
 				<td><%= parse_text_xml(ability.quick, type: :quick) %></td>
 			</tr>
 		<% end %>

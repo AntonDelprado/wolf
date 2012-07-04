@@ -1,31 +1,28 @@
 <% provide(:title, 'Profile') %>
 
-<div class="span10">
-	<div class="hero-unit">
-		<h1><%= @user.handle %></h1>
-		<% unless @campaigns_to_invite.empty? %>
-			<div class="center">
-				<div class='btn-group' style='display:inline-block; padding-top:15px;'>
-					<a class='btn btn-large btn-primary span2 dropdown-toggle' data-toggle='dropdown' href='#'>
-						Invite to Campaign<span class='caret'/>
-					</a>
-					<ul class='dropdown-menu'>
-						<% @campaigns_to_invite.each do |campaign| %>
-							<li><%= link_to campaign.name, invite_campaign_path(campaign, user_id: @user.id) %></li>
-						<% end %>
-					</ul>
-				</div>
+<div class="hero-unit">
+	<h1><%= @user.handle %></h1>
+	<% unless @campaigns_to_invite.empty? %>
+		<div class="center">
+			<div class='btn-group' style='display:inline-block; padding-top:15px;'>
+				<a class='btn btn-large btn-primary span2 dropdown-toggle' data-toggle='dropdown' href='#'>
+					Invite to Campaign<span class='caret'/>
+				</a>
+				<ul class='dropdown-menu'>
+					<% @campaigns_to_invite.each do |campaign| %>
+						<li><%= link_to campaign.name, invite_campaign_path(campaign, user_id: @user.id) %></li>
+					<% end %>
+				</ul>
 			</div>
-		<% end %>
-		<div style="float:left;">
-			Email:
-			<h2><%= @user.email %></h2>
 		</div>
-		<div style="float:right;">
-			Full Name:
-			<h2><%= @user.name %></h2>
-		</div>
-		<div style="clear:both;"/>
+	<% end %>
+	<div style="float:left;">
+		Email:
+		<h2><%= @user.email %></h2>
+	</div>
+	<div style="float:right;">
+		Full Name:
+		<h2><%= @user.name %></h2>
 	</div>
 </div>
 
@@ -55,12 +52,18 @@
 
 <% end %>
 
-<% unless @user.campaigns.empty? %>
-	<h1 class="span10">Campaigns</h1>
-	<%= render @user.campaigns.sort_by { |campaign| campaign.name } %>
+<% unless @campaigns.empty? %>
+	<h1>Campaigns</h1>
+	<div class='clear'>
+		<%= render @campaigns %>
+	</div>
+	<%= will_paginate @campaigns, param_name: 'campaign_page' %>
 <% end %>
 
-<% unless @user.characters.empty? %>
-	<h1 class="span10">Characters</h1>
-	<%= render @user.characters.sort_by { |character| character.name } %>
+<% unless @characters.empty? %>
+	<h1>Characters</h1>
+	<div class='character-block clear'>
+		<%= render @characters %>
+	</div>
+	<%= will_paginate @characters, param_name: 'character_page' %>
 <% end %>

@@ -23,11 +23,15 @@
 </div>
 
 <% unless @characters.empty? %>
-	<h1 class="span10">Characters</h1>
-	<% render @characters %>
+	<h1>Characters</h1>
+	<div class='character-block'>
+		<%= render @characters %>
+	</div>
+
+	<%= will_paginate @characters, param_name: 'character_page' %>
 <% end %>
 
-<h2>Member List:</h2>
+<h1>Member List:</h2>
 
 <table class="table table-striped table-bordered" id="member-table">
 	<col/>

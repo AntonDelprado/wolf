@@ -4,10 +4,11 @@
 	<h1>User List</h1>
 </div>
 
-<%= will_paginate %>
-
 <table class='table table-bordered vcenter'>
 	<col width='5%'/>
+	<col/>
+	<col width='20%'/>
+	<col width='20%'/>
 	<thead>
 		<tr>
 			<th/>
@@ -18,20 +19,12 @@
 	</thead>
 	<tbody>
 		<% @users.each_with_index do |user, index| %>
-			<% characters = @characters[user.id] %>
-			<% campaigns = @campaigns[user.id] %>
-			<% rowspan = characters.count > campaigns.count ? characters.count : campaigns.count %>
 			<tr>
-				<%= content_tag :td, index+1, rowspan: rowspan  %>
-				<%= content_tag :td, link_to(user.handle, user), rowspan: rowspan %>
-
-				<% (0..rowspan-1).each do |index| %>
-			<%= tag(:tr, nil, true) unless index.zero? %>
-				<td><%= link_to(characters[index].name, characters[index]) if characters.count > index %></td>
-				<td><%= link_to(campaigns[index].name, campaigns[index]) if campaigns.count > index %></td>
+				<td><%= index+1 %></td>
+				<td><%= link_to user.handle, user %></td>
+				<td><%= user.campaigns.size %></td>
+				<td><%= user.characters.size %></td>
 			</tr>
-				<% end %>
-				<%= '<td/><td/></tr>'.html_safe if rowspan.zero? %>
 		<% end %>
 	</tbody>
 </table>

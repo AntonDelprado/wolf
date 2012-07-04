@@ -20,6 +20,9 @@
 class User < ActiveRecord::Base
 	attr_accessible :email, :handle, :name, :password, :password_confirmation, :active_character, :character2_id, :character3_id, :active_campaign_id, :campaign2_id, :campaign3_id
 	has_secure_password
+	has_many :characters, dependent: :delete_all
+	has_many :campaign_members
+	has_many :campaigns, through: :campaign_members
 
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
@@ -28,16 +31,6 @@ class User < ActiveRecord::Base
 	validates :password_confirmation, presence: true
 
 	before_save { |user| user.email = email.downcase }
-
-
-
-	def campaigns
-		@campaigns ||= CampaignMember.find_all_by_user_id(self.id).collect { |membership| membership.member? ? Campaign.find(membership.campaign_id) : nil }.compact
-	end
-
-	def characters
-		@characters ||= Character.find_all_by_user_id(self.id)
-	end
 
 	def campaign_select
 		campaigns.collect { |campaign| [campaign.name, campaign.id] }.unshift(['None', nil])

@@ -8,26 +8,34 @@
 </div>
 
 <% if signed_in? %>
-	<% unless @owned_characters.empty? %>
-		<h1 class="span10">Your Characters</h1>
-		<%= render @owned_characters %>
+	<% unless @owned_characters.nil? or @owned_characters.empty? %>
+		<h1>Your Characters</h1>
+		<div class='character-block'>
+			<%= render @owned_characters %>
+		</div>
+		<%= will_paginate @owned_characters, param_name: 'owned_page' %>
 	<% end %>
 
-	<% unless @campaign_characters.empty? %>
-		<h1 class="span10">Campaign Characters</h1>
+	<% unless @campaign_characters.nil? or @campaign_characters.empty? %>
+		<h1>Campaign Characters</h1>
 
-		<% @campaign_characters.each do |campaign_id, characters| %>
+		<% @campaigns.each do |campaign_id, characters| %>
 			<% campaign = Campaign.find campaign_id %>
-			<%= content_tag(:h2, link_to(campaign.name, campaign), class: 'span10') %>
+			<%= content_tag(:h2, link_to(campaign.name, campaign), class: 'center') %>
 
-			<%= render characters %>
-
+			<div class='character-block'>
+				<%= render characters %>
+			</div>
 		<% end %>
+		<%= will_paginate @campaign_characters, param_name: 'campaign_page' %>
 	<% end %>
 <% end %>
 
-<% unless @other_characters.empty? %>
-	<h1 class="span10">Public Characters</h1>
+<% unless @other_characters.nil? or @other_characters.empty? %>
+	<h1>Public Characters</h1>
 
-	<%= render @other_characters %>
+	<div class='character-block'>
+		<%= render @other_characters %>
+	</div>
+	<%= will_paginate @other_characters, param_name: 'other_page' %>
 <% end %>

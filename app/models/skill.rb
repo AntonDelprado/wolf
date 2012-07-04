@@ -2,17 +2,23 @@
 #
 # Table name: skills
 #
-#  id             :integer         not null, primary key
-#  character_id   :integer
-#  name           :string(255)
-#  level          :integer
-#  required_skill :string(255)
-#  created_at     :datetime        not null
-#  updated_at     :datetime        not null
+#  id                :integer         not null, primary key
+#  character_id      :integer
+#  name              :string(255)
+#  level             :integer
+#  required_skill    :string(255)
+#  created_at        :datetime        not null
+#  updated_at        :datetime        not null
+#  required_skill_id :integer
 #
+
+include ApplicationHelper
 
 class Skill < ActiveRecord::Base
 	attr_accessible :character_id, :level, :name, :required_skill
+	belongs_to :character, touch: true
+	has_many :dependent_skills, dependent: :destroy, foreign_key: :required_skill_id, class_name: 'Skill'
+	belongs_to :required_skill, class_name: 'Skill'
 
 	validates :character_id, presence: true
 	validates :level, presence: true, numericality: { greater_than: 0 }
@@ -37,10 +43,30 @@ class Skill < ActiveRecord::Base
 		name: 'Statless',
 	}
 
-	after_initialize do
-		if self.required_skill.nil? and self.class.raw_data[self.name].has_key?(:required_skill)
-			self.required_skill = self.class.raw_data[self.name][:required_skill] if self.class.raw_data[self.name][:required_skill][0..7] != 'Will of'
+	before_validation(on: :create) do
+		# raise "raw = #{raw_data.count}"
+		self.level = case name
+		when 'Endurance' then self.character.str/2
+		when 'Sprint' then self.character.dex/2
+		when 'Observation' then self.character.int/2
+		when 'Sense' then self.character.fai/2
+		else 1
 		end
+
+		required_name = self.class.raw_data[self.name][:required_skill]
+		if required_name
+			self.required_skill = self.character.skill(required_name)
+			self.required_skill ||= self.character.skills.create(name: required_name)
+			self.required_skill.set_level(self.level+1) unless self.required_skill.level > self.level
+		end
+	end
+
+	after_create do
+		self.required_skill.dependent_skills << self if self.required_skill
+	end
+
+	before_destroy do
+		self.dependent_skills.each { |skill| skill.destroy }
 	end
 
 	def self.statless
@@ -97,6 +123,36 @@ class Skill < ActiveRecord::Base
 
 	def self.every
 		self.raw_data.collect { |name, data| self.new name: name unless name == 'statless' }.compact
+	end
+
+	def set_level(level)
+		if level <= 0
+			changed = [self.destroy.name]
+		elsif self.level > level
+			changed = [self.name]
+			self.update_attribute(:level, level)
+			self.dependent_skills.each { |skill| changed.concat skill.set_level(level-1) }
+		elsif self.level < level
+			changed = [self.name]
+			self.update_attribute(:level, level)
+			changed.concat(self.required_skill.set_level(level+1)) if self.required_skill
+		else
+			changed = []
+		end
+
+		return changed
+	end
+
+	def min_level
+		return 1+dependent_skills.collect { |skill| skill.min_level }.max unless dependent_skills.empty?
+
+		case name
+		when 'Endurance' then self.character.str/2
+		when 'Sprint' then self.character.dex/2
+		when 'Observation' then self.character.int/2
+		when 'Sense' then self.character.fai/2
+		else 1
+		end
 	end
 
 	def full_name
@@ -177,7 +233,7 @@ class Skill < ActiveRecord::Base
 	def dividible?
 		self.class.raw_data[self.name][:dividible]
 	end
-
+	
 	private
 
 	# acquire all the private data from 'skills.xml'
@@ -201,12 +257,12 @@ class Skill < ActiveRecord::Base
 				skill[:spell] = skill_xml.find_first('Spell').content if skill_xml.find_first('Spell')
 				skill[:required_skill] = skill_xml.find_first('Require').content if skill_xml.find_first('Require')
 
-				skill[:required_skill] = case skill[:stat]
+				skill[:required_skill] ||= case skill[:stat]
 				when 'Str' then 'Endurance'
 				when 'Dex' then 'Sprint'
 				when 'Int' then 'Observation'
 				when 'Fai' then 'Sense'
-				end unless skill[:required_skill] or skill[:stat].nil? or BASE_SKILLS.include? skill[:name]
+				end unless skill[:stat].nil? or BASE_SKILLS.include? skill[:name]
 
 				skill[:invertible] = !skill_xml.find_first('Invert').nil?
 				skill[:dividible] = !skill_xml.find_first('Divide').nil?
@@ -239,10 +295,6 @@ class Skill < ActiveRecord::Base
 				@@raw_data[skill[:name]] = skill
 			end
 		end
-		# @@raw_data['statless'] = {
-		# 	name: 'statless',
-		# 	effects: [],
-		# }
 		@@raw_data
 	end
 end
