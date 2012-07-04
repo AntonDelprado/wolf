@@ -55,7 +55,7 @@ class Character < ActiveRecord::Base
 		update_base_skills
 		if self.race == 'Vampire'
 			self.add_ability 'Atheist'
-			self.add_ability 'Lore'
+			self.add_ability 'Literate'
 		end
 	end
 
@@ -85,7 +85,8 @@ class Character < ActiveRecord::Base
 			character.update_base_skills
 
 			xml_root.find_first('Skills').find('Skill').each do |skill_node|
-				character.add_skill(skill_node.content, skill_node.attributes['level'].to_i)
+				character.add_skill(skill_node.content)
+				character.skill(skill_node.content).set_level(skill_node.attributes['level'].to_i)
 			end
 
 			xml_root.find_first('Abilities').find('Ability').each do |ability_node|
@@ -246,7 +247,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def add_ability(ability_name)
-		self.abilities.create name: ability_name
+		self.abilities.create name: ability_name unless self.has_ability? ability_name
 	end
 
 	def remove_ability(ability_name)

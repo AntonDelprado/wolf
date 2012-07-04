@@ -11,6 +11,7 @@
 			<%= "\"#{skill_name}\": \"#{skill_data[:required_skill]}\",".html_safe if skill_data[:required_skill] %>
 		<% end %>
 	};
+	character_submit = "edit_character_<%= params[:id] %>";
 </script>
 
 <% unless current_user_owns? @character %>
@@ -208,7 +209,7 @@
 
 <!-- ########### Skills Buttons ########### !-->
 
-<%= form_for(@character, url: { action: :skills }) do |f| %>
+<%= form_for(@character, url: { action: :skills }, html: { id: 'form-skill-levels' } ) do |f| %>
 
 <div class="dont-print modify">
 	<%= link_to page('Skills'), '/rules#tab-skills', class: "btn btn-primary disable-button" %>
@@ -218,10 +219,8 @@
 	<% else %>
 		<a class="btn btn-danger disable-button" data-toggle="modal" href='#removeModal'><%= remove('Skills') %></a>
 	<% end %>
-	<a class="btn btn-warning skill-level" onClick="show_skill_levels()"><%= change('Skill Levels') %></a>
-	<div class="skill-level-select span2">
-		<%= f.submit save_changes, class: "btn btn-large btn-warning span2" %>
-	</div>
+	<!-- <a class='btn btn-warning skill-level-select' onClick='submit_via_jquery()'><i class='icon-ok icon-white'></i> Save Changes</a> -->
+	<a class="btn btn-warning" onClick="show_skill_levels()" id='skill-levels'><%= change('Skill Levels') %></a>
 </div>
 <p/>
 

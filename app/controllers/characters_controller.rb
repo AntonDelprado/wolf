@@ -3,7 +3,7 @@ class CharactersController < ApplicationController
 	# helper ApplicationHelper
 	before_filter :signed_in_user, except: [:show, :index, :export]
 	before_filter :visible_to_user, only: [:show, :export]
-	before_filter :correct_user, except: [:show, :index, :export, :new, :create]
+	before_filter :correct_user, except: [:show, :index, :export, :new, :create, :import]
 
 	def new
 		@character = Character.new
@@ -165,6 +165,8 @@ class CharactersController < ApplicationController
 	# Post to editing
 	def update
 		@character = Character.find(params[:id])
+
+		raise "Params: #{params.inspect}"
 
 		if @character.update_attributes(params[:character])
 			redirect_to @character, flash: { success: "Changed Character Attributes" }
