@@ -166,8 +166,6 @@ class CharactersController < ApplicationController
 	def update
 		@character = Character.find(params[:id])
 
-		raise "Params: #{params.inspect}"
-
 		if @character.update_attributes(params[:character])
 			redirect_to @character, flash: { success: "Changed Character Attributes" }
 		else
