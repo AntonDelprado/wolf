@@ -97,8 +97,13 @@ function roll(value, type)
 	}
 
 	for (var i=0; i<value; i+=1)
-		if (Math.random()*type >= 3)
-			result += 1;
+		if (0) // First roll type is >=4; second is >=4 is 1, >=8 is 2, >=12 is 3
+		{
+			if (Math.random()*type >= 3)
+				result += 1;
+		}
+		else
+			result += Math.floor((Math.random()*type+1)/4);
 
 	if (result <= 0)
 		alert("Result: " + result + ' (Critical Failure)');
