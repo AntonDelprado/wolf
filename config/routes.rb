@@ -13,6 +13,9 @@ Wolf::Application.routes.draw do
       get :deny
       get :clear
       get :admin
+      get :combat
+      put :order
+      put :fight
     end
   end
   resources :characters do

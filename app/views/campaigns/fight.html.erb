@@ -1,0 +1,251 @@
+<% provide(:title, @campaign.name) %>
+
+<%= render 'campaigns/new_buff' %>
+
+<script type="text/javascript">
+	buffs = [];
+	buff_index = 0;
+
+	character_names = [
+	<% @character_list.each do |char| %>
+		'<%= char[:name] %>',
+	<% end %>
+	];
+</script>
+
+
+<div class='hero-unit'>
+	<h1><%= @campaign.name %></h1>
+	<h2>Combat Helper</h2>
+</div>
+
+<h1>Turn Order</h1>
+
+<table class='table table-bordered table-combat' id='combat-table'>
+	<col/>
+	<col width='50px'/>
+	<col width='150px'/>
+	<col width='130px'/>
+	<col width='130px'/>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Initiative</th>
+			<th>Skills</th>
+			<th>HP</th>
+			<th>MP</th>
+		</tr>
+	</thead>
+	<tbody id='combat-body'>
+		<% @character_list.each_with_index do |char, index| %>
+			<%= content_tag :tr, class: 'combat-row', index: index do %>
+				<% character = char[:character] %>
+
+				<%= content_tag :td, onclick: "select_character(#{index})" do %>
+					<%= content_tag :span, char[:name], class: 'bold' %>
+					<div class='right btn-group'>
+						<% if false %>
+						<%= content_tag :button, onclick: "row_prev(#{index})", class: 'btn btn-mini', style: "display: #{index==0 ? 'none' : 'inline'}" do %>
+							<i class='icon-chevron-up'></i>
+						<% end %>
+						<%= content_tag :button, onclick: "row_next(#{index})", class: 'btn btn-mini', style: "display: #{index==@character_list.count-1 ? 'none' : 'inline'}" do %>
+							<i class='icon-chevron-down'></i>
+						<% end %>
+						<% else %>
+						<%= content_tag :button, onclick: "row_prev(#{index})", class: 'btn btn-mini' do %>
+							<i class='icon-chevron-up'></i>
+						<% end %>
+						<%= content_tag :button, onclick: "row_next(#{index})", class: 'btn btn-mini' do %>
+							<i class='icon-chevron-down'></i>
+						<% end %>
+						<% end %>
+					</div>
+				<% end %>
+				<%= content_tag :td, char[:initiative] %>
+				<td>
+					<div class="btn-group">
+						<a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+							Use Skill <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu center">
+							<% character.skills.sort_by(&:name).each do |skill| %>
+								<% dice = character.power(skill, skill.effects[0], true) %>
+								<%= content_tag :li, "#{skill.name}*", onclick: "alert('Value: #{dice}')" unless dice.is_a? Array %>
+								<%= content_tag :li, skill.name, onclick: "roll(#{dice[0]},#{dice[1]})" if dice.is_a? Array %>
+							<% end %>
+						</ul>
+					</div>
+				</td>
+				<td>
+					<div class='btn-group'>
+						<%= content_tag :button, class: 'btn', onClick: "add('hp_#{index}', 1)" do %>
+							<i class='icon-plus'></i>
+						<% end %>
+						<%= content_tag :button, class: 'btn hp' do %>
+						<%= content_tag :span, character.hp_max, rel: 'popover', 'data-content' => popover_hp(character, index), 'data-original-title' => "Max HP is #{character.hp_max}", class: 'hp-popover', id: "hp_#{index}", index: index, max: character.hp_max %>
+						<% end %>
+						<%= content_tag :button, class: 'btn', onClick: "add('hp_#{index}', -1)" do %>
+							<i class='icon-minus'></i>
+						<% end %>
+					</div>
+				</td>
+				<td>
+					<div class='btn-group'>
+						<%= content_tag :button, class: 'btn', onClick: "add('mp_#{index}', 1)" do %>
+							<i class='icon-plus'></i>
+						<% end %>
+						<%= content_tag :button, class: 'btn mp' do %>
+						<%= content_tag :span, character.mp_max, rel: 'popover', 'data-content' => popover_mp(character, index), 'data-original-title' => "Max MP is #{character.mp_max}", class: 'mp-popover', id: "mp_#{index}", index: index, max: character.mp_max %>
+						<% end %>
+						<%= content_tag :button, class: 'btn', onClick: "add('mp_#{index}', -1)" do %>
+							<i class='icon-minus'></i>
+						<% end %>
+					</div>
+				</td>
+			<% end %> <!-- Row end !-->
+		<% end %>
+	</tbody>
+</table>
+
+<div class="row">
+	<div class='btn btn-primary btn-large span2' onclick='next_character()'>Next Character</div>
+	<a class="btn btn-primary btn-large span2 right" data-toggle="modal" href='#newBuff'>Create Buff</a>
+</div>
+
+<div id='current_character'>
+	<% @character_list.each_with_index do |char, index| %>
+		<%= content_tag :div, id: "character_#{index}", style: "display: #{index==0 ? 'inline' : 'none'}", index: index do %>
+			<% character = char[:character] %>
+			<%= content_tag :h1, char[:name] %>
+			<p class="center">
+				<button class='combat-expand' data-toggle='collapse' data-target=<%= ".stats[index=#{index}]" %>>
+					Character Stats <b class='caret'></b>
+				</button>
+			</p>
+			<%= content_tag :div, class: 'row collapse stats', index: index do %>
+				<div class="span3 offset1">
+					<table class='table table-striped table-bordered table-condensed item-table'>
+						<tbody>
+							<tr class="hp"><td>HP Max</td><td><%= character.hp_max %></td></tr>
+							<tr class="hp"><td>HP Rate</td><td><%= rate character.hp_rate %></td></tr>
+							<tr class="mp"><td>MP Max</td><td><%= character.mp_max %></td></tr>
+							<tr class="mp"><td>MP Rate</td><td><%= rate character.mp_rate %></td></tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="span3">
+					<table class='table table-striped table-bordered table-condensed item-table'>
+						<tbody>
+							<tr><td>Damage Reduction</td><td><%= character.damage_reduction %></td></tr>
+							<tr><td>Weapon Bonus</td><td>+<%= character.weapon_bonus %></td></tr>
+							<tr class="hp"><td>Regen Time</td><td><%= character.hp_time %></td></tr>
+							<tr class="mp"><td>Refresh Time</td><td><%= character.mp_time %></td></tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="span3">
+					<table class='table table-striped table-bordered table-condensed item-table'>
+						<tbody>
+							<tr><td>Strength</td><td><%= character.str %></td></tr>
+							<tr><td>Dexterity</td><td><%= character.dex %></td></tr>
+							<tr><td>Intelligence</td><td><%= character.int %></td></tr>
+							<tr><td>Faith</td><td><%= character.fai %></td></tr>
+						</tbody>
+					</table>
+				</div>
+			<% end %>
+
+			<!-- ########### Buffs Table ########### !-->
+
+			<p class='center'>
+				<button class='combat-expand' data-toggle='collapse' data-target=<%= ".buffs[index=#{index}]" %>>Current Buffs <b class='caret'></b></button>
+			</p>
+			<%= content_tag :div, class: 'collapse buffs', index: index do %>
+				<table class='table table-condensed table-striped table-bordered'>
+					<col width="30%"/>
+					<col width="30%"/>
+					<col width="15%"/>
+					<col width="25%"/>
+					<thead>
+						<tr><th>Name</th><th>Owner</th><th>Remaining Turns</th><th>Effect</th></tr>
+					</thead>
+					<%= tag :tbody, id: "buffs_#{index}" %>
+				</table>
+			<% end %>
+
+			<!-- ########### Skills Table ########### !-->
+
+			<p class='center'>
+				<button class='combat-expand' data-toggle='collapse' data-target=<%= ".skills[index=#{index}]"%>>Skill List <b class='caret'></b></button>
+			</p>
+
+			<%= content_tag :div, class: 'collapse skills', index: index do %>
+				<table class='table table-bordered table-condensed skill-table item-table'>
+					<col class="name-col"/>
+					<col class="small-col"/>
+					<col class="small-col"/>
+					<col class="small-col"/>
+					<thead>
+						<tr>
+							<th>Skill Name</th>
+							<th>Mana</th>
+							<th>Power</th>
+							<th>Dur.</th>
+							<th>Effect</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% character.skills.sort_by{ |skill| skill.name }.each do |skill| %>
+							<tr>
+								<%= content_tag :td, class: skill.synergy_css('name-'), rowspan: skill.effects.count do %>
+									<%= content_tag :span, skill.full_name, rel: 'popover', 'data-content' => popover_content(skill), 'data-original-title' => popover_title(skill), class: 'skill-popover' %>
+									<%= skill.icons.collect { |src| tag(:img, src: src, class: 'skill-icons right') }.join.html_safe %>
+								<% end %>
+								<% unless skill.effects.empty? %>
+									<% skill.effects.each_with_index do |effect, index| %>
+										<%= tag(:tr, nil, true) unless index.zero? %>
+											<td class="mp center"><%= effect[:mana] %></td>
+											<td class="power center"><%= character.power(skill, effect) %></td>
+											<td class="power center"><%= character.duration(skill, effect) %></td>
+											<td><%= parse_text_xml(effect[:quick], type: :quick).html_safe %></td>
+										</tr>
+									<% end %>
+								<% else %>
+							</tr>
+								<% end %>
+						<% end %>
+					</tbody>
+				</table>
+			<% end %>
+
+			<!-- ########### Abilities Table ########### !-->
+
+			<p class='center'>
+				<button class='combat-expand' data-toggle='collapse' data-target=<%= ".abilities[index=#{index}]"%>>Ability List <b class='caret'></b></button>
+			</p>
+
+			<%= content_tag :div, class: 'collapse abilities', index: index do %>
+				<table class='table table-striped table-bordered table-condensed'>
+					<col class='name-col'/>
+					<thead>
+						<tr>
+							<th>Ability Name</th>
+							<th>Effect</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% character.abilities.sort_by{ |ability| ability.name }.each do |ability| %>
+							<tr>
+								<%= content_tag :td, class: ability.synergy_css('name-') do %>
+									<%= content_tag :span, ability.name, rel: 'popover', 'data-content' => parse_text_xml(ability.text), 'data-original-title' => ability.name, class: 'skill-popover' %>
+								<% end %>
+								<td><%= parse_text_xml(ability.quick, type: :quick) %></td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			<% end %>
+
+		<% end %>
+	<% end %>
+</div>

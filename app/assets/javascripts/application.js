@@ -41,6 +41,42 @@ $(document).ready(function() {
 		$(this).popover('toggle');
 	});
 
+	$('.hp-popover').popover({
+		html : true,
+		trigger : 'manual',
+		placement : 'top'
+	}).click(function () {
+		var index = parseInt($(this).attr('index'));
+		var field;
+		$(this).popover('toggle');
+		field = $('.hp-field[index='+index+']');
+		if (field.length)
+		{
+			field.focus();
+			field.focusout(function () {
+				$('.hp-popover[index='+index+']').popover('hide');
+			});
+		}
+	});
+
+	$('.mp-popover').popover({
+		html : true,
+		trigger : 'manual',
+		placement : 'top'
+	}).click(function () {
+		var index = parseInt($(this).attr('index'));
+		var field;
+		$(this).popover('toggle');
+		field = $('.mp-field[index='+index+']');
+		if (field.length)
+		{
+			field.focus();
+			field.focusout(function () {
+				$('.mp-popover[index='+index+']').popover('hide');
+			});
+		}
+	});
+
 	recalculate_xp();
 
 	skill_levels_run = 0
@@ -48,7 +84,7 @@ $(document).ready(function() {
 
 function roll(value, type)
 {
-	var result = 0;
+	var result = 0, result_type;
 	while (type < 4)
 	{
 		value -= 2;
@@ -64,7 +100,192 @@ function roll(value, type)
 		if (Math.random()*type >= 3)
 			result += 1;
 
-	alert("Result: " + result);
+	if (result <= 0)
+		alert("Result: " + result + ' (Critical Failure)');
+	else if (result <= 2)
+		alert("Result: " + result + ' (Failure)');
+	else if (result <= 5)
+		alert("Result: " + result + ' (Basic Pass)');
+	else if (result <= 10)
+		alert("Result: " + result + ' (Pass)');
+	else if (result <= 18)
+		alert("Result: " + result + ' (Prodigious Pass)');
+	else
+		alert("Result: " + result + ' (Epic Pass)');
+}
+
+function add(elem_id, amount)
+{
+	var elem = $('#' + elem_id)
+
+	elem.html(parseInt(elem.html())+parseInt(amount));
+	if (parseInt(elem.attr('max')) < parseInt(elem.html()))
+		elem.css('font-weight', 'bold');
+	else
+		elem.css('font-weight', 'normal');
+}
+
+function update_hp(index)
+{
+	var field = $('.hp-field[index='+index+']'), contents = parseInt(field.val());
+	field.val("");
+	$('.hp-popover[index='+index+']').popover('hide');
+
+	if (isNaN(contents))
+		alert("Warning: Not a number!");
+	else
+		add('hp_'+index, contents);
+}
+
+function update_mp(index)
+{
+	var field = $('.mp-field[index='+index+']'), contents = parseInt(field.val());
+	field.val("");
+	$('.mp-popover[index='+index+']').popover('hide');
+
+	if (isNaN(contents))
+		alert("Warning: Not a number!");
+	else
+		add('mp_'+index, contents);
+}
+
+function row_next(index)
+{
+	var elem = $('.combat-row[index=' + index + ']'), next = elem.next();
+
+	if (next.length)
+	{
+		next.after(elem);
+	}
+	else
+	{
+		elem.parent().children().first().before(elem);
+	}
+
+	update_current_character();
+}
+
+function row_prev(index)
+{
+	var elem = $('.combat-row[index='+index+']'), prev = elem.prev();
+	if (prev.length)
+	{
+		prev.before(elem);
+	}
+	else
+	{
+		elem.parent().children().last().after(elem);
+	}
+
+	update_current_character();
+}
+
+function update_current_character()
+{
+	var index = parseInt($('.combat-row').first().attr('index'));
+
+	$('#current_character').children().each(function () {
+		var this_index = parseInt($(this).attr('index'));
+		$(this).css('display', index == this_index ? 'inline' : 'none');
+	})
+}
+
+function next_character()
+{
+	$('.combat-row').last().after($('.combat-row').first());
+	update_current_character();
+
+	var char_index = parseInt($('.combat-row').first().attr('index'));
+	for (var i=0; i<buffs.length; i+=1)
+	{
+		var buff = buffs[i];
+		if (buff['owner'] == char_index)
+		{
+			buff['duration'] -= 1;
+			if (buff['duration'] <= 0)
+			{
+				$('.buff-row[index='+buff['index']+']').remove();
+
+				buffs.splice(i, 1);
+				i -= 1; /* Ensure an element is not skipped. */
+			}
+			else
+			{
+				$('.buff-duration[index='+buff['index']+']').each(function () {
+					$(this).html(buff['duration']);
+				});
+			}
+		}
+	}
+}
+
+function select_character(index)
+{
+	$('.combat-row').each(function () {
+		var this_index = parseInt($(this).attr('index'));
+		$(this).css('background-color', index == this_index ? '#eef' : '#fff');
+	});
+
+	$('#current_character').children().each(function () {
+		var this_index = parseInt($(this).attr('index'));
+		$(this).css('display', index == this_index ? 'inline' : 'none');
+	});
+}
+
+function show_targets()
+{
+	if ($('#buff_target').val() == 'Custom')
+		$('#buff-targets').css('display', 'inline');
+	else
+		$('#buff-targets').css('display', 'none');
+}
+
+function new_buff()
+{
+	var owner_index = parseInt($('.combat-row').first().attr('index')), target = $('#buff_target').val();
+	var buff = {
+		'owner' : owner_index,
+		'name' : $('#buff_name').val(),
+		'duration' : parseInt($('#buff_duration').val()),
+		'characters' : [],
+		'index' : buff_index,
+		'effect' : $('#buff_effect').val(),
+		'size' : $('#buff_size').val(),
+	};
+
+	if (target == 'Everyone')
+	{
+		var i, total = character_names.length;
+		for (var i=0; i<total; i+=1)
+			buff['characters'].push(i);
+	}
+	else if (target == 'Friends')
+		alert('Not Implemented');
+	else if (target == 'Foes')
+		alert('Not Implemented');
+	else /* Custom */
+	{
+		$('.buff-character:checked').each(function () {
+			buff['characters'].push(parseInt($(this).attr('index')));
+		});
+	}
+
+	buffs.push(buff);
+
+	var i;
+	for (i=0; i<buff['characters'].length; i+=1)
+	{
+		var index = buff['characters'][i];
+		var table_row = '<tr class="buff-row" index="' + buff_index + '">';
+		table_row += '<td>' + buff['name'] + '</td>';
+		table_row += '<td>' + character_names[owner_index] + '</td>';
+		table_row += '<td class="buff-duration" index="' + buff_index + '">' + buff['duration'] + '</td>';
+		table_row += '<td>' + buff['effect'] + ': ' + buff['size'] + '</td></tr>';
+
+		$('#buffs_' + index).append(table_row);
+	}
+
+	buff_index += 1;
 }
 
 function total_time(size, rate)

@@ -48,6 +48,10 @@ h1 {
 	clear: both;
 }
 
+.hidden {
+	display: none;
+}
+
 .popover-spell {
 	float: right;
 	height: 24px;
@@ -280,6 +284,20 @@ table.stat-table td {
 table.skill-table td {
 	vertical-align: middle;
 	/* text-align: center; */
+}
+
+table.table-combat td {
+	vertical-align: middle;
+}
+
+table.table-combat tbody tr:first-child {
+	background-color: #eef;
+}
+
+.combat-expand {
+	@extend .btn;
+	@extend .btn-large;
+	width: 250px;
 }
 
 col.name-col {

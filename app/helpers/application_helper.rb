@@ -150,6 +150,20 @@ module ApplicationHelper
 		return text + '</p>'
 	end
 
+	def popover_hp(character, index)
+		[
+			'Change HP By:',
+			text_field_tag("hp_field_#{index}", "", class: 'hp-field', index: index, onchange: "update_hp(#{index})"),
+		].join()
+	end
+
+	def popover_mp(character, index)
+		[
+			'Change MP By:',
+			text_field_tag("mp_field_#{index}", "", class: 'mp-field', index: index, onchange: "update_mp(#{index})"),
+		].join()
+	end
+
 	def popover_content(skill)
 		return "<p class='bold'>Requires: #{skill.required_skill.name} #{parse_text_xml(skill.text)}" unless skill.required_skill.nil?
 		return parse_text_xml(skill.text)

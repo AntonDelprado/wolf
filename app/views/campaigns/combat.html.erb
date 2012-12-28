@@ -1,0 +1,25 @@
+<% provide(:title, @campaign.name) %>
+
+<h2>Select Characters for Combat.</h2>
+<%= form_for(@campaign, url: {action: :order}) do |f| %>
+	<table class='table table-striped table-bordered'>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Quantity</th>
+				<th>Initiative</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @characters.each_with_index do |character, index| %>
+				<tr>
+					<%= hidden_field_tag :"character_#{index}", character.name %>
+					<%= content_tag :td, character.name %>
+					<td><%= select_tag "quantity_#{index}", options_for_select((0..10).to_a, 1) %></td>
+					<td><%= select_tag "initiative_#{index}", options_for_select(['Generate'] + (0..20).to_a) %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+	<%= f.submit 'Use Characters', class: 'btn btn-large btn-primary' %>
+<% end %>

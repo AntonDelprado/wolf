@@ -446,7 +446,7 @@ class Character < ActiveRecord::Base
 		end
 	end
 
-	def parse_effect_xml(skill, effect_xml)
+	def parse_effect_xml(skill, effect_xml, raw)
 		return effect_xml.content if effect_xml.find_first('skill').nil?
 
 		total = effect_xml.attributes['add'].to_i
@@ -466,7 +466,10 @@ class Character < ActiveRecord::Base
 		total *= effect_xml.attributes['times'].to_f if effect_xml.attributes['times']
 		total = total.floor
 
-		return total.to_i.to_s unless effect_xml.attributes['type'] == 'roll'
+		unless effect_xml.attributes['type'] == 'roll'
+			return total.to_i if raw
+			return total.to_i.to_s
+		end
 
 		case skill.stat
 		when 'Str' then dice_type = self.str_final
@@ -476,15 +479,29 @@ class Character < ActiveRecord::Base
 		else dice_type = 0
 		end
 
+		return [total.to_i, dice_type] if raw
 		return "<span onClick='roll(#{total.to_i}, #{dice_type})'>#{total.to_i}d#{dice_type}</span>".html_safe
 	end
 
-	def power(skill, effect)
-		parse_effect_xml(skill, effect[:power]) if effect[:power]
+	def power(skill, effect, raw=false)
+		parse_effect_xml(skill, effect[:power], raw) if effect[:power]
 	end
 
-	def duration(skill, effect)
-		parse_effect_xml(skill, effect[:duration]) if effect[:duration]
+	def duration(skill, effect, raw=false)
+		parse_effect_xml(skill, effect[:duration], raw) if effect[:duration]
+	end
+
+	def roll(skill_name)
+		skill = self.skills.find_by_name(skill_name)
+		skill ||= Skill.new name: skill_name, level: 0
+
+		dice = self.power(skill, skill.effects[0], true)
+		return dice unless dice.is_a? Array
+		return (1..dice[0]).reduce(0) { |total, index| total + (rand(dice[1])+1 >= 4 ? 1 : 0) }
+	end
+
+	def initiative
+		self.roll('Initiative')
 	end
 
 	def stats_options(index = nil)
@@ -521,7 +538,7 @@ class Character < ActiveRecord::Base
 	end
 
 	def hp_rate
-		regen = self.has_skill?('Regnerate') ? self.skill('Regenerate').level : 0
+		regen = self.has_skill?('Regenerate') ? self.skill('Regenerate').level : 0
 		warrior = self.has_synergy?('Warrior') ? self.synergies['Warrior'][:level] : 0
 
 		return (0.5 * (regen+warrior)).floor - 5

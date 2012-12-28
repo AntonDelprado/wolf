@@ -29,6 +29,56 @@ class CampaignsController < ApplicationController
 		end
 	end
 
+	def combat
+		@campaign = Campaign.find(params[:id])
+		@characters = @campaign.characters.select { |character| character.visible_to? current_user }.sort_by &:name
+	end
+
+	def order
+		@campaign = Campaign.find(params[:id])
+		@character_list = []
+		params.select { |param, value| param[0..9] == 'character_'}.each do |param, character_name|
+			character = Character.find_by_name(character_name)
+			index = param.sub('character_','').to_i
+			quantity = params["quantity_#{index}"].to_i
+			initiative = params["initiative_#{index}"]
+
+			case quantity
+			when 0 then
+			when 1
+				if initiative == 'Generate'
+					# init = character.skill('Initiative')
+					# dice = character.power(init, init.effects[0], true)
+					# initiative = "#{character.initiative} #{dice[0]}d#{dice[1]}"
+					initiative = character.roll('Initiative')
+				else
+					initiative = initiative.to_i
+				end
+				@character_list << { character: character, name: character.name, initiative: initiative }
+			else
+				quantity.times do |i|
+					if initiative == 'Generate'
+						# init = character.skill('Initiative')
+						# dice = character.power(init, init.effects[0], true)
+						# this_init = "#{character.initiative} #{dice[0]}d#{dice[1]}"
+						this_init = character.roll('Initiative')
+					else
+						this_init = initiative.to_i
+					end
+					@character_list << { character: character, name: "#{character.name} #{i+1}", initiative: this_init }
+				end
+			end
+		end
+
+		@character_list.sort_by! { |char| -char[:initiative] }
+
+		render 'fight'
+	end
+
+	def fight
+		@character_list ||= []
+	end
+
 	def index
 		user_ids = current_user.campaign_ids if signed_in?
 		user_ids ||= []
