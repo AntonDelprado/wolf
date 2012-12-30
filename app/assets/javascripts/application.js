@@ -117,8 +117,10 @@ function roll(value, type)
 		alert("Result: " + result + ' (Skillful Pass)');
 	else if (result <= 26)
 		alert("Result: " + result + ' (Prodigious Pass)');
-	else
+	else if (result <= 37)
 		alert("Result: " + result + ' (Epic Pass)');
+	else
+		alert("Result: " + result + ' (Godlike Pass)');
 }
 
 function add(elem_id, amount)

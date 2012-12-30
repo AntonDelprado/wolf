@@ -110,7 +110,8 @@ module ApplicationHelper
 		when value <= 10 then 3
 		when value <= 17 then 4
 		when value <= 26 then 5
-		else 6
+		when value <= 37 then 6
+		else 7
 		end
 	end
 
@@ -123,6 +124,7 @@ module ApplicationHelper
 		when 4 then 'Skillful Pass'
 		when 5 then 'Prodigious Pass'
 		when 6 then 'Epic Pass'
+		when 7 then 'Godlike Pass'
 		end
 	end
 
