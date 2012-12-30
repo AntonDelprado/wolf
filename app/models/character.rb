@@ -318,7 +318,9 @@ class Character < ActiveRecord::Base
 	end
 
 	def unequip(slot)
-		self.items.find_by_slot(slot).try(:delete)
+		allthings = Equipment.find_all_by_character_id_and_slot(self.id,slot)
+		allthings.each { |thing| thing.delete } if allthings
+		# self.items.find_all_by_slot(slot).try(:delete)
 	end
 
 	def equip(equipment)
