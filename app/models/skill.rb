@@ -212,17 +212,26 @@ class Skill < ActiveRecord::Base
 		icon_list << '/assets/dividible.png' if self.dividible?
 		icon_list << '/assets/invertible.png' if self.invertible?
 		icon_list << '/assets/defend.png' if self.defend?
-		icon_list << '/assets/attack.png' if self.attack?
+		icon_list << '/assets/attack.png' if self.attack? && self.melee?
+		icon_list << '/assets/ranged.png' if self.attack? && self.ranged?
 
 		return icon_list
 	end
 
 	def attack?
-		self.class.raw_data[self.name][:effects].any? { |effect| effect[:action] == :attack_action }
+		self.class.raw_data[self.name][:attack]
+	end
+
+	def ranged?
+		self.class.raw_data[self.name][:ranged]
+	end
+
+	def melee?
+		self.class.raw_data[self.name][:melee]
 	end
 
 	def defend?
-		self.class.raw_data[self.name][:effects].any? { |effect| effect[:action] == :defend_action }
+		self.class.raw_data[self.name][:defend]
 	end
 
 	def invertible?
@@ -283,6 +292,8 @@ class Skill < ActiveRecord::Base
 					when 'attack' 
 						effect[:action] = :attack_action
 						skill[:attack] = true
+						skill[:ranged] = (effect_xml.find_first('Action')['type'] != 'melee')
+						skill[:melee] = (effect_xml.find_first('Action')['type'] != 'ranged')
 					when 'defend'
 						effect[:action] = :defend_action
 						skill[:defend] = true

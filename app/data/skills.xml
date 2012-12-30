@@ -27,7 +27,7 @@
             A character who is hidden or moving silently can perform a <name>Backstab</name> of power <check type="dex">Attack+Backstab</check>. The attacker may use the +3 bonus for attacking an unaware defender. The damage of this attack is equal to its power.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>5</Mana>
             <Power type="roll" weapon="1"><skill>Attack</skill><skill>Backstab</skill></Power>
             <Quick> If unseen, attack for X damage.</Quick>
@@ -45,7 +45,7 @@
             The power of this skill is <check type="str">Berserk</check>. The duration of this skill is equal to its power and cannot be stopped before this. Each turn the character must make an attack with power and damage equal to <check type="str">Berserk<times/>2</check>. They may choose the target but must pick a conscious target if one exists. If there are no conscious targets they must target unconscious living targets. If there are no living targets they must target dead creatures.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Power type="roll" times="2" weapon="1"><skill>Berserk</skill></Power>
             <Duration type="roll"><skill>Berserk</skill></Duration>
             <Quick>Must attack for Y turns. Each turn roll an attack for X.</Quick>
@@ -149,7 +149,7 @@
             The power of the attack is <check type="str">Bloodlust</check>. This attack deals damage equal to the power of the attack and gains <HP>1</HP> for each 2 damage done.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>2</Mana>
             <Power type="roll" weapon="1"><skill>Bloodlust</skill></Power>
             <Quick>Attack for X. Gain 1 HP for each 2 damage done.</Quick>
@@ -169,7 +169,7 @@
             The bolt deals damage equal to its power to every creature it passes. Creatures can be hit by the same bolt more than once however they are only targeted by the attack once and so only need to defend once.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>4</Mana>
             <Power type="roll"><skill>Chain Lightning</skill></Power>
             <Quick>Attack for X. May re-target the result level number of times</Quick>
@@ -215,7 +215,7 @@
             The power of the attack is <check type="str">Cleave</check>. The skill deals damage equal to its power to at most the result level number of adjacent characters.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>1</Mana>
             <Power type="roll" weapon="1"><skill>Cleave</skill></Power>
             <Quick>Attack adjacent characters for X.</Quick>
@@ -231,17 +231,17 @@
         <Text>
             While appearing slow at first the attacker gains momentum and blow follows blow at last wreaking massive damage to any foolhardy enough to get in the attacker's way.
             If the attacker's last action was not a successful attack or they choose to restart the <name>Combo</name> the skill's power is <check type="dex">Combo</check>. The attack costs <MP>0</MP> and deals damage equal to its power.
-            If the attacker's last action was a successful attack then the skill's power is <check type="dex">Combo</check> plus the result of the previous attack after defense. The attack costs <MP>2</MP> plus the cost of the last attack. The attack deals damage equal to its power.
+            If the attacker's last action was a successful melee attack then the skill's power is <check type="dex">Combo</check> plus the result of the previous attack after defense. The attack costs <MP>2</MP> plus the cost of the last attack. The attack deals damage equal to its power.
             This means that the power and mana cost of the attack accumulates with successful attacks.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>0</Mana>
             <Power type="roll" weapon="1"><skill>Combo</skill></Power>
             <Quick>Attack for X costing 0 MP.</Quick>
         </Effect>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>X+2</Mana>
             <Power type="roll" weapon="1"><skill>Combo</skill></Power>
             <Quick>If last Major Action was a successful attack then attack for X+last result and costing 2+last MP.</Quick>
@@ -281,7 +281,7 @@
         <Synergy>Rogue</Synergy>
         <Text>
             By using the attackers own strength against them the defender quickly turns the blow destined for them to the back to attacker themselves.
-            The power of the skill is <check type="dex">Counter+1</check>. If this power is equal to or greater than the power of the attack then the attack deals no damage nor has any effect. In this case the attacker receives damage equal to the power of this skilll and any effects that the defender would have received. This damage is not considered an attack and so cannot be defended against.
+            The power of the skill is <check type="dex">Counter+1</check>. If this power is equal to or greater than the power of the melee attack then the attack deals no damage nor has any effect. In this case the attacker receives damage equal to the power of this skilll and any effects that the defender would have received. This damage is not considered an attack and so cannot be defended against.
             This skill cannot be used to defend against projectile attacks.
         </Text>
         <Effect>
@@ -351,7 +351,7 @@
             When used on an incapacitated target the target causes <check type="str">Devour</check> <name>Deep Wounds</name>. For each <name>Deep Wound</name> the target sustains the character gains <HP>1</HP>. Devouring requires a <name>Major Action</name>.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>2</Mana>
             <Power type="roll"><skill>Devour</skill></Power>
             <Quick>Gain X HP and deal X deep wound to incapacitated foe.</Quick>
@@ -366,7 +366,7 @@
         <Synergy>Rogue</Synergy>
         <Text>
             Spotting weakness in a character's attack the defender swiftly parries and opens the attacker for a quick riposte.
-            The power of the defence is <check type="dex">Deflect+1</check>. If this power is equal to or greater than the power of the attack then it deals no damage nor has any effect and the attacker is <name>Stun</name>ned for 1 turn. Note that <name>Tough Fighter</name> does not affect this skill.
+            The power of the defence is <check type="dex">Deflect+1</check>. If this power is equal to or greater than the power of the melee attack then it deals no damage nor has any effect and the attacker is <name>Stun</name>ned for 1 turn. Note that <name>Tough Fighter</name> does not affect this skill.
             This skill cannot be used to defend against projectile attacks.
         </Text>
         <Effect>
@@ -388,7 +388,7 @@
             The power of the attack is <check type="fai">Divine Arrow</check>. It deals damage equal to it's power.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>2</Mana>
             <Power type="roll"><skill>Divine Arrow</skill></Power>
             <Quick>Attack for X.</Quick>
@@ -515,7 +515,7 @@
             The power of this skill is <check type="fai">Fireball</check>. This skill deals damage equal to its power and has radius equal to half its result distance. A character that receives at least 5 damage from this skill is <name>On Fire</name> with power equal to the power of this skill.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>4</Mana>
             <Power type="roll"><skill>Fireball</skill></Power>
             <Quick>Attack anyone in radius of half power distance for X. If X is at least 5 then on fire for X as well.</Quick>
@@ -660,7 +660,7 @@
             The power of this skill is <check type="fai">Inferno</check>. The radius of this effect is equal to the power of this skill in metres, excluding the caster, and the damage is equal to its power. Anyone who takes damage from this skill is <name>On Fire</name> with power equal to the power of this skill. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>5</Mana>
             <Power type="roll"><skill>Inferno</skill></Power>
             <Quick>Attack everyone in a radius of X for X and they are on fire for X.</Quick>
@@ -848,7 +848,7 @@
             The power of the skill is <check type="fai">Lightning Bolt</check>. The path of the bolt is a line starting at the character and will continue for the power of the skill in metres or until it hits a wall or similarly grounded object. Every character in this path takes damage equal to the power of this skill.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>5</Mana>
             <Power type="roll"><skill>Lightning Bolt</skill></Power>
             <Quick>Attack for X everyone in a line of length X.</Quick>
@@ -912,7 +912,7 @@
             A character who chooses a to <name>Lunge</name> may move as though they spent their <name>Major Action</name> as a <name>Move Action</name>. A character may not <name>Lunge</name> by first moving away from a target and then towards.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>2</Mana>
             <Power type="roll"><skill>Lunge</skill></Power>
             <Quick>Lunge at someone gaining Lunge plus a standard attack to anyone within the result distance.</Quick>
@@ -1030,7 +1030,7 @@
             The power of this attack is <check type="fai">Poison Dart</check>. The target becomes <name>Poisoned</name> with power equal to the power of this attack.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>4</Mana>
             <Power type="roll"><skill>Poison Dart</skill></Power>
             <Quick>Attack for X. If successful it poisons for X.</Quick>
@@ -1293,7 +1293,7 @@
             This attack has a power of <check type="str">Stun Attack</check>. The power of this attack is reduced by the defence skill used regardless of which defence skill is used. The defender is stunned for a number of turns equal to the remaining result level.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="melee">Attack</Action>
             <Mana>3</Mana>
             <Power type="roll" weapon="1"><skill>Stun Attack</skill></Power>
             <Quick>Attack for X. All defence skills reduce X. Stun for result level turns.</Quick>
@@ -1312,7 +1312,7 @@
             The power of this attack is <check type="fai">Stunning Bolt</check>. The power of this attack is reduced by the defence skill regardless of which skill is used. The target is <name>Stun</name>ned for a number of turns equal to the remaining result level.
         </Text>
         <Effect>
-            <Action>Attack</Action>
+            <Action type="ranged">Attack</Action>
             <Mana>3</Mana>
             <Power type="roll"><skill>Stunning Bolt</skill></Power>
             <Quick>Attack for X. All defence skills reduce X. Stun for result level turns.</Quick>
