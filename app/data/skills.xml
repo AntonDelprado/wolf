@@ -88,7 +88,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>4</Mana>
+            <Mana>8</Mana>
             <Power type="roll"><skill>Bless</skill></Power>
             <Duration>X</Duration>
             <Quick>Target gets +2 or -2 to all skills.</Quick>
@@ -109,13 +109,13 @@
         </Text>
         <Effect>
             <Action>Defend</Action>
-            <Mana>1</Mana>
+            <Mana>2</Mana>
             <Power type="roll"><skill>Blink</skill><skill>Dodge</skill></Power>
             <Quick>If X at least attack, then no damage or effect.</Quick>
         </Effect>
         <Effect>
             <Action>Minor</Action>
-            <Mana>1</Mana>
+            <Mana>2</Mana>
             <Power type="roll"><skill>Blink</skill></Power>
             <Quick>Move a distance of up to X.</Quick>
         </Effect>
@@ -170,7 +170,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>4</Mana>
+            <Mana>10</Mana>
             <Power type="roll"><skill>Chain Lightning</skill></Power>
             <Quick>Attack for X. May re-target the result level number of times</Quick>
         </Effect>
@@ -192,13 +192,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>5,2</Mana>
+            <Mana>10,2</Mana>
             <Power type="roll"><skill>Charm</skill></Power>
             <Quick>If 2X is at least target's MP they are charmed.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
-            <Mana>5,2</Mana>
+            <Mana>10,2</Mana>
             <Power type="roll"><skill>Charm</skill></Power>
             <Quick>If 2X is at least target's MP they become confused, attacking characters randomly.</Quick>
         </Effect>
@@ -216,7 +216,7 @@
         </Text>
         <Effect>
             <Action type="melee">Attack</Action>
-            <Mana>1</Mana>
+            <Mana>4</Mana>
             <Power type="roll" weapon="1"><skill>Cleave</skill></Power>
             <Quick>Attack adjacent characters for X.</Quick>
         </Effect>
@@ -261,13 +261,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>2</Mana>
+            <Mana>4</Mana>
             <Power type="roll"><skill>Control Undead</skill></Power>
             <Quick>Gain control of an undead/golem not under anyones control of level less than X.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
-            <Mana>2</Mana>
+            <Mana>4</Mana>
             <Power type="roll"><skill>Control Undead</skill></Power>
             <Quick>Target undead/golem of level less than X is no longer under anyones control.</Quick>
         </Effect>
@@ -286,7 +286,7 @@
         </Text>
         <Effect>
             <Action>Defend</Action>
-            <Mana>1</Mana>
+            <Mana>2</Mana>
             <Power type="roll" add="1"><skill>Counter</skill></Power>
             <Quick>If X is at least attack then take no damage and attacker takes X damage.</Quick>
         </Effect>
@@ -328,13 +328,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>5,X</Mana>
+            <Mana>8,X</Mana>
             <Power type="roll"><skill>Create Golem</skill></Power>
             <Quick>Create a golem of power X. Divide power to add a golem. Cost to sustain is equal to number of golems.</Quick>
         </Effect>
         <Effect>
             <Action>Minor</Action>
-            <Mana>5</Mana>
+            <Mana>8</Mana>
             <Power type="roll"><skill>Destroy Golem</skill></Power>
             <Quick>Remove X power from a summoned Golem.</Quick>
         </Effect>
@@ -371,7 +371,7 @@
         </Text>
         <Effect>
             <Action>Defend</Action>
-            <Mana>1</Mana>
+            <Mana>2</Mana>
             <Power type="roll"><skill>Deflect</skill></Power>
             <Quick>If X is at least attack power then take no damage and attacker is stunned for 1 turn.</Quick>
         </Effect>
@@ -389,7 +389,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>2</Mana>
+            <Mana>3</Mana>
             <Power type="roll"><skill>Divine Arrow</skill></Power>
             <Quick>Attack for X.</Quick>
         </Effect>
@@ -491,13 +491,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>3,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Fear</skill></Power>
             <Quick>If 2X is at least targets MP then target fears the caster.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
-            <Mana>3,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Fear</skill></Power>
             <Quick>If 2X is at least targets MP then target attacks a scapegoat.</Quick>
         </Effect>
@@ -516,7 +516,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>4</Mana>
+            <Mana>8</Mana>
             <Power type="roll"><skill>Fireball</skill></Power>
             <Quick>Attack anyone in radius of half power distance for X. If X is at least 5 then on fire for X as well.</Quick>
         </Effect>
@@ -551,13 +551,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>3,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Fog</skill></Power>
             <Quick>Create a fog of strength X.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
-            <Mana>3,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Wind</skill></Power>
             <Quick>Create a wind of strength X.</Quick>
         </Effect>
@@ -599,7 +599,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>4</Mana>
+            <Mana>5</Mana>
             <Power type="roll"><skill>Heal</skill></Power>
             <Quick>Target gains or loses X HP.</Quick>
         </Effect>
@@ -641,7 +641,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>4,2</Mana>
+            <Mana>8,2</Mana>
             <Power type="roll"><skill>Hold Person</skill></Power>
             <Duration>X</Duration>
             <Quick>Target has no Major Action, or if they have no Major Action they now have one.</Quick>
@@ -661,7 +661,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>5</Mana>
+            <Mana>10</Mana>
             <Power type="roll"><skill>Inferno</skill></Power>
             <Quick>Attack everyone in a radius of X for X and they are on fire for X.</Quick>
         </Effect>
@@ -701,7 +701,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>5</Mana>
+            <Mana>7</Mana>
             <Power type="roll"><skill>Increase Size</skill></Power>
             <Duration>X</Duration>
             <Quick>Target gains or loses a size class. Divide to add or lose an additional class.</Quick>
@@ -723,7 +723,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>5</Mana>
+            <Mana>7</Mana>
             <Power type="roll"><skill>Increase Stat</skill></Power>
             <Duration>X</Duration>
             <Quick>Target gains +1 or -1 to either Str, Dex, Int or Fai. Divide for an additional +1 or -1.</Quick>
@@ -746,7 +746,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>7</Mana>
+            <Mana>10</Mana>
             <Power type="roll"><skill>Increase Stats</skill></Power>
             <Duration>X</Duration>
             <Quick>Target gains +1 or -1 to all of Str, Dex, Int and Fai. Divide for an additional +1 or -1.</Quick>
@@ -780,7 +780,7 @@
         </Text>
         <Effect>
             <Action>Minor</Action>
-            <Mana>6</Mana>
+            <Mana>7</Mana>
             <Power type="roll"><skill>Inversion</skill></Power>
             <Quick>If X is at least the power of a spell then either its effect is inverted or it targets the caster instead.</Quick>
         </Effect>
@@ -802,13 +802,13 @@
         </Text>
         <Effect>
             <Action>Minor</Action>
-            <Mana>2,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Invisibility</skill></Power>
             <Quick>Target gains +X to the result of any stealth rolls</Quick>
         </Effect>
         <Effect>
             <Action>Minor</Action>
-            <Mana>2</Mana>
+            <Mana>5</Mana>
             <Power type="roll"><skill>Locate</skill></Power>
             <Quick>Find an object within a radius of result distance.</Quick>
         </Effect>
@@ -849,7 +849,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>5</Mana>
+            <Mana>8</Mana>
             <Power type="roll"><skill>Lightning Bolt</skill></Power>
             <Quick>Attack for X everyone in a line of length X.</Quick>
         </Effect>
@@ -969,7 +969,7 @@
             <Action>Major</Action>
             <Power type="roll"><skill>Phase Shift</skill></Power>
             <Duration>X</Duration>
-            <Mana>5,1</Mana>
+            <Mana>5,2</Mana>
             <Quick>Become Ethereal.</Quick>
         </Effect>
     </Skill>
@@ -1012,7 +1012,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>5,2</Mana>
+            <Mana>8,2</Mana>
             <Power type="roll"><skill>Poison Cloud</skill></Power>
             <Quick>Create a cloud with strength X that poisons for X to anyone caught inside.</Quick>
         </Effect>
@@ -1031,7 +1031,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>4</Mana>
+            <Mana>5</Mana>
             <Power type="roll"><skill>Poison Dart</skill></Power>
             <Quick>Attack for X. If successful it poisons for X.</Quick>
         </Effect>
@@ -1052,13 +1052,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>1</Mana>
+            <Mana>2</Mana>
             <Power>-</Power>
             <Quick>Create the first portal.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
-            <Mana>1,X</Mana>
+            <Mana>5,X</Mana>
             <Power type="roll"><skill>Portal</skill></Power>
             <Quick>Create a portal and link to an existing portal within 2 to the X metres. Ongoing cost is one less than the number of portals.</Quick>
         </Effect>
@@ -1098,7 +1098,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>3,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Raise Undead</skill></Power>
             <Quick>Raise an undead with power X. Divide to raise an additional undead.</Quick>
         </Effect>
@@ -1118,7 +1118,7 @@
         </Text>
         <Effect>
             <Action>Defend</Action>
-            <Mana>2</Mana>
+            <Mana>4</Mana>
             <Power type="roll"><skill>Redirect</skill></Power>
             <Quick>If X is at least a projectile attack then the attack targets the attacker.</Quick>
         </Effect>
@@ -1188,7 +1188,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>3,1</Mana>
+            <Mana>5,1</Mana>
             <Power type="roll"><skill>Sleep</skill></Power>
             <Quick>Target gains or loses X to their HP for the purposes of consciousness</Quick>
         </Effect>
@@ -1313,7 +1313,7 @@
         </Text>
         <Effect>
             <Action type="ranged">Attack</Action>
-            <Mana>3</Mana>
+            <Mana>6</Mana>
             <Power type="roll"><skill>Stunning Bolt</skill></Power>
             <Quick>Attack for X. All defence skills reduce X. Stun for result level turns.</Quick>
         </Effect>
@@ -1334,7 +1334,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>?</Mana>
+            <Mana>5,X</Mana>
             <Power type="roll"><skill>Swarm of Rats</skill></Power>
             <Quick>Summon X rats. Each rat has <HP>1</HP> and attacks for 2 damages ignoring shields.</Quick>
         </Effect>
@@ -1390,13 +1390,13 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>1,1</Mana>
+            <Mana>2,1</Mana>
             <Power><skill>Telekinesis</skill></Power>
             <Quick>Precisely move objects of up to the result weight.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
-            <Mana>5</Mana>
+            <Mana>6</Mana>
             <Power type="roll"><skill>Telekinesis</skill></Power>
             <Quick>Move a large object a distance in metres equal to the result distance times result weight divided by object weight.</Quick>
         </Effect>
@@ -1437,7 +1437,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>3</Mana>
+            <Mana>5</Mana>
             <Power type="roll"><skill>Unlock</skill></Power>
             <Quick>Lock or unlock magically for strength X.</Quick>
         </Effect>
@@ -1459,7 +1459,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>5,2</Mana>
+            <Mana>8,2</Mana>
             <Power type="roll"><skill>Void</skill></Power>
             <Quick>Cancel ongoing effects and new spells with power less than X.</Quick>
         </Effect>
