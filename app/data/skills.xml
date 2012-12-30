@@ -20,7 +20,7 @@
         <Name>Backstab</Name>
         <Require>Attack</Require>
         <Stat>Dex</Stat>
-        <Cost>2</Cost>
+        <Cost>1</Cost>
         <Synergy>Rogue</Synergy>
         <Text>
             Unseen and unheard the skilled rogue can approach a victim and take the time necessary to ensure that the blow they strike is precise and effective.
@@ -165,14 +165,14 @@
         <Synergy>Battle Mage</Synergy>
         <Text>
             By calling on the power of <name>Arthur</name> the caster is able to channel energy to form a massive bolt of lightning that bounces between foes.
-            The power of the attack is <check type="fai">Chain Lightning</check>. The caster determines the initial trajectory and can change this trajectory a number of times equal to <half/> of the power of this skill. Each time the bolt travels in a straight line and hits all characters it crosses. The total distance that the bolt travels is equal to the power of the skill in metres however will stop prior to this if it hits a wall or similarly grounded object.
+            The power of the attack is <check type="fai">Chain Lightning</check>. The caster determines the initial trajectory and can change this trajectory a number of times equal to the result level of the check changing only after hitting a target. Each time the bolt travels in a straight line and hits all characters it crosses. The total distance that the bolt travels is equal to the power of the skill in metres however will stop prior to this if it hits a wall or similarly grounded object.
             The bolt deals damage equal to its power to every creature it passes. Creatures can be hit by the same bolt more than once however they are only targeted by the attack once and so only need to defend once.
         </Text>
         <Effect>
             <Action>Attack</Action>
             <Mana>4</Mana>
             <Power type="roll"><skill>Chain Lightning</skill></Power>
-            <Quick>Attack for X. May re-target X/2 times</Quick>
+            <Quick>Attack for X. May re-target the result level number of times</Quick>
         </Effect>
     </Skill>
     
@@ -212,13 +212,13 @@
         <Synergy>Warrior</Synergy>
         <Text>
             With broad powerful strokes the attacker can engage multiple foes at once.
-            The power of the attack is <check type="str">Cleave</check>. The skill deals damage equal to its power to all adjacent characters, friend and foe alike.
+            The power of the attack is <check type="str">Cleave</check>. The skill deals damage equal to its power to at most the result level number of adjacent characters.
         </Text>
         <Effect>
             <Action>Attack</Action>
             <Mana>1</Mana>
             <Power type="roll" weapon="1"><skill>Cleave</skill></Power>
-            <Quick>Attack all adjacent characters for X.</Quick>
+            <Quick>Attack adjacent characters for X.</Quick>
         </Effect>
     </Skill>
     
@@ -436,12 +436,12 @@
         <Cost>1</Cost>
         <Text>
             This character is strong and has learnt to endure even the harshest conditions.
-            The character can attempt a dead lift of any object with power equal to <check type="str">Endurance</check>. If the value of power<times/>20kg is greater than the weight of the object then it can be lifted.
+            The character can attempt a dead lift of any object with power equal to <check type="str">Endurance</check>. If the weight of the object is at most three times the power weight then it can be lifted.
             Unskilled <Str/> actions can be performed with a power of <check type="str">Endurance+1</check>. Any skill with an <Str/> icon requires this skill.
         </Text>
         <Effect>
             <Power type="roll"><skill>Endurance</skill></Power>
-            <Quick>Lift objects up to X times 20kg.</Quick>
+            <Quick>Lift objects up to three times the power weight.</Quick>
         </Effect>
         <Effect>
             <Power type="roll" add="1"><skill>Endurance</skill></Power>
@@ -512,13 +512,13 @@
         <Synergy>Battle Mage</Synergy>
         <Text>
             By calling on the power of <name>Arthur</name> the caster is able to channel energy to form a ball of fire which is then hurled at its hapless victims exploding on contact.
-            The power of this skill is <check type="fai">Fireball</check>. This skill deals damage equal to its power and has radius equal to <half/> of its power in metres. A character that receives at least 5 damage from this skill is <name>On Fire</name> with power equal to the power of this skill.
+            The power of this skill is <check type="fai">Fireball</check>. This skill deals damage equal to its power and has radius equal to half its result distance. A character that receives at least 5 damage from this skill is <name>On Fire</name> with power equal to the power of this skill.
         </Text>
         <Effect>
             <Action>Attack</Action>
             <Mana>4</Mana>
             <Power type="roll"><skill>Fireball</skill></Power>
-            <Quick>Attack anyone in radius of X/2 for X. If X is at least 5 then on fire for X as well.</Quick>
+            <Quick>Attack anyone in radius of half power distance for X. If X is at least 5 then on fire for X as well.</Quick>
         </Effect>
     </Skill>
     
@@ -616,13 +616,13 @@
         <Synergy>Necromancer</Synergy>
         <Text>
             By calling on the power of <name>Innodi</name> the caster can heal even the most dire of wounds, or cause them.
-            The power of this skill is <check type="fai">Heal Deep Wounds</check>. This skill can reduce the number of <name>Deep Wounds</name> by its power or alternatively can cause cause a number of <name>Deep Wounds</name> equal to its power. If used to heal <name>Deep Wounds</name> and the power of this skill is greater than the number <name>Deep Wounds</name> then the remaining power is used to heal regular wounds. The casting time is around one minute.
+            The power of this skill is <check type="fai">Heal Deep Wounds</check>. This skill can reduce the number of <name>Deep Wounds</name> by its result level or alternatively can cause cause a number of <name>Deep Wounds</name> equal to its result level . If used to heal <name>Deep Wounds</name> and the power of this skill is greater than the number <name>Deep Wounds</name> then the remaining power is used to heal regular wounds. The casting time is around one minute.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>10</Mana>
             <Power type="roll"><skill>Heal Deep Wounds</skill></Power>
-            <Quick>Target gains or loses X deep wounds</Quick>
+            <Quick>Target gains or loses result level deep wounds</Quick>
         </Effect>
     </Skill>
     
@@ -810,7 +810,7 @@
             <Action>Minor</Action>
             <Mana>2</Mana>
             <Power type="roll"><skill>Locate</skill></Power>
-            <Quick>Find an object within a radius of X.</Quick>
+            <Quick>Find an object within a radius of result distance.</Quick>
         </Effect>
     </Skill>
     
@@ -908,15 +908,14 @@
         <Synergy>Warrior</Synergy>
         <Text>
             With great power the character near instantly closes the distance to a foe landing on them with a crushing blow.
-            This skill reduces fall damage. If the character falls <emph>X</emph> metres then they lose <HP>(X-Lunge-2)</HP> with a minimum of <HP>0</HP>.
-            When jumping the power of the skill is <check type="str">Lunge+1</check>. The maximum vertical distance jumped is equal to the power in metres. The maximum horizontal distance jumped is equal to twice the power in metres. The character may choose to end the lunge in a standard <name>Attack</name>. If they do so the total power of the attack is equal to the sum of the power of the <name>Lunge</name> with the power of the <name>Attack</name>.
-            If the character jumps less than the power of the jump in metres then the power of the skill is considered to be the length of the jump in metres for the purposes of ended in an <name>Attack</name>.
+            A character starts a lunge in the same way they jump using the <name>Sprint</name> skill except they use this skill for the roll. They may end the leap with an attack. If so they may make a basic <name>Attack</name> roll and add the <name>Lunge</name> roll to the damage. They may not add more damage than is one result distance further than they jumped. For example if a character lunges 5m then one result distance further is the result range 6-10 and so the added damage cannot be more than 10.
+            A character who chooses a to <name>Lunge</name> may move as though they spent their <name>Major Action</name> as a <name>Move Action</name>. A character may not <name>Lunge</name> by first moving away from a target and then towards.
         </Text>
         <Effect>
             <Action>Attack</Action>
             <Mana>2</Mana>
             <Power type="roll"><skill>Lunge</skill></Power>
-            <Quick>Lunge at someone gaining Lunge plus a standard attack to anyone within a distance of 2X.</Quick>
+            <Quick>Lunge at someone gaining Lunge plus a standard attack to anyone within the result distance.</Quick>
         </Effect>
     </Skill>
     
@@ -1009,7 +1008,7 @@
         <Synergy>Necromancer</Synergy>
         <Text>
             By calling on the power of <name>Innodi</name> the character can summon a poisonous cloud that saps the energy from any creature caught inside.
-            The power of this skill is <check type="fai">Poison Cloud</check>. The radius of the cloud is the power in metres. A <name>Poison Cloud</name> has all the properties of <name>Fog</name>. Any turn that a character ends while in the cloud must make a <check type="str">Endurance</check> or <check type="fai">Sense</check> check. If a character fails this check they are effected by <name>Poison</name> with a power equal to the power of the cloud.
+            The power of this skill is <check type="fai">Poison Cloud</check>. The radius of the cloud is the power distance. A <name>Poison Cloud</name> has all the properties of <name>Fog</name>. Any turn that a character ends while in the cloud must make a <check type="str">Endurance</check> or <check type="fai">Sense</check> check. If a character fails this check they are effected by <name>Poison</name> with a power equal to the power of the cloud.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -1185,7 +1184,7 @@
             By calling on the power of <name>Ird'ken</name> the caster can gain control over their state of consciousness.
             If trying to cause a character to sleep the power of this skill is <check type="fai">Sleep</check>. While under the influence of this skill the targeted character has their <HP/> lowered by power of this skill for the purposes of consciousness and unconsciousness. Note that this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
             If trying to wake an unconscious character the power is <name>Wake</name>. For the duration of this skill the character has their <HP/> raised by the power of this skill for the purposes of consciousness and unconsciousness. Note this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
-            An unaware target who remains conscoius may make a <check>Notice</check> to see if they notice the effect. If the notice power is at least the power of the skill then they notice.
+            An unaware target who remains conscious may make a <check>Notice</check> to see if they notice the effect. If the notice power is at least the power of the skill then they notice.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -1219,16 +1218,14 @@
         <Cost>1</Cost>
         <Text>
             This character is particularly agile and can move with grace and speed.
-            The character can move <check type="dex">Sprint</check>+2 metres every turn. This check is only made once per combat.
+            In combat the character can move a number of metres each turn dependant on the result level of the level of the skill. Note that armour can affect movement speed. Outside of combat the character can move the same distance but each second.
+            A character may use movement speed to jump horizontally. If so they make a <check type="dex">Sprint</check> and the result distance is the maximum number of metres they can jump. A run up will help a character to jump. A character may not jump more than two metres further than their run up.
+            A character may use movement speed to jump vertically. If so they make a <check type="dex">Sprint</check> and the result distance halved indicates the maximum number of metres they can jump. A run up does not help a character jump vertically.
             Unskilled <Dex/> actions can be performed with a power of <check type="dex">Sprint+1</check>. Any skill with an <Dex/> icon requires this skill.
         </Text>
         <Effect>
             <Power type="roll"><skill>Sprint</skill></Power>
-            <Quick>Character can move at X+2 metres/turn.</Quick>
-        </Effect>
-        <Effect>
-            <Power type="roll"><skill>Sprint</skill></Power>
-            <Quick>Character can jump 2X+1 horizontally or X vertically</Quick>
+            <Quick>The character can jump the result distance horizontally or half that vertically.</Quick>
         </Effect>
         <Effect>
             <Power type="roll" add="1"><skill>Sprint</skill></Power>
@@ -1292,14 +1289,14 @@
         <Cost>2</Cost>
         <Synergy>Rogue</Synergy>
         <Text>
-            The character moves with quick strikes that, while doing no damage, confounds the target and stun them for a short period.
-            This attack has a power of <check type="str">Stun Attack</check>. The power of this attack is reduced by the defence skill used regardless of which defence skill is used. The defender is stunned for a number of turns equal to the remaining power of this skill.
+            The character moves with quick strikes that, while doing no damage, confounds the target and stuns them for a short period.
+            This attack has a power of <check type="str">Stun Attack</check>. The power of this attack is reduced by the defence skill used regardless of which defence skill is used. The defender is stunned for a number of turns equal to the remaining result level.
         </Text>
         <Effect>
             <Action>Attack</Action>
             <Mana>3</Mana>
             <Power type="roll" weapon="1"><skill>Stun Attack</skill></Power>
-            <Quick>Attack for X. All defence skills reduce X. Stun for X turns.</Quick>
+            <Quick>Attack for X. All defence skills reduce X. Stun for result level turns.</Quick>
         </Effect>
     </Skill>
     
@@ -1311,14 +1308,35 @@
         <Spell>Loreanna</Spell>
         <Synergy>Trickster</Synergy>
         <Text>
-            By calling on the power of <name>Loreanna</name> the character is able to sum- mon a divine bolt which confounds whomever it strikes.
-            The power of this attack is <check type="fai">Stunning Bolt</check>. The power of this attack is reduced by the defence skill regardless of which skill is used. The target is <name>Stun</name>ned for a number of turns equal to its power.
+            By calling on the power of <name>Loreanna</name> the character is able to summon a divine bolt which confounds whomever it strikes.
+            The power of this attack is <check type="fai">Stunning Bolt</check>. The power of this attack is reduced by the defence skill regardless of which skill is used. The target is <name>Stun</name>ned for a number of turns equal to the remaining result level.
         </Text>
         <Effect>
             <Action>Attack</Action>
             <Mana>3</Mana>
             <Power type="roll"><skill>Stunning Bolt</skill></Power>
-            <Quick>Attack for X. All defence skills reduce X. Stun for X turns.</Quick>
+            <Quick>Attack for X. All defence skills reduce X. Stun for result level turns.</Quick>
+        </Effect>
+    </Skill>
+
+    <Skill>
+        <Name>Swarm of Rats</Name>
+        <Require>Raise Undead</Require>
+        <Stat>Fai</Stat>
+        <Cost>1</Cost>
+        <Spell>Innodi</Spell>
+        <Synergy>Necromancer</Synergy>
+        <Text>
+            By calling on the power of <name>Innodi</name> the character is able to call on small creatures to attack their foes.
+            The power of this skill is <check type="fai">Swarm of Rats</check>. The first turn nothing happens. Before the characters next turn a number of rats is summoned equal to the power level of this skill. Each rat has <HP>1</HP> and attacks for 2 slashing damage each turn. This damage ignores shields. This skill costs <MP>1</MP> to sustain for each power level of rats remaining, including the first turn. For example: if there are 7 rats left the skill costs <MP>3</MP>. Casting requires a <name>Major Action</name>.
+            The entire swarm is controlled with a single simple command such as to attack a particular character or to congregate in a particular area. If the sustain cost is not paid then the results are unpredictable. Most animals will disperse but some may attack random targets.
+            In urban environments rats are exclusively summoned. In other environments many other small species may instead appear. Such as other small mammals, lizards, snakes or even small birds. Their stats remain the same no matter what small animals are summoned.
+        </Text>
+        <Effect>
+            <Action>Major</Action>
+            <Mana>?</Mana>
+            <Power type="roll"><skill>Swarm of Rats</skill></Power>
+            <Quick>Summon X rats. Each rat has <HP>1</HP> and attacks for 2 damages ignoring shields.</Quick>
         </Effect>
     </Skill>
     
@@ -1330,7 +1348,7 @@
         <Synergy>Trickster</Synergy>
         <Text>
             By calling on the power of <name>Loreanna</name> the character is able to channel the energy of others to transfer each to the other.
-            The power of this skill is <check type="fai">Switch</check>. This skill fails if the distance between the targets in metres is greater than the power of this skill. This skill also fails if the difference between the targets' <HP/> is greater than the power of this skill. The targets are now each standing where the other was standing. Also their <HP/> has switched. Casting requires a <name>Major Action</name>.
+            The power of this skill is <check type="fai">Switch</check>. This skill fails if the distance between the targets in metres is greater than the power of this skill. This skill also fails if the target is unwilling and the difference between the targets' <HP/> is greater than the power of this skill. The targets are now each standing where the other was standing. Also their <HP/> has switched. Casting requires a <name>Major Action</name>.
             Note that this skill may raise a character's <HP/> above their <HPMax/>.
         </Text>
         <Effect>
@@ -1361,27 +1379,26 @@
     <Skill>
         <Name>Telekinesis</Name>
         <Stat>Int</Stat>
-        <Cost>2</Cost>
+        <Cost>4</Cost>
         <Spell>Oxdoro</Spell>
         <Synergy>Mechanist</Synergy>
         <Text>
             By calling on the power of <name>Oxdoro</name> the caster can deftly manoeuvre small objects or crudely move large objects from a distance.
-            If used to manipulate small objects this skill has power equal to <third/> of its level. For a cost of <MP>1</MP> per turn the character can telekinetically move objects with precision. Each unit of power enables the character to move an additional 10kg. For example with a skill level of 10 the power of this skill is 3 and so the character can manipulate objects with mass up to 30kg. Delicate movement requries a <name>Major Action</name> but no <MP/>.
-            If used to crudely move large objects the power of this skill is given by <check type="int">Telekinesis</check>. The mana cost is <MP>5</MP>. If the power of this skill is P and M is the mass of the object to be moved in kg then the object is moved a distance D in metres given by the equation below.
-            <equation> D = \frac{P \times 20kg}{M} </equation>
-            If a creature is thrown in the above way into a wall or similar barrier then they are stunned for a number of turns equal to the extra distance they would have been thrown. For example a 60kg character is thrown with a Telekinesis check of power 12 and so would be thrown 4m. They hit a wall after 1m and so they are then stunned for 3 turns. Gross movement requires a <name>Minor Action</name>.
+            If used to manipulate small objects this skill has power equal to its level without a check. Any object of weight less than the result weight can be telekinetically moved with precision. Delicate movement requries a <name>Major Action</name> but no <MP/>.
+            If used to crudely move large objects the power of this skill is given by <check type="int">Telekinesis</check>. The mana cost is <MP>5</MP>. The distance that an object is moved is the result distance times the result weight divided by the object weight. For example: if a 60kg boulder is to be moved and the result of the check is 8 then the object can be moved 6 times 30 divided by 60 or 3 metres.
+            If a creature is thrown in the above way into a wall or similar barrier then they are stunned for a number of turns equal to the extra distance they would have been thrown. For example a 80kg character is thrown with a Telekinesis check of power 12 and so would be thrown 4m. They hit a wall after 1m and so they are then stunned for 3 turns. Gross movement requires a <name>Major Action</name>.
         </Text>
         <Effect>
-            <Action>Minor</Action>
+            <Action>Major</Action>
             <Mana>1,1</Mana>
             <Power><skill>Telekinesis</skill></Power>
-            <Quick>Precisely Move objects of up to 3X kg</Quick>
+            <Quick>Precisely move objects of up to the result weight.</Quick>
         </Effect>
         <Effect>
             <Action>Major</Action>
             <Mana>5</Mana>
             <Power type="roll"><skill>Telekinesis</skill></Power>
-            <Quick>Move a large object (20X kg/weight) metres.</Quick>
+            <Quick>Move a large object a distance in metres equal to the result distance times result weight divided by object weight.</Quick>
         </Effect>
     </Skill>
     
@@ -1392,8 +1409,8 @@
         <Synergy>Rogue</Synergy>
         <Text>
             By careful examination of the environment via visual and olfactory cues a character is able to track a creature path over any terrain.
-            The power of the skill is <check type="int">Track</check>. The power of the skill provides how deftly the character can follow the track. With a power of two or greater the track can be followed albeit slowly. With a power of four or more the track can be followed at more or less walking pace. With a power of six or more the track can be followed at a running pace. Tracking requires a <name>Major Action</name> for each turn spent tracking.
-            The <name>Track</name> roll is modified by several penalties. A path that has been made in the past day has no penalty. However there is a penalty of -1 for each day beyond the first. Soft ground provides no penalty. However there is a penalty of up to -3 relative to the hardness of the ground.
+            The power of the skill is <check type="int">Track</check>. The result level provides how deftly the character can follow the track. A Basic Pass albeit slowly. With a Pass the track can be followed at more or less walking pace. With a Prodigious Pass the track can be followed at a running pace. Tracking requires a <name>Major Action</name> for each turn spent tracking. If the character wishes to track using only a <name>Minor Action</name> they track with a result level one lower.
+            Tracking becomes harder under certain circumstances. The tracking roll has the result reduced by 1 for each day that has passed since the trail was made. Soft ground imposes no penalty. However harder terrain will reduce the result level.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -1572,6 +1589,14 @@
             <Quick>Caster gets the chance to invert any invertible spell.</Quick>
         </Effect>
     </Skill>
+
+    <Ability>
+        <Name>Actor</Name>
+        <Text>
+            This character is a skilled actor. They may make a <check type="int">Observation</check> to perform. This ability may be used to disguise the identity of the character or impersonate another character.
+        </Text>
+        <Quick>This character is good at acting, disguising and impersonating.</Quick>
+    </Ability>
     
     <Ability>
         <Name>Acrobatic</Name>
@@ -1581,7 +1606,7 @@
             If appropriate an <name>Acrobatic</name> character may help another character perform an acrobatic action. If they do so it requires a <name>Major Action</name> for each turn that they assist. A <check type="dex">Sprint</check> is made with the <name>Sprint</name> skill of the assisting character and the <Dex/> of the assisted character.
             Acrobatic characters have two <name>Minor Action</name>s each turn.
         </Text>
-        <Quick>The character is unusually agile and has two <name>Minor Action</name>s each turn.</Quick>
+        <Quick>The character is unusually agile and has two Minor Actions each turn.</Quick>
     </Ability>
     
     <Ability>
@@ -1627,6 +1652,14 @@
             They may <check type="int">Observation</check> to make or prepare food. This includes the ability to butcher animals and collect food in wilderness areas.
         </Text>
         <Quick>This character is skilled at cooking.</Quick>
+    </Ability>
+
+    <Ability>
+        <Name>Dancer</Name>
+        <Text>
+            This character moves with grace. They may make a <check type="dex">Sprint</check> to perform a dance.
+        </Text>
+        <Quick>This character is skilled at dancing.</Quick>
     </Ability>
     
     <Ability>
@@ -1765,9 +1798,9 @@
         <Name>Iron Will</Name>
         <Text>
             A character with an <name>Iron Will</name> can focus their mental energies to provide a temporary bonus to any task they can perform.
-            They may use a <name>Minor Action</name> when they use a skill and spend <MP>X</MP> to increase their level in that skill by X for that usage. This perk may not be used with the will of a deity.
+            They may use a <name>Minor Action</name> before they use a skill and spend <MP>X</MP> to increase their level in that skill by X for that usage. This perk may not be used with the will of a deity.
         </Text>
-        <Quick>Spend X MP to gain +X to a skill.</Quick>
+        <Quick>Spend X MP to gain +X to a skill before using it.</Quick>
     </Ability>
     
     <Ability>
@@ -1855,6 +1888,14 @@
             This character is born to ride the seas. They know what to watch for with sea weather and how to navigate and may make a <check type="int">Observation</check> to verify. They are also able to make minor seaworthy vessels with a <check type="dex">Sprint</check>.
         </Text>
         <Quick>The character is a skilled sailor</Quick>
+    </Ability>
+
+    <Ability>
+        <Name>Singer</Name>
+        <Text>
+            This character has a exceptional and powerful singing voice. They may make a <check type="int">Observation</check> to sing.
+        </Text>
+        <Quick>The character is a skilled singer</Quick>
     </Ability>
     
     <Ability>

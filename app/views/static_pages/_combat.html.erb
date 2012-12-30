@@ -11,11 +11,11 @@
 <ol>
 	<li>The attacker chooses an attack skill and the target[s] of the attack. </li>
 	<li>The attacker rolls the appropriate attack check and informs the defender of the result.</li>
-	<li>The defender chooses a defensive skill and makes the appropriate check or chooses not to defend.</li>
+	<li>The defender chooses a defensive skill and makes the appropriate check; or chooses not to defend.</li>
 	<li>The attack is resolved with the appropriate damage dealt and effects performed.</li>
 </ol>
 
-<p>Each character may defend once for free. However each defensive skill use beyond the first will require a <%= minor_action %>.</p>
+<p>Each character may defend once per turn for free. However each defensive skill use beyond the first will require a <%= minor_action %>.</p>
 
 <h2>Consciousness</h2>
 
@@ -27,7 +27,7 @@
 
 <h2>Unaware Opponent</h2>
 
-<p>Any character made against an unaware opponent gains <em>+3</em>.</p>
+<p>Any attack a character makes against an unaware opponent gains <em>+3</em>.</p>
 
 <h2>Damage Reduction</h2>
 
@@ -61,7 +61,7 @@
 
 <p>A character who is on fire loses <%= hp 2 %> at the start of their turn and the fire reduces in strength by three. When the power of the fire is zero or less the fire goes out. If the fire is magical in source and the character has the ability <%= skill'Atheist' %> then they only lose <%= hp 1 %> per turn.</p>
 
-<p>A character may use a <%= major_action %> to attempt to put themselves out. If the power of the check is at least the power of the fire then the fire goes out.</p>
+<p>A character may use a <%= major_action %> to attempt to put themselves out. They make a <%= check('Sprint', 'dex') %> and if the power of the check is at least the power of the fire then the fire goes out.</p>
 
 <h2>Controlled Characters</h2>
 

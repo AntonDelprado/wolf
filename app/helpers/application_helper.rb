@@ -73,6 +73,11 @@ module ApplicationHelper
 		content_tag :span, "Move Action", class: 'label label-inverse'
 	end
 
+	def damage_reduction(amount=nil)
+		return content_tag :span, "DR", class: 'label' if amount.nil?
+		return content_tag :span, "#{amount} DR", class: 'label'
+	end
+
 	def hp(amount = nil)
 		return content_tag(:span, 'HP', class: 'label label-important') if amount.nil?
 		return content_tag(:span, 'HP Max', class: 'label label-important') if amount == 'max'
@@ -97,15 +102,39 @@ module ApplicationHelper
 		end
 	end
 
+	def result_level(value)
+		case
+		when value <= 0 then 0
+		when value <= 2 then 1
+		when value <= 5 then 2
+		when value <= 10 then 3
+		when value <= 17 then 4
+		when value <= 26 then 5
+		else 6
+		end
+	end
+
+	def result_name(value)
+		case result_level(value)
+		when 0 then 'Critical Failure'
+		when 1 then 'Failure'
+		when 2 then 'Basic Pass'
+		when 3 then 'Pass'
+		when 4 then 'Skillful Pass'
+		when 5 then 'Prodigious Pass'
+		when 6 then 'Epic Pass'
+		end
+	end
+
 	def check(skill_name, stat_name)
 		content_tag :span, "#{skill_name.capitalize}:#{stat_name.capitalize}".html_safe, class: 'label label-warning'
 	end
 
 	def parse_text_xml(xml_text, type=:full)
-		text = "<p>"
+		text = "<p class='popover-body'>"
 		xml_text.each do |node|
 			case node.name.downcase
-			when 'text' then text << node.content.gsub("\n", '</p><p>')
+			when 'text' then text << node.content.gsub("\n", '</p><p class="popover-body">')
 			when 'half' then text << "&frac12"
 			when 'third' then text << "&#8531"
 			when 'times' then text << "&times;"
@@ -114,6 +143,8 @@ module ApplicationHelper
 					text << minor_action
 				elsif node.content == 'Major Action'
 					text << major_action
+				elsif node.content == 'Move Action'
+					text << move_action
 				elsif Skill.all.any? { |skill| skill.name == node.content } ||
 					Ability.all.any? { |ability| ability.name == node.content }
 					text << skill(node.content)
@@ -146,7 +177,7 @@ module ApplicationHelper
 			end
 		end
 
-		return text.gsub(/<\/?p>/, '') unless type == :full
+		return text.gsub(/<\/?p(\s.*)?>/, '') unless type == :full
 		return text + '</p>'
 	end
 
@@ -165,17 +196,17 @@ module ApplicationHelper
 	end
 
 	def popover_content(skill)
-		return "<p class='bold'>Requires: #{skill.required_skill.name} #{parse_text_xml(skill.text)}" unless skill.required_skill.nil?
-		return parse_text_xml(skill.text)
+		return "<p class='popover-requires'>Requires: #{skill.required_skill.name}</p> <p class='popover-body'>#{parse_text_xml(skill.text)}</p>" unless skill.required_skill.nil?
+		return "<p class='popover-body'>#{parse_text_xml(skill.text)}</p>"
 	end
 
 	def popover_title(skill)
 		case skill.spell
-		when 'Arthur' then "#{skill.full_name} #{tag :img, src: '/assets/arthur.png', class: 'popover-spell'}"
-		when 'Innodi' then "#{skill.full_name} #{tag :img, src: '/assets/innodi.png', class: 'popover-spell'}"
-		when "Ird'ken" then "#{skill.full_name} #{tag :img, src: '/assets/irdken.png', class: 'popover-spell'}"
-		when 'Oxdoro' then "#{skill.full_name} #{tag :img, src: '/assets/oxdoro.png', class: 'popover-spell'}"
-		when 'Loreanna' then "#{skill.full_name} #{tag :img, src: '/assets/loreanna.png', class: 'popover-spell'}"
+		when 'Arthur' then "<span class='popover-title'>#{skill.full_name}</span> #{tag :img, src: '/assets/arthur.png', class: 'popover-spell'}"
+		when 'Innodi' then "<span class='popover-title'>#{skill.full_name}</span> #{tag :img, src: '/assets/innodi.png', class: 'popover-spell'}"
+		when "Ird'ken" then "<span class='popover-title'>#{skill.full_name}</span> #{tag :img, src: '/assets/irdken.png', class: 'popover-spell'}"
+		when 'Oxdoro' then "<span class='popover-title'>#{skill.full_name}</span> #{tag :img, src: '/assets/oxdoro.png', class: 'popover-spell'}"
+		when 'Loreanna' then "<span class='popover-title'>#{skill.full_name}</span> #{tag :img, src: '/assets/loreanna.png', class: 'popover-spell'}"
 		else skill.name
 		end
 	end

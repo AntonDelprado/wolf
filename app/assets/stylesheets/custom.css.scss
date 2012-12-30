@@ -52,10 +52,28 @@ h1 {
 	display: none;
 }
 
+.popover {
+	width: 40%;
+}
+
 .popover-spell {
 	float: right;
 	height: 24px;
 	margin-top: -3px;
+}
+
+.popover-requires {
+	color: black;
+	font-weight: bold;
+}
+
+.popover-body {
+	color: black;
+	font-weight: normal;
+}
+
+.popover-title {
+	font-weight: bold;
 }
 
 footer {

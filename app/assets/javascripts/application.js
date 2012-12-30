@@ -18,7 +18,7 @@
 $(document).ready(function() {
 	$('#skill-filter').change(function () { skill_filter_change('skill-', $(this).val()); });
 	$('#skill_filter').change(function () { skill_filter_change('add-', $(this).val()); });
-	$('#statsBase').change(stats_change);
+	$('#base_stats').change(stats_change);
 	synergy_classes = ["warrior", "rogue", "channeller", "mechanist", "trickster", "battle-mage", "necromancer", "lore", "no-synergy"]
 	stats_change();
 
@@ -113,7 +113,9 @@ function roll(value, type)
 		alert("Result: " + result + ' (Basic Pass)');
 	else if (result <= 10)
 		alert("Result: " + result + ' (Pass)');
-	else if (result <= 18)
+	else if (result <= 17)
+		alert("Result: " + result + ' (Skillful Pass)');
+	else if (result <= 26)
 		alert("Result: " + result + ' (Prodigious Pass)');
 	else
 		alert("Result: " + result + ' (Epic Pass)');

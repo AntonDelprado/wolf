@@ -45,7 +45,11 @@
 				<h2>Player: <%= link_to User.find(@character.user_id).handle, user_path(@character.user_id) %></h2>
 			<% end %>
 			<% if @character.in_campaign? %>
-				<h2>Campaign: <%= link_to @character.campaign.name, @character.campaign %></h2>
+				<h2>Campaign:
+					<%= link_to @character.campaign.name, @character.campaign, class: 'dont-print' %>
+					<%= content_tag :span, @character.campaign.name, class: 'hidden print' %>
+				</h2>
+
 			<% end %>
 			<h2>Race: <%= @character.race %></h2>
 			<% unless @character.public? %>
@@ -63,21 +67,23 @@
 				<table class='table table-striped table-bordered table-condensed item-table'>
 					<tbody>
 						<tr><td>XP</td><td id="xp"><%= @character.xp %></td></tr>
-						<tr class="hp"><td>HP Max</td><td><%= @character.hp_max %></td></tr>
-						<tr class="hp"><td>HP Rate</td><td><%= rate @character.hp_rate %></td></tr>
-						<tr class="mp"><td>MP Max</td><td><%= @character.mp_max %></td></tr>
-						<tr class="mp"><td>MP Rate</td><td><%= rate @character.mp_rate %></td></tr>
+						<tr><td>Spell XP</td><td><%= @character.xp :spell %></td></tr>
+						<tr><td>Combat Speed (m/Turn)</td><%= content_tag :td, @character.speed %></tr>
+						<tr><td>Sprint Speed (km/h)</td><%= content_tag :td, @character.speed * 3.6 %></tr>
+						<tr><td>Damage Reduction</td><td><%= @character.damage_reduction %></td></tr>
+						<tr><td>Weapon Bonus</td><td>+<%= @character.weapon_bonus %></td></tr>
 					</tbody>
 				</table>
 			</div>
 			<div class="span3">
 				<table class='table table-striped table-bordered table-condensed item-table'>
 					<tbody>
-						<tr><td>Damage Reduction</td><td><%= @character.damage_reduction %></td></tr>
-						<tr><td>Weapon Bonus</td><td>+<%= @character.weapon_bonus %></td></tr>
+						<tr class="hp"><td>HP Max</td><td><%= @character.hp_max %></td></tr>
+						<tr class="hp"><td>HP Rate</td><td><%= rate @character.hp_rate %></td></tr>
 						<tr class="hp"><td>Regen Time</td><td><%= @character.hp_time %></td></tr>
+						<tr class="mp"><td>MP Max</td><td><%= @character.mp_max %></td></tr>
+						<tr class="mp"><td>MP Rate</td><td><%= rate @character.mp_rate %></td></tr>
 						<tr class="mp"><td>Refresh Time</td><td><%= @character.mp_time %></td></tr>
-						<tr><td>Spell XP</td><td><%= @character.xp :spell %></td></tr>
 					</tbody>
 				</table>
 			</div>

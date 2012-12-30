@@ -50,6 +50,18 @@ class Equipment < ActiveRecord::Base
 		data[:require]
 	end
 
+	def weapon?
+		item_type == 'Weapon'
+	end
+
+	def armour?
+		item_type == 'Armour'
+	end
+
+	def shield?
+		item_type == 'Shield'
+	end
+
 	def one_handed?
 		data[:hands] == 1
 	end

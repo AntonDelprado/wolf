@@ -590,6 +590,12 @@ class Character < ActiveRecord::Base
 		self.items.reduce(0) { |bonus, item| bonus + item.bonus.to_i }
 	end
 
+	def speed
+		speed_result = result_level(self.skill('Sprint').level)*2
+		self.items.each { |item| speed_result += item.dex_mod if item.armour? }
+		return speed_result
+	end
+
 	def pass_requirements?(requirements)
 		return true if requirements.nil?
 		requirements.all? do |type, value|
@@ -684,7 +690,7 @@ class Character < ActiveRecord::Base
 
 			if self.has_ability? 'Atheist'
 				self.skills.each do |skill|
-					warnings << "As an atheist, cannot use '#{skill.name}'" unless skill.spell.nil?
+					warnings << "An atheist cannot use '#{skill.name}'" unless skill.spell.nil?
 				end
 			end
 
