@@ -1,0 +1,58 @@
+<Monsters>
+
+	<Monster>
+		<Name>Ball Lightning</Name>
+		<HP>X</HP><Fai>12</Fai>
+		<Attack type="Lightning">HP</Attack>
+		<Text>
+			Ball Lightning cannot be attacked. Each turn Ball Lightning can attack with level equal to its <HP/> and <Fai/> as the Stat to all characters in the result distance. If it deals damage then it takes damage equal to the damage it dealt. Ball Lightning loses <HP>1</HP> per turn and dissapates when it drops below <HP>0</HP>.
+		</Text>
+	</Monster>
+
+	<Monster>
+		<Name>Golem, Earth</Name>
+		<HP>2X</HP><Str>12</Str>
+		<Attack type="Crushing">X</Attack>
+		<Defend skill="Block">X</Defend>
+	</Monster>
+
+	<Monster>
+		<Name>Golem, Fire</Name>
+		<HP>X</HP><Str>10</Str><Dex>8</Dex>
+		<Attack type="Fire">X</Attack>
+		<Defend skill="Block">X</Defend>
+		<Text>
+			If a fire golem deals at least 3 damage then the target is on fire with strength equal to the attack power. Fire Golems are immune to fire attacks.
+		</Text>
+	</Monster>
+
+	<Monster>
+		<Name>Rat</Name>
+		<HP>1</HP><Dex>8</Dex>
+		<Attack type="Slashing">2</Attack>
+		<Text>
+			Rats do not roll to attack, their attack is always power 2. When dealing damage rats ignore the DR from shields.
+		</Text>
+	</Monster>
+
+	<Monster>
+		<Name>Skeletal Warrior</Name>
+		<HP>X</HP><Str>10</Str><Dex>6</Dex>
+		<Attack type="Slashing">X</Attack>
+		<Defend skill="Dodge">X</Defend>
+		<Text>
+			Skeletal Warriors have a shield DR 1. They gain an additional DR 1 against slashing attacks and DR 2 against piercing attacks.
+		</Text>
+	</Monster>
+
+	<Monster>
+		<Name>Skeletal Archer</Name>
+		<HP>X</HP><Str>6</Str><Dex>10</Dex>
+		<Attack type="Piercing">X</Attack>
+		<Defend skill="Dodge">X</Defend>
+		<Text>
+			Skeletal Archers attack using Dex. They have a range of +2. They have DR 1 against slashing attacks and DR 2 against piercing attacks.
+		</Text>
+	</Monster>
+
+</Monsters>

@@ -1,30 +1,40 @@
 <h2>Stats and Skill Checks</h2>
+
 <p>Characters in the Wolf System have four Stats: <%= strength %>, <%= dexterity %>, <%= intelligence %> and <%= faith %>. Each stat is one dice type of the following: d4, d6, d8, d10 or d12 which determines what type of dice will be rolled when performing a skill check.</p>
+
 <p>Skill checks are performed by rolling a number of dice determined by the level of the skill of type determined by an associated Stat. The <em>Power</em> of a skill check is the number of dice rolled that are 4 or higher.</p>
+
 <p>The notation <%= check('Skill','stat') %> is used to mean a skill check with the skill for the given stat.</p>
-<p>Skill checks can have bonuses and penalties which add or remove dice from the roll. Skill checks can also have bonuses to dice type. For example: if a charcter would normally roll d8s but have their die type increased by one they will instead roll d10s. If a roll has a die type less d4s then they still roll d4s but have a penalty of 2 for each die type. If a roll has a die type greater than d12s then they still roll d12s but have a bonus of 2 for each die type. For example if someone has a roll of <em>6d4</em> but has their die type reduced by 2 they would instead roll <em>2d4</em>.</p>
+
+<p>Skill checks can have bonuses and penalties which add or remove dice from the roll. Skill checks can also have bonuses to dice type. For example: if a charcter would normally roll d8s but have their die type increased by one they will instead roll d10s.
+
+<p>Under extreme circumstances die types can be raised higher than d12s. If a roll has a die type greater than d12 then an additional die is added starting from d4s. For example if a character has a roll of <em>8d12</em> and the die type is raised by two they would roll <em>8d12</em> <span class='bold'>and</span> <em>8d6</em> and add the results together.</p>
+
+<p>Die types may also drop below d4s. If a roll has a die type less d4s then they still roll d4s but have a penalty of 2 for each die type. For example if someone has a roll of <em>6d4</em> but has their die type reduced by 2 they would instead roll <em>2d4</em>. If a character attempts a roll of <em>0d4</em> or less then the result is 0 without rolling any dice.</p>
+
 <p>The base <%= hp 'max' %> of a character is equal to their <%= strength %> plus their <%= dexterity %>. The base <%= mp 'max' %> of a character is equal to their <%= intelligence %> plus their <%= faith %>.</p>
+
 <p>Below is a table detailing the type of result given the power of a skill check. When a skill check refers to the result level it is referring to the level column below. Similarly the columns below show result distances and result weights.</p>
 
 <table class="table table-striped table-bordered table-condensed">
 	<thead>
-		<tr><th>Value</th><th>Level</th><th>Result</th><th>Distance (m)</th><th>Weight (kg)</th></tr>
+		<tr><th>Value</th><th>Level</th><th>Result</th><th>Distance (m)</th><th>Duration (Turns)</th><th>Weight (kg)</th></tr>
 	</thead>
 	<tbody>
-		<tr><td>0</td>		<td>0</td>	<td>Critical Failure</td>		<td>0</td>	<td>0</td></tr>
-		<tr><td>1-2</td>	<td>1</td>	<td>Failure</td>				<td>2</td>	<td>10</td></tr>
-		<tr><td>3-5</td>	<td>2</td>	<td>Basic Pass</td>				<td>4</td>	<td>20</td></tr>
-		<tr><td>6-10</td>	<td>3</td>	<td>Pass</td>					<td>6</td>	<td>30</td></tr>
-		<tr><td>11-17</td>	<td>4</td>	<td>Skillful Pass</td>			<td>8</td>	<td>40</td></tr>
-		<tr><td>18-26</td>	<td>5</td>	<td>Prodigious Pass</td>		<td>10</td>	<td>50</td></tr>
-		<tr><td>27-37</td>	<td>6</td>	<td>Epic Pass</td>				<td>12</td>	<td>60</td></tr>
-		<tr><td>38+</td>	<td>7</td>	<td>Godlike Pass</td>			<td>14</td>	<td>70</td></tr>
+		<tr><td>0</td>		<td>0</td>	<td>Critical Failure</td>		<td>0</td>	<td>0</td>	<td>0</td></tr>
+		<tr><td>1-2</td>	<td>1</td>	<td>Failure</td>				<td>2</td>	<td>1</td>	<td>10</td></tr>
+		<tr><td>3-5</td>	<td>2</td>	<td>Basic Pass</td>				<td>4</td>	<td>2</td>	<td>20</td></tr>
+		<tr><td>6-10</td>	<td>3</td>	<td>Pass</td>					<td>6</td>	<td>3</td>	<td>30</td></tr>
+		<tr><td>11-17</td>	<td>4</td>	<td>Skillful Pass</td>			<td>8</td>	<td>4</td>	<td>40</td></tr>
+		<tr><td>18-26</td>	<td>5</td>	<td>Prodigious Pass</td>		<td>10</td>	<td>5</td>	<td>50</td></tr>
+		<tr><td>27-37</td>	<td>6</td>	<td>Epic Pass</td>				<td>12</td>	<td>6</td>	<td>60</td></tr>
+		<tr><td>38+</td>	<td>7</td>	<td>Godlike Pass</td>			<td>14</td>	<td>7</td>	<td>70</td></tr>
 	</tbody>
 </table>
 
 <h3>Observing, Sensing and Noticing</h3>
 
-<p>There are two skills that characters use to notice something that occurs around them: <%= skill 'Observation' %> and <%= skill 'Sense' %>. <%= skill 'Observation' %> is used to notice anything visual or aural and <%= skill 'Sense' %> is used to notice anything else. Characters can be asked to notice something or to perform <%= check('Notice', '') %>. If so they may make <%= check('Observation','Int')%> or <%= check('Sense','Fai') %>. Note that what they notice depends on which skill they use.</p>
+<p>There are two skills that characters use to notice something that occurs around them: <%= skill 'Observation' %> and <%= skill 'Sense' %>. <%= skill 'Observation' %> is used to notice anything visual or aural and <%= skill 'Sense' %> is used to notice anything else. Characters can be asked to notice something or to perform <%= check('Notice', '') %>. If so they may make <%= check('Observation','Int')%> or <%= check('Sense','Fai') %>. Note that what they notice may depend on which skill they use.</p>
 
 <h2>Turns</h2>
 
@@ -39,7 +49,7 @@
 	<dd>A character may perform any <%= minor_action %>. They may save this to use any time until their next turn.
 </dl>
 
-<p>At the end of their turn the character will Regerate their <%= hp %> and Refresh their <%= mp %> depending on their rates.</p>
+<p>At the end of their turn the character will Regerate their <%= hp %> and Refresh their <%= mp %> depending on their rates. After Regenerating and Refreshing any skill whose duration has elapsed then terminates.</p>
 
 <h2>Speed and Rates</h2>
 
@@ -67,9 +77,74 @@
 <h3>Regeneration and Refreshing</h3>
 
 <p>Character naturally increase their <%= hp %> and <%= mp %> up to their maximum values by using the skills <%= skill 'Regenerate' %> and <%= skill 'Refresh' %>. These skills have a rate that should be interpreted in the same fashion as speed. For example a character with a regeneration rate of 0 will gain <%= hp(1) %> at the end of each turn.</p>
-<p>If a character's speed is altered then they add their speed to their regeneration and refresh rates. For example: if a character has speed 2 and a refresh rate of -1 then they will gain <%= mp(2) %> at the end of each turn.</p>
+<p>If a character's speed is altered then they add their speed to their regeneration and refresh rates. For example: if a character has <span class='bold'>Speed 2</span> and a refresh rate of -1 then they will gain <%= mp(2) %> at the end of each turn.</p>
 
-<h2>Magical Resistance</h2>
+<p>It is possible for skills to increase the <%= hp %> of a character beyond <%= hp 'max' %>. Under this circumstance and when a character would normally <span class='bold'>Regenerate</span> they instead lose <%= hp %>. The result table is checked using how many <%= hp %> they are above <%= hp 'max' %> and the result level indicates how many <%= hp %> they lose.</p>
+
+<p>For example a character with <%= hp 7 %> above <%= hp 'max' %> will lose <%= hp 3 %> instead of <span class='bold'>Regenerating</span>. The next turn they will lose <%= hp 2 %> as they have <%= hp 4 %> above <%= hp 'max' %>.</p>
+
+<p>In the same fashion as <%= hp %> above <%= hp 'max' %>, characters will lose <%= mp %> when above <%= mp 'max' %>.
+
+<h2>Spells</h2>
+
+<p>Some skills are embody powers granted by a deity. They are referred to as spells. Spells require a character to commune with the deity that grants the spell. This invocation is in the Divine language and should be said aloud. The spell may be silently cast but this incurs a penalty of one die type. Some spells have a duration and if this duration is zero then the spell has no effect. Below is a list of the deities, their icons, and their sphere of influence.</p>
+
+<table class="table table-striped table-bordered table-condensed">
+	<col width="75px"/>
+	<thead>
+		<tr><th>Icon</th><th>God</th><th>Influence</th></tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td style="text-align:center;"><img src="/assets/travaer.png" alt="Travaer"/></td>
+			<td>Travaer</td>
+			<td>The Prime God and God of Balance.</td>
+		</tr>
+		<tr>
+			<td style="text-align:center;"><img src="/assets/arthur.png" alt="Arthur"/></td>
+			<td>Arthur</td>
+			<td>God of War and Peace.</td>
+		</tr>
+		<tr>
+			<td style="text-align:center;"><img src="/assets/innodi.png" alt="Inoddi"/></td>
+			<td>Innodi</td>
+			<td> God of Life and Death.</td>
+		</tr>
+		<tr>
+			<td style="text-align:center;"><img src="/assets/irdken.png" alt="Ird'ken"/></td>
+			<td>Ird'ken</td>
+			<td>Got of Chaos and Order.</td>
+		</tr>
+		<tr>
+			<td style="text-align:center;"><img src="/assets/oxdoro.png" alt="Oxdoro"/></td>
+			<td>Oxdoro</td>
+			<td>God of Time and Space.</td>
+		</tr>
+		<tr>
+			<td style="text-align:center;"><img src="/assets/loreanna.png" alt="Loreanna"/></td>
+			<td>Loreanna</td>
+			<td>God of Skill, Chance and Luck.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3>Invertible</h3>
+
+<p>Some spells are invertible. They can produce an effect or produce an opposing effect decided by the caster. If a invertible spell affects more than one target then the same effect applies to all targets.</p>
+
+<p>For example: the spell <%= skill 'Bless'%> is invertible. A character gains +2 to all skill checks; or a character gains -2 to all skill checks. The caster decides which of these applies.</p>
+
+<h3>Divisible</h3>
+
+<p>Some spells are divisible. The power of the spell may be decreased to increase certains effects of the spell. Each time the power is halved, rounding down, and the effect is increased by one.</p>
+
+<p>For example: the spell <%= skill 'Bless'%> provides &plusmn;2 to all skills for result duration of the check. Let us assume they have a check of power 11. Without dividing the skill they can give &plusmn;2 to all skills for 4 turns (duration of 11). If they divide the skill once they can give &plusmn;4 to all skills for 2 turns (duration of 5). If they divide the skill twice they can give &plusmn;6 for 1 turn (duration of 2). If they divide the skill thrice they can give &plusmn;8 for 1 turn (duration of 1). They cannot divide the skill four times as the duration would be for 0 turns.</p>
+
+<h3>Boosting Duration</h3>
+
+<p>If the duration of a spell is about to expire then the caster may use a <%= minor_action %> to extend the duration. If they do they must pay the casting cost again and the duration is extended by one turn fewer than it was initially cast for. The duration may be extended any number of times with the duration decreasing by one more turn each time it is extended to a minimum of one turn.</p>
+
+<h3>Magical Resistance</h3>
 
 <p>Characters with magical resistance have a natural immunity to spells. A character with magical resitance of <em>N</em> will subtract <em>N</em> from the power of any spell that affects them. If the spell affects multiple characters then this reduction only affects the character with resistance. This applies to all spells, not just adverse ones.</p>
 
@@ -91,7 +166,7 @@
 
 <p> A character may fall relative to the result power of a <%= check('Sprint','dex') %>. A Critical Fail means they cannot fall any distance without taking damage and each result level beyond this increases the distance a character can move safely by one metre. Any character who falls more than the safe distance suffers fall damage at <%= hp 2 %> per metre. Any character losing at least <%= hp 6 %> is also prone.</p>
 
-<p>Armour can reduce the safe fall distance. Each point of <%= dexterity %> decrease also decreases the safe fall distance by one.</p>
+<p>Armour can reduce the safe fall distance. Each point of <%= dexterity %> decrease also decreases the distance a character can safely fall by one.</p>
 
 <h2>Altered Size</h2>
 
@@ -106,6 +181,8 @@
 
 <h2>Debating</h2>
 
-<p>A character can start a debate with another character if they have an ability to let them do so. The responding character may defend with a debating ability or with <%= skill 'Observation' %>. Both characters roll checks for their abilities or if they defended with <%= skill 'Observation' %> they make a <%= check('Observation-3','int') %>.</p>
+<p>A character may start a debate with another character if they have an ability to let them do so. The responding character may defend with any debating ability. If they have no debating abilities then they choose may choose any debating ability with an untrained penalty of two result levels.</p>
+
 <p>A defending character who loses a debate is not necessarily convinced but if they chose an action that runs against the result of the debate they have a penalty to that action equal to how much they lost the debate by.</p>
+
 <p>Characters debates should be role-played to a degree and bonuses and penalties should apply depending on what is being argued.</p>

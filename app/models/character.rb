@@ -481,6 +481,8 @@ class Character < ActiveRecord::Base
 		else dice_type = 0
 		end
 
+		dice_type += 2 * effect_xml.attributes['die'].to_i # if no 'die' attribute then result becomes nil.to_i == 0
+
 		return [total.to_i, dice_type] if raw
 		return "<span onClick='roll(#{total.to_i}, #{dice_type})'>#{total.to_i}d#{dice_type}</span>".html_safe
 	end

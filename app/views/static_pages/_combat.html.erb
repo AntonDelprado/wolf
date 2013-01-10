@@ -1,8 +1,6 @@
-<h2>Initiative and Movement Speed</h2>
+<h2>Initiative</h2>
 
 <p>When combat starts each character makes a <%= check('Initiative+1','int') %> and turn order is from highest to lowest. If multiple characters have the same initiative then they reroll to separate themselves. No matter what they roll they do not change order with characters who did not make the same original roll.</p>
-
-<p>At the start of combat each character also makes a <%= check('Sprint','dex') %> and their movement speed is two plus the result of this check metres per turn. This check determines the movement speed for the entire combat.</p>
 
 <h2>Attack and Defense</h2>
 
@@ -17,6 +15,14 @@
 
 <p>Each character may defend once per turn for free. However each defensive skill use beyond the first will require a <%= minor_action %>.</p>
 
+<h3>Ranged Attacks</h3>
+
+<p>Ranged attacks are used to attack characters from a distance. There must be line of sight from the attacker to the defender and the attacker must have sufficient range to attack from range.</p>
+
+<p>A character is in range if result of the skill check of the attack at least the distance between the characters in metres. In addition to this projectile weapons have a bonus to range which is added to the result for the purposes of checking if a target is in range. Spells have a range bonus equal to the Lore synergy bonus of the caster.</p>
+
+<p>If a character is behind cover they are harder to hit. A character behind partial cover increases the required range by 5m. A character behind near full cover has the required range increased by 10m.</p>
+
 <h2>Consciousness</h2>
 
 <p>A character falls unconscious when are on <%= hp 0 %> or less. They die once they reach -<%= hp 'max' %>. When a unconscious character has <%= hp %> above <%= hp 0 %> they do not immediately regain consciousness. However each turn they may make a <%= strength %> check with their current <%= hp %> in dice. If they roll at least equal to the minimum <%= hp %> they reached then they regain consciousness.</p>
@@ -27,17 +33,19 @@
 
 <h2>Unaware Opponent</h2>
 
-<p>Any attack a character makes against an unaware opponent gains <em>+3</em>.</p>
+<p>Any attack a character makes against an unaware opponent gains <em>+3</em>. When a character successfully uses <%= skill 'Backstab' %> they gain this bonus.</p>
 
 <h2>Damage Reduction</h2>
 
-<p>Some items, such as armour, provide damage reduction. If the defender has any damage reduction then the power of an attack is reduced before any defensive skill is used.</p>
+<p>Some items, such as armour, provide damage reduction. If the defender has any damage reduction then the power of an attack is reduced by this value before any defensive skill is used.</p>
 
 <h2>Deep Wounds</h2>
 
 <p>Deep Wounds are wounds that are particularly hard to heal. Most skills, such as <%= skill 'Heal' %> and <%= skill 'Regenerate' %>, that recover <%= hp %> do not recover Deep Wounds.</p>
 
 <p>A character may have sufficient Deep Wounds to keep them under <%= hp 0 %>. Such a character is considered comatose and will not recover unless the Deep Wounds are healed.</p>
+
+<p>A character who is healed by more Deep Wounds than they have has the remaining wounds added to their <%= hp %>. </p>
 
 <h2>Damage Types</h2>
 
@@ -48,6 +56,7 @@
 <ul>
 	<li>Piercing</li>
 	<li>Slashing</li>
+	<li>Crushing</li>
 	<li>Fire</li>
 	<li>Poison</li>
 	<li>Magic</li>

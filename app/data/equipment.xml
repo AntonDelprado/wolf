@@ -1,0 +1,166 @@
+<Equipment>
+    
+    <Armour>
+        <Name>Cloth</Name>
+    </Armour>
+    
+    <Armour>
+        <Name>Leather</Name>
+        <Require><Str>6</Str></Require>
+        <Effect>
+            <DR>1</DR>
+            <Dex>-1</Dex>
+        </Effect>
+        <Quick>DR 1, Dex -1</Quick>
+    </Armour>
+    
+    <Armour>
+        <Name>Chain</Name>
+        <Require><Str>8</Str></Require>
+        <Effect>
+            <DR>2</DR>
+            <Dex>-2</Dex>
+        </Effect>
+        <Quick>DR 2, Dex -2</Quick>
+    </Armour>
+    
+    <Armour>
+        <Name>Plate</Name>
+        <Require><Str>10</Str></Require>
+        <Effect>
+            <DR>3</DR>
+            <Dex>-3</Dex>
+        </Effect>
+        <Quick>DR 3, Dex -3</Quick>
+    </Armour>
+
+    <Shield>
+        <Name>Buckler</Name>
+        <Effect><DR>1</DR></Effect>
+        <Quick>DR 1</Quick>
+    </Shield>
+    
+    <Shield>
+        <Name>Tower Shield</Name>
+        <Require><Str>8</Str><Dex>6</Dex></Require>
+        <Effect><DR>2</DR></Effect>
+        <Quick>DR 2</Quick>
+    </Shield>
+    
+    <Weapon>
+        <Name>Dagger</Name>
+        <Hands>1</Hands>
+        <Class>Small</Class>
+        <Damage>Piercing</Damage>
+        <Bonus>0</Bonus>
+    </Weapon>
+
+    <Weapon>
+        <Name>Short Sword</Name>
+        <Require><Str>6</Str></Require>
+        <Hands>1</Hands>
+        <Class>Medium</Class>
+        <Damage>Slashing</Damage>
+        <Bonus>2</Bonus>
+    </Weapon>
+        
+    <Weapon>
+        <Name>Claymore</Name>
+        <Require><Str>8</Str></Require>
+        <Hands>2</Hands>
+        <Class>Large</Class>
+        <Damage>Slashing</Damage>
+        <Bonus>3</Bonus>
+    </Weapon>
+    
+    <Weapon>
+        <Name>Battle Axe</Name>
+        <Require><Str>8</Str></Require>
+        <Hands>2</Hands>
+        <Class>Large</Class>
+        <Damage>Slashing</Damage>
+        <Bonus>3</Bonus>
+    </Weapon>
+    
+    <Weapon>
+        <Name>Mace</Name>
+        <Require><Str>6</Str></Require>
+        <Hands>1</Hands>
+        <Class>Medium</Class>
+        <Damage>Crushing</Damage>
+        <Bonus>1</Bonus>
+    </Weapon>
+    
+    <Weapon>
+        <Name>War Hammer</Name>
+        <Require><Str>8</Str></Require>
+        <Hands>2</Hands>
+        <Class>Large</Class>
+        <Damage>Crushing</Damage>
+        <Bonus>2</Bonus>
+    </Weapon>
+    
+    <Weapon>
+        <Name>Rapier</Name>
+        <Require><Dex>8</Dex></Require>
+        <Hands>2</Hands>
+        <Class>Medium</Class>
+        <Damage>Piercing</Damage>
+        <Bonus>2</Bonus>
+        <Effect>
+            <skill add="1">Dodge</skill>
+            <skill add="1">Deflect</skill>
+            <skill add="1">Counter</skill>
+        </Effect>
+        <Quick>+1 to Dodge, Deflect and Counter</Quick>
+    </Weapon>
+    
+    <Weapon>
+        <Name>Sling</Name>
+        <Hands>2</Hands>
+        <Class>Small</Class>
+        <Damage>Crushing</Damage>
+        <Bonus>0</Bonus>
+    </Weapon>
+
+    <Weapon>
+        <Name>Throwing Knives</Name>
+        <Require><Dex>6</Dex><Str>6</Str></Require>
+        <Hands>1</Hands>
+        <Class>Ranged</Class>
+        <Damage>Piercing</Damage>
+        <Bonus>2</Bonus>
+        <Range>1</Range>
+    </Weapon>
+    
+    <Weapon>
+        <Name>Long Bow</Name>
+        <Require><Dex>8</Dex></Require>
+        <Hands>2</Hands>
+        <Class>Ranged</Class>
+        <Damage>Piercing</Damage>
+        <Bonus>1</Bonus>
+        <Range>5</Range>
+    </Weapon>
+
+    <Weapon>
+        <Name>Short Bow</Name>
+        <Require><Dex>8</Dex></Require>
+        <Hands>2</Hands>
+        <Class>Ranged</Class>
+        <Damage>Piercing</Damage>
+        <Bonus>3</Bonus>
+        <Range>0</Range>
+    </Weapon>
+    
+    <Weapon>
+        <Name>Crossbow</Name>
+        <Require><Dex>6</Dex><Str>6</Str></Require>
+        <Hands>2</Hands>
+        <Class>Ranged</Class>
+        <Damage>Piercing</Damage>
+        <Bonus>5</Bonus>
+        <Range>-5</Range>
+    </Weapon>
+
+</Equipment>

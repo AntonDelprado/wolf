@@ -24,16 +24,35 @@
         <Synergy>Rogue</Synergy>
         <Text>
             Unseen and unheard the skilled rogue can approach a victim and take the time necessary to ensure that the blow they strike is precise and effective.
-            A character who is hidden or moving silently can perform a <name>Backstab</name> of power <check type="dex">Attack+Backstab</check>. The attacker may use the +3 bonus for attacking an unaware defender. The damage of this attack is equal to its power.
+            A character who is hidden or moving silently can perform a <name>Backstab</name> of power <check type="dex">Attack+Backstab</check>. The attacker gains the +3 bonus for attacking an unaware defender. The damage of this attack is equal to its power.
         </Text>
         <Effect>
             <Action type="melee">Attack</Action>
             <Mana>5</Mana>
-            <Power type="roll" weapon="1"><skill>Attack</skill><skill>Backstab</skill></Power>
+            <Power type="roll" add="3" weapon="1"><skill>Attack</skill><skill>Backstab</skill></Power>
             <Quick> If unseen, attack for X damage.</Quick>
         </Effect>
     </Skill>
-    
+
+    <Skill>
+        <Name>Ball Lightning</Name>
+        <Require>Lightning Bolt</Require>
+        <Stat>Fai</Stat>
+        <Spell>Arthur</Spell>
+        <Cost>1</Cost>
+        <Synergy>Battle Mage</Synergy>
+        <Text>
+            By calling on the power of <name>Arthur</name> the character is able to summon a ball of pure lightning to attack their foes.
+            The power of this skill is <check type="fai">Ball Lightning</check>. The character creates a <name>Ball Lightning</name> with level equal to the power of this skill.
+        </Text>
+        <Effect>
+            <Action>Major</Action>
+            <Mana>8,2</Mana>
+            <Power type="roll"><skill>Ball Lightning</skill></Power>
+            <Quick>Create a Ball Lightning with power X.</Quick>
+        </Effect>
+    </Skill>
+
     <Skill>
         <Name>Berserk</Name>
         <Require>Attack</Require>
@@ -42,11 +61,13 @@
         <Synergy>Warrior</Synergy>
         <Text>
             Whipping themselves into a fury the character loses track of everything but inflicting pain on those around them.
-            The power of this skill is <check type="str">Berserk</check>. The duration of this skill is equal to its power and cannot be stopped before this. Each turn the character must make an attack with power and damage equal to <check type="str">Berserk<times/>2</check>. They may choose the target but must pick a conscious target if one exists. If there are no conscious targets they must target unconscious living targets. If there are no living targets they must target dead creatures.
+            The power of this skill is <check type="str">Berserk</check>. The character is <name>Berserk</name> for the result duration and cannot be stopped before this.
+            Each turn the character must make a regular attack with the die type increased by two against a target. The character must target a conscious target so long as one exists, conscious friends included. If there are no conscious targets they must target unconscious but alive characters, alive friend included. If there are no unconscious characters they must target an object or dead character.
         </Text>
         <Effect>
             <Action type="melee">Attack</Action>
-            <Power type="roll" times="2" weapon="1"><skill>Berserk</skill></Power>
+            <Mana>10</Mana>
+            <Power type="roll" die="2" weapon="1"><skill>Berserk</skill></Power>
             <Duration type="roll"><skill>Berserk</skill></Duration>
             <Quick>Must attack for Y turns. Each turn roll an attack for X.</Quick>
         </Effect>
@@ -61,12 +82,13 @@
         <Synergy>Mechanist</Synergy>
         <Text>
             By calling on the power of <name>Oxdoro</name> the character is able to bend space in on itself creating a point in space that sucks everything towards it and crushes those inside.
-            The power of this skill is <check type="fai">Black Hole</check>. The duration of <name>Black Hole</name> is equal to its power in turns. Anyone within a radius in metres equal to the power of this skill is immediately sent to the centre of the hole even if other objects or characters are already there. Anyone starting their turn in the hole takes damage equal to the power of this skill and cannot move out of the centre of the hole.
-            This skill requires a <name>Major Action</name> to cast and each following turn to sustain it. The character does not <name>Refresh</name> their <MP/> for the duration of this skill. Note that if the caster is within the radius of the hole then they too are sucked into the centre.
+            The power of this skill is <check type="fai">Black Hole</check>. The duration of this skill is the result duration and the radius of this skill is the result distance. At the start of their turn any character in the radius of this skill, including in the hole, may make a <check type="str">Endurance</check> or <check type="dex">Sprint</check>. If the result of this check is less than the power of this skill then they are sucked to the centre of the hole.
+            Any character in the hole may not use their <name>Move Action</name> for that turn. They also take damage equal to the result level of this skill which cannot be defended against.
+            Note that if the caster is within the radius then they too can be sucked into the hole.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>10</Mana>
             <Power type="roll"><skill>Black Hole</skill></Power>
             <Duration>X</Duration>
             <Quick>Create a black hole radius X that sucks objects in.</Quick>
@@ -84,7 +106,7 @@
         <Synergy>Trickster</Synergy>
         <Text>
             Calling on the power of <name>Loreanna</name> fortune favours someone in all they do.
-            The power of the skill is <check type="fai">Bless</check>. The target character gains +2 to all skill checks or -2 to all skill checks in any skill that they have spent <XP/> on. The duration of the effect is equal to its power. This effect is <name>Dividable</name> so by reducing the duration the user can give a larger bonus or penalty to skill checks. Casting requires a <name>Major Action</name>.
+            The power of the skill is <check type="fai">Bless</check>. The target character gains +2 to all skill checks or -2 to all skill checks in any skill that they have spent <XP/> on. This skill lasts for the result duration. This effect is <name>Divisible</name> and so by reducing the duration the user can give a larger bonus or penalty to skill checks. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -146,7 +168,7 @@
         <Synergy>Warrior</Synergy>
         <Text>
             Sadistically revelling in the misfortune of their target the character gains power as they attack their opponent.
-            The power of the attack is <check type="str">Bloodlust</check>. This attack deals damage equal to the power of the attack and gains <HP>1</HP> for each 2 damage done.
+            The power of the attack is <check type="str">Bloodlust</check>. This attack deals damage equal to the power of the attack and gains <HP/> equal to the result level of the attack after defense.
         </Text>
         <Effect>
             <Action type="melee">Attack</Action>
@@ -175,7 +197,26 @@
             <Quick>Attack for X. May re-target the result level number of times</Quick>
         </Effect>
     </Skill>
-    
+
+    <Skill>
+        <Name>Channel Mana</Name>
+        <Require>Counter-spell</Require>
+        <Invert/>
+        <Stat>Fai</Stat>
+        <Cost>2</Cost>
+        <Spell>Ird'ken</Spell>
+        <Synergy>Channeller</Synergy>
+        <Text>
+            By calling on the power of <name>Ird'ken</name> the caster can sap the energies of their foes or provide energy to allies.
+            The power of this skill is <check type="fai">Channel Mana</check>. If the target does not resist: the target loses the power in <MP/> and the caster gains the power in <MP/>; or the target gains the power in <MP/> and the caster loses the power in <MP/>. If the target resists then the result level is exchanged instead. A character may not be reduced below <MP>0</MP> by this skill. However they may be raised above <MPMax/>.
+        </Text>
+        <Effect>
+            <Action>Minor</Action>
+            <Power type="roll"><skill>Channel Mana</skill></Power>
+            <Quick>Exchange X MP from a target or power level MP if they resist.</Quick>
+        </Effect>
+    </Skill>
+
     <Skill>
         <Name>Charm</Name>
         <Name>Confuse</Name>
@@ -282,6 +323,7 @@
         <Text>
             By using the attackers own strength against them the defender quickly turns the blow destined for them to the back to attacker themselves.
             The power of the skill is <check type="dex">Counter+1</check>. If this power is equal to or greater than the power of the melee attack then the attack deals no damage nor has any effect. In this case the attacker receives damage equal to the power of this skilll and any effects that the defender would have received. This damage is not considered an attack and so cannot be defended against.
+            <name>Counter</name> may be used to defend an adjacent ally.
             This skill cannot be used to defend against projectile attacks.
         </Text>
         <Effect>
@@ -321,7 +363,7 @@
         <Synergy>Necromancer</Synergy>
         <Text>
             By calling on the power of <name>Innodi</name> a character can bring earth and fire to life to fight at their side.
-            When creating a golem the power of this skill is <check type="fai">Create Golem</check>. The user can create a <name>Golem</name> of level up to the power of this skill. This effect is <name>Dividable</name> and so level of creature can be sacrificed for quantity of creatures. Casting requires a <name>Major Action</name> and sufficent earth or fire source dependant on the type of <name>Golem</name>. The casting creates the form so the earth or fire do not have to be shaped by hand.
+            When creating a golem the power of this skill is <check type="fai">Create Golem</check>. The user can create a <name>Golem</name> of level up to the power of this skill. This effect is <name>Divisible</name> and so level of creature can be sacrificed for quantity of creatures. Casting requires a <name>Major Action</name> and a sufficient source of earth or fire dependant on the type of <name>Golem</name>. The casting creates the form so the earth or fire do not have to be shaped by hand.
             For example a character with a check of 9 can create one <name>Golem</name> with level up to 9. They could also create two <name>Golem</name>s with level up to 4 or 3 <name>Golem</name>s with level up to 2.
             This skill costs <MP>1</MP> to sustain for each <name>Golem</name>.
             When destroying a golem the power of this skill is <check type="fai">Destroy Golem</check>. The golem loses power equal to the power of this skill. If the golem falls below <HP>0</HP> or reaches power 0 then it is destroyed.
@@ -367,6 +409,7 @@
         <Text>
             Spotting weakness in a character's attack the defender swiftly parries and opens the attacker for a quick riposte.
             The power of the defence is <check type="dex">Deflect+1</check>. If this power is equal to or greater than the power of the melee attack then it deals no damage nor has any effect and the attacker is <name>Stun</name>ned for 1 turn. Note that <name>Tough Fighter</name> does not affect this skill.
+            <name>Deflect</name> may be used to defend an adjacent ally.
             This skill cannot be used to defend against projectile attacks.
         </Text>
         <Effect>
@@ -380,7 +423,7 @@
     <Skill>
         <Name>Divine Arrow</Name>
         <Stat>Fai</Stat>
-        <Cost>5</Cost>
+        <Cost>4</Cost>
         <Spell>Arthur</Spell>
         <Synergy>Battle Mage</Synergy>
         <Text>
@@ -408,7 +451,7 @@
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>20</Mana>
             <Power type="roll" times="5"><skill>Divine Contract</skill></Power>
             <Quick>Willing target must obey contract. If they fail to roll for X and they take X deep wounds.</Quick>
         </Effect>
@@ -436,12 +479,12 @@
         <Cost>1</Cost>
         <Text>
             This character is strong and has learnt to endure even the harshest conditions.
-            The character can attempt a dead lift of any object with power equal to <check type="str">Endurance</check>. If the weight of the object is at most three times the power weight then it can be lifted.
+            The character can attempt a dead lift of any object with power equal to <check type="str">Endurance</check>. If the weight of the object is at most three times the result weight then it can be lifted.
             Unskilled <Str/> actions can be performed with a power of <check type="str">Endurance+1</check>. Any skill with an <Str/> icon requires this skill.
         </Text>
         <Effect>
             <Power type="roll"><skill>Endurance</skill></Power>
-            <Quick>Lift objects up to three times the power weight.</Quick>
+            <Quick>Lift objects up to three times the result weight.</Quick>
         </Effect>
         <Effect>
             <Power type="roll" add="1"><skill>Endurance</skill></Power>
@@ -518,7 +561,26 @@
             <Action type="ranged">Attack</Action>
             <Mana>8</Mana>
             <Power type="roll"><skill>Fireball</skill></Power>
-            <Quick>Attack anyone in radius of half power distance for X. If X is at least 5 then on fire for X as well.</Quick>
+            <Quick>Attack anyone in radius of half result distance for X. If X is at least 5 then on fire for X as well.</Quick>
+        </Effect>
+    </Skill>
+
+    <Skill>
+        <Name>Flight</Name>
+        <Require>Telekinesis</Require>
+        <Stat>Fai</Stat>
+        <Cost>1</Cost>
+        <Spell>Oxdoro</Spell>
+        <Synergy>Mechanist</Synergy>
+        <Text>
+            By calling on the power of <name>Oxdoro</name> the caster is able to defy gravity.
+            The power of this skill is <check type="fai">Flight</check>. Instead of a regular <name>Move Action</name> the target may move the result distance in any direction. This movement is affected by wind.
+        </Text>
+        <Effect>
+            <Action>Major</Action>
+            <Mana>3,1</Mana>
+            <Power type="roll"><skill>Flight</skill></Power>
+            <Quick>Fly instead of move up to result distance.</Quick>
         </Effect>
     </Skill>
     
@@ -574,7 +636,7 @@
         <Synergy>Mechanist</Synergy>
         <Text>
             By calling on the power of <name>Oxdoro</name> the caster can create a pocket of space containing a single character where the flow of time is altered.
-            The power of this skill is <check type="fai">Haste</check>. The target gains +1 or -1 to <name>Speed</name> for a duration equal to this skill's power in turns. This effect is <name>Dividable</name> and so duration can be halved to add an additional +1 or -1 to speed. Casting requires a <name>Major Action</name>.
+            The power of this skill is <check type="fai">Haste</check>. The target gains +1 or -1 to <name>Speed</name> for the result duration. This effect is <name>Divisible</name> and so the duration may be halved to add an additional +1 or -1 to speed. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -636,7 +698,7 @@
         <Synergy>Mechanist</Synergy>
         <Text>
             By calling on the power of <name>Oxdoro</name> the caster can magically bind creature in one spot.
-            The power of this skill is <check type="fai">Hold Person</check>. The maximum duration of the skill is equal to its power. The target can no longer move and so on their turn cannot move, take a <name>Major Action</name> nor any action that requires movement. They still get a <name>Minor Action</name> however they may not use it to perform any physical action apart from speaking or casting spells. This skill requires a <name>Major Action</name> to cast and then a <name>Major Action</name> each following turn to sustain it.
+            The power of this skill is <check type="fai">Hold Person</check>. This power lasts for the result duration. The target can no longer move and so on their turn cannot move, take a <name>Major Action</name> nor any action that requires movement. They still get a <name>Minor Action</name> however they may not use it to perform any physical action apart from speaking or casting spells. This skill requires a <name>Major Action</name> to cast and then a <name>Major Action</name> each following turn to sustain it.
             Alternatively any target character now has a normal movement phase and <name>Major Action</name> whether or not another skill restricts them. This does not provide any effect on an unconscious character however does grant a <name>Major Action</name> to someone under the effects of a <name>Slow</name> spell. This skill requires a <name>Major Action</name> to sustain it.
         </Text>
         <Effect>
@@ -696,7 +758,7 @@
         <Synergy>Mechanist</Synergy>
         <Text>
             Calling on the power of <name>Oxdoro</name> the character can warp the size of any creature or object.
-            The power of the skill is <check type="fai">Alter Size</check>. The target either gains a size class or loses a size class, decided by the user. The duration of the skill is equal to the power of the skill. This effect is <name>Dividable</name> so by sacrificing duration the character can add or subtract an additional size class. Casting requires a <name>Major Action</name>.
+            The power of the skill is <check type="fai">Alter Size</check>. The target either gains a size class or loses a size class, decided by the user. The duration of the skill is equal to the result duration. This effect is <name>Divisible</name> so by sacrificing duration the character can add or subtract an additional size class. Casting requires a <name>Major Action</name>.
             For rules on size classes and effects see <name>Altered Size</name> for details.
         </Text>
         <Effect>
@@ -719,7 +781,7 @@
         <Synergy>Trickster</Synergy>
         <Text>
             By calling on the power of <name>Loreanna</name> a character suddenly becomes more powerful in a specific way.
-            The power of this skill is <check type="fai">Change Stat</check>. The caster chooses either <Str/>, <Dex/>, <Int/> or <Fai/> and the target gains an extra die level or loses a die level to that stat for a duration equal to the power of the skill. This effect is <name>Dividable</name> so by reducing the duration the caster can increase the number of dice levels gained or lost. Casting requires a <name>Major Action</name>.
+            The power of this skill is <check type="fai">Change Stat</check>. The caster chooses either <Str/>, <Dex/>, <Int/> or <Fai/> and the target gains an extra die level or loses a die level to that stat for a duration equal to the result duration. This effect is <name>Divisible</name> so by reducing the duration the caster can increase the number of dice levels gained or lost. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -742,7 +804,7 @@
         <Synergy>Trickster</Synergy>
         <Text>
             By calling on the power of Loreanna a character suddenly becomes more powerful in every way.
-            The power of this skill is <check type="fai">Change Stats</check>. The target gains an extra die level or loses a die level to all of <Str/>, <Dex/>, <Int/> and <Fai/> for a duration qual to the power of the skill. This effect is <name>Dividable</name> so by reducing the duration the caster can increase the number of dice levels gained or lost. Casting requires a <name>Major Action</name>.
+            The power of this skill is <check type="fai">Change Stats</check>. The target gains an extra die level or loses a die level to all of <Str/>, <Dex/>, <Int/> and <Fai/> for a duration equal to the result duration. This effect is <name>Divisible</name> so by reducing the duration the caster can increase the number of dice levels gained or lost. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -826,7 +888,7 @@
         <Text>
             By calling on the power of <name>Loreanna</name> the caster can channel light either shinning with divine light or sucking the light out of the environment.
             This skill can, without a check or <MP/> cost, produce sufficient light to see by under any non-divine conditions. Casting requires a <name>Minor Action</name>.
-            The power of this skill <check type="fai">Light</check>. The caster can increase or reduce the light in the current location by one for a duration equal to the power of this skill. See <name>Environmental Light</name> for details. This effect is <name>Dividable</name> so by reducing the duration the caster can increase or decrease the light further. Casting requires a <name>Major Action</name>.
+            The power of this skill <check type="fai">Light</check>. The caster can increase or reduce the light in the current location by one for a duration equal to the power of this skill in turns. See <name>Environmental Light</name> for details. This effect is <name>Divisible</name> so by reducing the duration the caster can increase or decrease the light further. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Minor</Action>
@@ -940,8 +1002,9 @@
     
     <Skill>
         <Name>Permanence</Name>
+        <Require>Phase Shift</Require>
         <Stat>Fai</Stat>
-        <Cost>5</Cost>
+        <Cost>3</Cost>
         <Spell>Oxdoro</Spell>
         <Synergy>Mechanist</Synergy>
         <Text>
@@ -963,7 +1026,7 @@
         <Synergy>Mechanist</Synergy>
         <Text>
             By calling the power of <name>Oxdoro</name> the character can slide slightly outside the realm of existence.
-            The power of this skill is <check type="fai">Phase Shift</check>. The user can becomes <name>Ethereal</name> for a number of turns equal to the power of this skill. Casting requires a <name>Minor Action</name>.
+            The power of this skill is <check type="fai">Phase Shift</check>. The user can becomes <name>Ethereal</name> for the result duration. Casting requires a <name>Minor Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -1008,7 +1071,7 @@
         <Synergy>Necromancer</Synergy>
         <Text>
             By calling on the power of <name>Innodi</name> the character can summon a poisonous cloud that saps the energy from any creature caught inside.
-            The power of this skill is <check type="fai">Poison Cloud</check>. The radius of the cloud is the power distance. A <name>Poison Cloud</name> has all the properties of <name>Fog</name>. Any turn that a character ends while in the cloud must make a <check type="str">Endurance</check> or <check type="fai">Sense</check> check. If a character fails this check they are effected by <name>Poison</name> with a power equal to the power of the cloud.
+            The power of this skill is <check type="fai">Poison Cloud</check>. The radius of the cloud is the result distance. A <name>Poison Cloud</name> has all the properties of <name>Fog</name>. Any turn that a character ends while in the cloud must make a <check type="str">Endurance</check> or <check type="fai">Sense</check> check. If a character fails this check they are effected by <name>Poison</name> with a power equal to the power of the cloud.
         </Text>
         <Effect>
             <Action>Major</Action>
@@ -1105,9 +1168,37 @@
     </Skill>
     
     <Skill>
-        <Name>Redirect</Name>
+        <Name>Random Fate</Name>
+        <Require>Bless</Require>
         <Stat>Fai</Stat>
-        <Cost>3</Cost>
+        <Cost>1</Cost>
+        <Spell>Loreanna</Spell>
+        <Synergy>Trickster</Synergy>
+        <Text>
+            The caster puts the fate of a character in the hands of <name>Loreanna</name>
+            The power of the attack is <check type="fai">Chaos Bolt</check>. The fate of the character is given to <name>Loreanna</name> who decides their fate dependant on the result level of this skill after defense is calculated.
+            0: +1 to all skills for 1 turn.
+            1: Nothing happens.
+            2: Knocked Prone.
+            3: -1 die type to all skills for 2 turns.
+            4: -1 to Speed for 6 turns.
+            5: Stunned for 5 turns.
+            6: The target dies.
+            7: The caster decides their fate.
+        </Text>
+        <Effect>
+            <Action type="ranged">Attack</Action>
+            <Mana>5</Mana>
+            <Power type="roll"><skill>Chaos Bolt</skill></Power>
+            <Quick>Randomly determine a character's fate.</Quick>
+        </Effect>
+    </Skill>
+    
+    <Skill>
+        <Name>Redirect</Name>
+        <Require>Divine Arrow</Require>
+        <Stat>Fai</Stat>
+        <Cost>1</Cost>
         <Spell>Arthur</Spell>
         <Synergy>Battle Mage</Synergy>
         <Text>
@@ -1182,8 +1273,8 @@
         <Synergy>Channeller</Synergy>
         <Text>
             By calling on the power of <name>Ird'ken</name> the caster can gain control over their state of consciousness.
-            If trying to cause a character to sleep the power of this skill is <check type="fai">Sleep</check>. While under the influence of this skill the targeted character has their <HP/> lowered by power of this skill for the purposes of consciousness and unconsciousness. Note that this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
-            If trying to wake an unconscious character the power is <name>Wake</name>. For the duration of this skill the character has their <HP/> raised by the power of this skill for the purposes of consciousness and unconsciousness. Note this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
+            If trying to cause a character to sleep the power of this skill is <check type="fai">Sleep</check>. The duration of this skill is equal ot its power in turns. While under the influence of this skill the targeted character has their <HP/> lowered by power of this skill for the purposes of consciousness and unconsciousness. Note that this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
+            If trying to wake an unconscious character the power is <check type="fai">Wake</check>. For the duration of this skill the character has their <HP/> raised by the power of this skill for the purposes of consciousness and unconsciousness. Note this does not affect at what <HP/> a character dies, only when they fall unconscious or regain consciousness. Casting requires a <name>Major Action</name>.
             An unaware target who remains conscious may make a <check>Notice</check> to see if they notice the effect. If the notice power is at least the power of the skill then they notice.
         </Text>
         <Effect>
@@ -1272,7 +1363,7 @@
         <Synergy>Channeller</Synergy>
         <Text>
             By incredible skill the character interjects into a caster's commune with their deity they gain complete control of the spell, wielding it in any way they choose.
-            The power of this skill is <check type="int">Steal Spell</check>. If this is greater than or equal to the power of a spell that has just been cast then the spell targets whoever the character wishes, if invertible they may invert the spell and if <name>Dividable</name> they may divide it. The power of the spell becomes the power of this skill. The casting cost is paid by the caster but the user may pay the ongoing costs to increase its duration in the same way that the original caster could. This skill requires a <name>Minor Action</name>.
+            The power of this skill is <check type="int">Steal Spell</check>. If this is greater than or equal to the power of a spell that has just been cast then the spell targets whoever the character wishes, if invertible they may invert the spell and if <name>Divisible</name> they may divide it. The power of the spell becomes the power of this skill. The casting cost is paid by the caster but the user may pay the ongoing costs to increase its duration in the same way that the original caster could. This skill requires a <name>Minor Action</name>.
         </Text>
         <Effect>
             <Action>Minor</Action>
@@ -1328,7 +1419,7 @@
         <Synergy>Necromancer</Synergy>
         <Text>
             By calling on the power of <name>Innodi</name> the character is able to call on small creatures to attack their foes.
-            The power of this skill is <check type="fai">Swarm of Rats</check>. The first turn nothing happens. Before the characters next turn a number of rats is summoned equal to the power level of this skill. Each rat has <HP>1</HP> and attacks for 2 slashing damage each turn. This damage ignores shields. This skill costs <MP>1</MP> to sustain for each power level of rats remaining, including the first turn. For example: if there are 7 rats left the skill costs <MP>3</MP>. Casting requires a <name>Major Action</name>.
+            The power of this skill is <check type="fai">Swarm of Rats</check>. The first turn nothing happens. Before the characters next turn a number of rats is summoned equal to the result level of this skill. Each rat has <HP>1</HP> and attacks for 2 slashing damage each turn. This damage ignores shields. This skill costs <MP>1</MP> to sustain for each result level of rats remaining, including the first turn. For example: if there are 7 rats left the skill costs <MP>3</MP>. Casting requires a <name>Major Action</name>.
             The entire swarm is controlled with a single simple command such as to attack a particular character or to congregate in a particular area. If the sustain cost is not paid then the results are unpredictable. Most animals will disperse but some may attack random targets.
             In urban environments rats are exclusively summoned. In other environments many other small species may instead appear. Such as other small mammals, lizards, snakes or even small birds. Their stats remain the same no matter what small animals are summoned.
         </Text>
@@ -1469,18 +1560,20 @@
         <Name>Will of Arthur</Name>
         <Require>Follower of Arthur</Require>
         <Invert/>
+        <Divide/>
         <Stat>Fai</Stat>
-        <Cost>10</Cost>
+        <Cost>8</Cost>
         <Spell>Arthur</Spell>
+        <Synergy>Battle Mage</Synergy>
         <Text>
             As a devout follower of <name>Arthur</name> the caster is able to draw extreme divine power from <name>Arthur</name>. They can increase the potency of all attack or defence abilities in their presence.
-            The power of this skill is <check type="fai">Will of Arthur</check>. The duration of this skill is equal to its power in turns. The caster chooses either attack or defence or both and all skills of that type/those types are increased by the power of this skill in all characters near the caster.
-            If the caster chooses to increase both attack and defence skills then this skill is not considered to be invertible for that casting. If only one is used then the other is considered the inverse.
+            The power of this skill is <check type="fai">Will of Arthur</check>. The duration of this skill is equal to the result duration. The caster chooses either attack or defence. For each nearby character the caster decides to increase or reduce the die type of attack or defense, as chosen earlier, of the character.
+            If this skill is inverted then attack is swapped with defense and each character swaps whether it was increased or decreased. This skill is divisible. The caster may halve its power to increase the number of die types increased and reduced.
             This skill is unaffected by <name>Counter-spell</name>, <name>Spell Shield</name>, <name>Inversion</name>, <name>Steal Spell</name> and <name>Void</name>. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>15</Mana>
             <Power type="roll"><skill>Will of Arthur</skill></Power>
             <Duration>X</Duration>
             <Quick>Add or remove X to all attack skills, defence skills or both.</Quick>
@@ -1492,16 +1585,17 @@
         <Require>Follower of Innodi</Require>
         <Invert/>
         <Stat>Fai</Stat>
-        <Cost>10</Cost>
+        <Cost>8</Cost>
         <Spell>Innodi</Spell>
+        <Synergy>Necromancer</Synergy>
         <Text>
             As a devout follower of <name>Innodi</name> the caster is able to draw extreme divine power from <name>Innodi</name>. They can channel life force in or out of the surrounding environment healing or grievously harming those around them.
-            The power of this skill is <check type="fai">Will of Innodi</check>. Every character near the caster, including the caster, either gains a number of <name>Deep Wounds</name> equal to the power of this skill or heals a number of <name>Deep Wounds</name> equal to the power of this skill. Any character that is healed but has fewer <name>Deep Wounds</name> than the power of this skill gains the rest in <HP/>. This is not an attack skill and so cannot be defended against.
+            The power of this skill is <check type="fai">Will of Innodi</check>. For each nearby character the caster chooses that that character either heals or sustains a number of <name>Deep Wounds</name> equal to the result level of this skilll.
             This skill is unaffected by <name>Counter-spell</name>, <name>Spell Shield</name>, <name>Inversion</name>, <name>Steal Spell</name> and <name>Void</name>. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>15</Mana>
             <Power type="roll"><skill>Will of Innodi</skill></Power>
             <Quick>All characters gain or lose X deep wounds.</Quick>
         </Effect>
@@ -1510,43 +1604,43 @@
     <Skill>
         <Name>Will of Ird'ken</Name>
         <Require>Follower of Ird'ken</Require>
-        <Invert/>
         <Stat>Fai</Stat>
-        <Cost>10</Cost>
+        <Cost>8</Cost>
         <Spell>Ird'ken</Spell>
+        <Synergy>Channeller</Synergy>
         <Text>
             As a devout follower of <name>Ird'ken</name> the caster is able to draw extreme divine power from <name>Ird'ken</name> to cause chaos or order.
-            The power of this skill is <check type="fai">Follower of Ird'ken</check>. The duration of this skill is equal to its power in turns. The caster chooses to produce chaos or order. If used to produce order then every character nearby chooses one attack skill, one defence skill and one other skill. The other skill may be an attack skill or a defence skill. For the duration of the <name>Will of Ird'ken</name> they may not use any other skills. If used to produce chaos then characters no longer choose which skills they use. During their turn each character randomly chooses one of their skills that uses a <name>Major Action</name> and has a chance to succeed. The specifics of the used skill, such as targets etc, are up to the character. When a target defends they randomly choose a defence skill that will result in at least one die rolled and must defend with that skill.
+            The power of this skill is <check type-="fai">Follower of Ird'ken</check>. The duration of this skill is the result duration. Whenever each nearby character in the effect performs a <name>Major Action</name> they instead pick the result level number of skills. The caster then chooses which skill the target actually performs. The target still chooses the specifics of the skill they use such as targets. If the target does not have sufficient skills that have <name>Major Action</name>s then they pick as many skills as they can.
             This skill is unaffected by <name>Counter-spell</name>, <name>Spell Shield</name>, <name>Inversion</name>, <name>Steal Spell</name> and <name>Void</name>. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>15</Mana>
             <Power type="roll"><skill>Will of Ird'ken</skill></Power>
             <Duration>X</Duration>
-            <Quick>All character either act randomly or only have one attack one defence and one other skill they can use.</Quick>
+            <Quick>Choose targets' Major Actions from a list numbering result level skills.</Quick>
         </Effect>
     </Skill>
     
     <Skill>
         <Name>Will of Loreanna</Name>
         <Require>Follower of Loreanna</Require>
-        <Invert/>
         <Divide/>
         <Stat>Fai</Stat>
-        <Cost>10</Cost>
+        <Cost>8</Cost>
         <Spell>Loreanna</Spell>
+        <Synergy>Trickster</Synergy>
         <Text>
-            As a devout follower of <name>Loreanna</name> the caster is able to draw extreme divine power from <name>Loreanna</name>. The skill and luck of those around the caster become warped.
-            The power of this skill is <check type="fai">Will of Loreanna</check>. The caster chooses to either increase every skill performed nearby to increase by one die type or decrease every skill performed nearby for one die type. This effect is <name>Dividable</name> so by reducing the duration the caster can increase the number of die levels gained or lost.
+            As a devout follower of <name>Loreanna</name> the caster is able to draw extreme divine power from <name>Loreanna</name>. Loreanna imparts skill and knowledge to an individual.
+            The power of this skill is <check type="fai">Will of Loreanna</check>. The duration of this skill is the power duration. The target gains one result level to any ability used or the skills <name>Locks and Traps</name>, <name>Lore</name>, <name>Observation</name>, <name>Sense</name> and <name>Stealth</name>. If the target is untrained in the ability they also reduce the untrained penalty by one level. This effect is <name>Divisible</name> and so by reducing the duration the caster can increase the number of targets.
             This skill is unaffected by <name>Counter-spell</name>, <name>Spell Shield</name>, <name>Inversion</name>, <name>Steal Spell</name> and <name>Void</name>. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>15</Mana>
             <Power type="roll"><skill>Will of Loreanna</skill></Power>
             <Duration>X</Duration>
-            <Quick>All skills get +1 or -1. Divide to give additional +1 or -1.</Quick>
+            <Quick>Target gains +1 to abilties and reduces untrained penalties. Divide to increase number of targets.</Quick>
         </Effect>
     </Skill>
     
@@ -1554,16 +1648,17 @@
         <Name>Will of Oxdoro</Name>
         <Require>Follower of Oxdoro</Require>
         <Stat>Fai</Stat>
-        <Cost>10</Cost>
+        <Cost>8</Cost>
         <Spell>Oxdoro</Spell>
+        <Synergy>Mechanist</Synergy>
         <Text>
             As a devout follower of <name>Oxdoro</name> the caster is able to draw extreme divine power from <name>Oxdoro</name>. They can stop time for everyone except themselves bringing objects and creatures back to life by their touch.
-            The power of this skill is <check type="fai">Will of Oxdoro</check>. The world is frozen in time for duration equal to this skill's power in turns. Any character, including the caster, who has this skill at a level equal to or greater than the power of this skill is not frozen. Any object touched by an unfrozen character, including other characters, becomes unfrozen. When frozen character cannot defend however any attack on them will unfreeze them.
+            The power of this skill is <check type="fai">Will of Oxdoro</check>. Time is frozen for the result duration of the check. Any character may make a <check type="fai">Will of Oxdoro</check> to see if they are frozen. The caster and any character with a check at least the power of this skill is not frozen. Any character or object touched by a character not frozen is no longer frozen. A character may use a <name>Minor Action</name> to touch another character or object or a <name>Major Action</name> to touch up to two characters or objects. A frozen character does not get a chance to defend when frozen. However this counts as touching the defending character and so they are no longer frozen.
             This skill is unaffected by <name>Counter-spell</name>, <name>Spell Shield</name>, <name>Inversion</name>, <name>Steal Spell</name> and <name>Void</name>. Casting requires a <name>Major Action</name>.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>15</Mana>
             <Power type="roll"><skill>Will of Oxdoro</skill></Power>
             <Quick>Freeze everything but characters with the Will of Oxdoro. Anything they touch unfreezes.</Quick>
         </Effect>
@@ -1573,583 +1668,22 @@
         <Name>Will of Travaer</Name>
         <Require>Follower of Travaer</Require>
         <Stat>Fai</Stat>
-        <Cost>10</Cost>
+        <Cost>8</Cost>
         <Spell>Travaer</Spell>
+        <Synergy>Lore</Synergy>
         <Text>
             As a devout follower of <name>Travaer</name> the caster is able to draw extreme divine power from <name>Travaer</name>. The caster can invert any spell or skill used in their presence.
-            The power of this skill is <name>Will of Travaer</name>. The duration of this skill is equal to its power in turns. If any invertible spell or skill is used near this skill's user, this skill's user can, at their discretion, take it's inverse ability.
-            This only affects newly activated skills and does not affect ongoing effects. This can affect the will of other deities.
+            The power of this skill is <name>Will of Travaer</name>. The duration of this skill is equal to its result duration. Any invertible spell that is cast nearby is affected by this skill. The caster of this skill may invert the spell at their discretion. If the invertible spell has multiple targets then the effect is inverted for all targets.
+            This only affects newly cast spells and does not affect ongoing effects. This can affect the will of other deities.
             This skill is unaffected by <name>Counter-spell</name>, <name>Spell Shield</name>, <name>Inversion</name>, <name>Steal Spell</name> and <name>Void</name>. Casting requires a <name>Major Action</name>. While this skill does not have a divine token, it is a spell.
         </Text>
         <Effect>
             <Action>Major</Action>
-            <Mana>M</Mana>
+            <Mana>15</Mana>
             <Power type="roll"><skill>Will of Travaer</skill></Power>
             <Duration>X</Duration>
             <Quick>Caster gets the chance to invert any invertible spell.</Quick>
         </Effect>
     </Skill>
 
-    <Ability>
-        <Name>Actor</Name>
-        <Text>
-            This character is a skilled actor. They may make a <check type="int">Observation</check> to perform. This ability may be used to disguise the identity of the character or impersonate another character.
-        </Text>
-        <Quick>This character is good at acting, disguising and impersonating.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Acrobatic</Name>
-        <Synergy>Rogue</Synergy>
-        <Text>
-            This character is highly agile and dextrous. They may make a <check type="dex">Sprint</check> to perform an acrobatic action.
-            If appropriate an <name>Acrobatic</name> character may help another character perform an acrobatic action. If they do so it requires a <name>Major Action</name> for each turn that they assist. A <check type="dex">Sprint</check> is made with the <name>Sprint</name> skill of the assisting character and the <Dex/> of the assisted character.
-            Acrobatic characters have two <name>Minor Action</name>s each turn.
-        </Text>
-        <Quick>The character is unusually agile and has two Minor Actions each turn.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Ambidextrous</Name>
-        <Synergy>Rogue</Synergy>
-        <Text>
-            This character is just as able with their off hand. They may They may dual wield one handed weapons with the same <name>Damage Type</name>. When dual wielding a character adds the bonus from both weapons when making their <name>Attack</name> rolls.
-        </Text>
-        <Quick>The character is just as able with their off hand and may dual wield.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Atheist</Name>
-        <Text>
-            An Atheist has made the choice to divorce themselves from the gods. The character gains <name>Magical Resistance</name> of 1. An <name>Atheist</name> may not cast spells.
-            The presence of the Gods is irrefutable and so an Atheist believes not in the non-existence of Gods but that they should not be followed. This ability should affect how a character is role-played.
-        </Text>
-        <Quick>Magic Resistance +1. The character cannot cast spells.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Blacksmith</Name>
-        <Text>
-            The character is a skilled blacksmith and can forge their own weapons, armour and miscellanea given the right equipment and a forge.
-            When making items a <check type="int">Observation</check> is made which determines the <name>Quality</name> of the item made. A pass gives a normal <name>Quality</name> with each result range adding or subtracting 1 from the <name>Quality</name>
-        </Text>
-        <Quick>Make and Observation roll to make weapons and armour.</Quick>
-    </Ability>
-
-    <Ability>
-        <Name>Carpenter</Name>
-        <Text>
-            This character is skilled at carpentry and can build and analyse wooden structures.
-            They may make a <check type="dex">Sprint</check> to build a wooden structure. They may make a <check type="int">Observation</check> to analyse a wooden structure.
-        </Text>
-        <Quick>This character is skilled at carpentry.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Chef</Name>
-        <Text>
-            This character is skilled at preparing and cooking food.
-            They may <check type="int">Observation</check> to make or prepare food. This includes the ability to butcher animals and collect food in wilderness areas.
-        </Text>
-        <Quick>This character is skilled at cooking.</Quick>
-    </Ability>
-
-    <Ability>
-        <Name>Dancer</Name>
-        <Text>
-            This character moves with grace. They may make a <check type="dex">Sprint</check> to perform a dance.
-        </Text>
-        <Quick>This character is skilled at dancing.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Emote</Name>
-        <Synergy>Lore</Synergy>
-        <Text>
-            This character can win arguments through reassurance, flattery or other emotional means.
-            They can make a <check type="int">Sense</check> to start a <name>Debate</name>.
-        </Text>
-        <Quick>Emotional argument with Sense/Int check.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Equestrianism</Name>
-        <Text>
-            This character is a lover of horses and a skilled rider.
-            They can ride horses without checks. To attack from a horse a <check type="dex">Sprint</check> is made and the attack has strength of the minimum of this check and the attack roll. If a melee weapon was used and the horse charging add +5 to the result.
-        </Text>
-        <Quick>Can ride horses and attack from horseback.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Follower of Arthur</Name>
-        <Synergy>Battle Mage</Synergy>
-        <Require><XP type="Spell">50</XP></Require>
-        <Text>
-            This character is a devout follower of <name>Arthur</name> and has dedicated their life to the deity <name>Arthur</name>.
-            They gain +2 to all spells provided by <name>Arthur</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
-            A character cannot become a <name>Follower of Arthur</name> if they already follow another god.
-        </Text>
-        <Quick>+2 to Arthur spells -1 to others.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Follower of Innodi</Name>
-        <Synergy>Necromancer</Synergy>
-        <Require><XP type="Spell">50</XP></Require>
-        <Text>
-            This characer is a devout follower of <name>Innodi</name> and has dedicated their life to the deity <name>Innodi</name>.
-            They gain +2 to all spells provided by <name>Innodi</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
-            A character cannot become a <name>Follower of Innodi</name> if they already follow another god.
-        </Text>
-        <Quick>+2 to Innodi spells -1 to others.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Follower of Ird'ken</Name>
-        <Synergy>Channeller</Synergy>
-        <Require><XP type="Spell">50</XP></Require>
-        <Text>
-            This character is a devout follower of <name>Ird'ken</name> and has dedicated their life to the deity <name>Ird'ken</name>.
-            They gain +2 to all spells provided by <name>Ird'ken</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
-            A character cannot become a <name>Follower of Ird'ken</name> if they already follow another god.
-        </Text>
-        <Quick>+2 to Ird'ken spells -1 to others.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Follower of Loreanna</Name>
-        <Synergy>Trickster</Synergy>
-        <Require><XP type="Spell">50</XP></Require>
-        <Text>
-            This character is a devout follower of <name>Loreanna</name> and has dedicated their life to the deity <name>Loreanna</name>.
-            They gain +2 to all spells provided by <name>Loreanna</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
-            A character cannot become a <name>Follower of Loreanna</name> if they already follow another god.
-        </Text>
-        <Quick>+2 to Loreanna spells -1 to others.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Follower of Oxdoro</Name>
-        <Synergy>Mechanist</Synergy>
-        <Require><XP type="Spell">50</XP></Require>
-        <Text>
-            This character is a devout follower of <name>Oxdoro</name> and has dedicated their life to the deity <name>Oxdoro</name>. They gain +2 to all spells provided by <name>Oxdoro</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
-            A character cannot become a <name>Follower of Oxdoro</name> if they already follow another god.
-        </Text>
-        <Quick>+2 to Oxdoro spells -1 to others.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Follower of Travaer</Name>
-        <Require><XP type="Spell">50</XP></Require>
-        <Text>
-            This character is a devout follower of <name>Travaer</name> and has dedicated their life to the deity <name>Travaer</name>.
-            They gain +1 to all invertible spells but -1 to all non-invertible spells. This choice of deity should affect character driven traits.
-            A character cannot become a <name>Follower of Travaer</name> if they already follow another god.
-        </Text>
-        <Quick>+1 to invertible spells. -1 to non-invertible spells.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Gadgeteer</Name>
-        <Synergy>Mechanist</Synergy>
-        <Text>
-            This character loves to tinker and experiment with mechanical devices.
-            Given the right tools this character knows how to build and repair small gadgets or any mechanical device with either a <check type="dex">Sprint</check> or <check type="int">Observation</check>.
-            This character receives a +2 to <name>Locks and Traps</name> which does not apply when forcing locks.
-        </Text>
-        <Quick>Skilled with gadgets.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Gambler</Name>
-        <Synergy>Trickster</Synergy>
-        <Text>
-            A <name>Gambler</name> knows how to twist the fates to their will and when to leave good enough alone.
-            They are able to make an <check type="int">Observation</check> to assess risks. They know all games of chance and have a greatly increased chance of winning.
-        </Text>
-        <Quick>Good as gambling. Can assess risks.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Imbue</Name>
-        <Require><Ability>Orb Crafter</Ability></Require>
-        <Text>
-            By calling on divine powers an item can be imbued with the magics of an Orb or an Orb can be created by removing the divine powers of a magical item.
-            When used to imbue an item with and Orb the power is <check type="fai">Sense<times/>2</check>. If the power of the skill is at least the power of the Orb then the item gains the properties of the Orb and the Orb is destroyed. If the power of the skill is less than the power of the Orb, the item already has magical properties, or the item is not compatible with the orb, then nothing happens. However if the power of the skill is zero then the Orb is destroyed.
-            When used to extract properties from an item the power of this ability is <check type="fai">Extract<times/>2</check>. If the power of the ability is at least as powerful as the item's magics then the item loses its magical properties and an Orb with the properties is created. If the power of the skill is less than the power of the item's magics then nothing happens. However if the power of the skill is zero then the item loses its magical properties but no Orb is produced.
-            Depending on the skill of the crafter these processes can take hours to perform. Note that while divine powers are called upon, this is not a spell.
-        </Text>
-        <Quick>Imbue or Extract Orbs from items.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Intimidate</Name>
-        <Synergy>Warrior</Synergy>
-        <Text>
-            This character can win arguments through intimidation and aggression.
-            They can make a <check type="int">Endurance</check> to start a <name>Debate</name>.
-        </Text>
-        <Quick>Intimidate using an Endurance/Int check.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Iron Will</Name>
-        <Text>
-            A character with an <name>Iron Will</name> can focus their mental energies to provide a temporary bonus to any task they can perform.
-            They may use a <name>Minor Action</name> before they use a skill and spend <MP>X</MP> to increase their level in that skill by X for that usage. This perk may not be used with the will of a deity.
-        </Text>
-        <Quick>Spend X MP to gain +X to a skill before using it.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Leader</Name>
-        <Require><XP>250</XP></Require>
-        <Text>
-            This character is a born leader. This <name>Ability</name> unlocks leadership skills.
-        </Text>
-        <Quick>Unlocks leadership skills.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Literate</Name>
-        <Synergy>Lore</Synergy>
-        <Text>
-            This character knows how to read and write.
-        </Text>
-        <Quick>Can read and write.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Mana Shield</Name>
-        <Text>
-            A character with a mana shield may take all damage from one source to their <MP/> instead of <HP/>. If this would reduce their <MP/> below zero then it reduces their <MP/> to zero and the rest of the damage goes to their <HP/> instead. For the purposes of all skills and effects mana shield damage is considered <HP/> damage.
-        </Text>
-        <Quick>May take damage to MP instead of HP.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Mason</Name>
-        <Text>
-            This character is skilled at masonry. They may make a <check type="dex">Sprint</check> to mason a structure. They may make a <check type="int">Observation</check> to analyse masonry.
-        </Text>
-        <Quick>This character is skilled at masonry.</Quick>
-    </Ability>
-
-    <Ability>
-        <Name>Miner</Name>
-        <Text>
-            This character is skilled at mining and geology. They may make a <check type="int">Observation</check> to make geological identitfication and <check type="str">Endurance</check> to mine ore.
-        </Text>
-        <Quick>This character is skilled at mining and geology.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Orb Crafter</Name>
-        <Text>
-            By calling on divine powers the caster can create a magical Orb.
-            When creating orbs the power of this ability is <check type="fai">Sense</check>. If the power of the ability is at least the required power for the type of Orb then an Orb is created of the desired type and power. Note that this is a spell with the deity dependent on the type of Orb.
-            When combining orbs the power of this ability is <check type="fai">Sense</check>. If the power of this ability is at least the sum of the component Orbs then a new Orb is created with the combined properties of the component Orbs and power equal to the sum of the component Orbs. If the power of the ability is less than the sum of the component Orbs then nothing happens. However if there is a critical failure then all the component Orbs are destroyed.
-            Note that while it is possible for the properties to cancel the resultant power is still the sum of the component Orbs. Creating an Orb is a spell and the deity depends on the Orb created.
-        </Text>
-        <Quick>Can craft orbs with magical properties.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Pocket Dimension</Name>
-        <Synergy>Mechanist</Synergy>
-        <Text>
-            A character with Pocket Dimension has enough swing with <name>Oxdoro</name> that they can warp space sufficiently to create a pocket to store small materials in. The pocket is a rectangular prism with a maximum volume of 8,000 cubic cm and no side less than 1cm. Note that a cube with 20cm sides gives 8,000 cubic cm.
-        </Text>
-        <Quick>Can make a pocket dimension of up to 20x20x20 cub. cm</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Poison Resistant</Name>
-        <Text>
-            A character who is resistant to poison suffers from being <name>Poison</name>ed for half the duration. While the power of most poisons decreases by one each turn when someone with this perk is poisoned the poison decreases by two each turn.
-        </Text>
-        <Quick>Doubles recovery rate from poisons.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Quick Changer</Name>
-        <Require><Race>Wolf</Race></Require>
-        <Text>
-            A wolf that can quickly change requires only a <name>Minor Action</name> to change between human form and wolf form. Changing to or from warg form for the first time in a turn does not require a <name>Minor Action</name>.
-        </Text>
-        <Quick>Change between wolf forms faster.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Sailor</Name>
-        <Text>
-            This character is born to ride the seas. They know what to watch for with sea weather and how to navigate and may make a <check type="int">Observation</check> to verify. They are also able to make minor seaworthy vessels with a <check type="dex">Sprint</check>.
-        </Text>
-        <Quick>The character is a skilled sailor</Quick>
-    </Ability>
-
-    <Ability>
-        <Name>Singer</Name>
-        <Text>
-            This character has a exceptional and powerful singing voice. They may make a <check type="int">Observation</check> to sing.
-        </Text>
-        <Quick>The character is a skilled singer</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Reason</Name>
-        <Synergy>Rogue</Synergy>
-        <Text>
-            This character can win arguments through intellectual debate.
-            They can make a <check type="int">Observation</check> to start a <name>Debate</name>.
-        </Text>
-        <Quick>Rational argument with Observation check.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Silent Speech</Name>
-        <Synergy>Channeller</Synergy>
-        <Text>
-            The character can reach into the minds of those around them to create a passage of communication for all those joined while providing protection from others to notice.
-            Anyone joined can communicate to anyone else in the union with any language that they understand and the listeners understand. This is independent of what form a character is in. For example two characters in Wolf Form can use Silent Speech to talk to each other in common however they can only use divine if both characters can understand it.
-            Minds can be joined if the parties are within 1km of the caster.
-        </Text>
-        <Quick>Can join minds to talk over short distances.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Streetwise</Name>
-        <Synergy>Rogue</Synergy>
-        <Text>
-            This character knows a guy who knows a guy. They may make a [Observation:Int] check to find information.
-        </Text>
-        <Quick>Make an Observation check to know information.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Swimmer</Name>
-        <Text>
-            This character can swim. They may make a <check type="dex">Sprint</check> to perform an aquatic action.
-            They may make a <check type="dex">Sprint</check> to hold their breath for an extended duration. A basic pass equates to 2 minutes, pass gives 5 minutes, prodigious pass gives 10 minutes and an epic pass gives 30 minutes.
-        </Text>
-        <Quick>Character is skilled at swimming and can hold their breath for extended periods.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Tough Fighter</Name>
-        <Synergy>Warrior</Synergy>
-        <Text>
-            A <name>Tough Fighter</name> is used to being knocked around in combat and so is stunned for one fewer turns whenever they are stunned.
-        </Text>
-        <Quick>Stun for one turn fewer.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Weapons: Small</Name>
-        <Synergy>Warrior</Synergy>
-        <Text>
-            This character knows how to effectively wield small weapons such as daggers. They gain +1 to <name>Attack</name> rolls and may use <Dex/> instead of <Str/>.
-        </Text>
-        <Quick>Wield daggers etc. with +1 and may use Dex instead of Str.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Weapons: Medium</Name>
-        <Synergy>Warrior</Synergy>
-        <Text>
-            This character knows how to wield medium and large sized weaponry. They are allowed to use single and double handed weapons.
-        </Text>
-        <Quick>May wield one and two handed melee weapons.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Weapons: Large</Name>
-        <Synergy>Warrior</Synergy>
-        <Require><Ability>Weapons: Medium</Ability></Require>
-        <Text>
-            This character knows how to wield large weapons and can wield any two handed weapons as a one handed weapon. If they are also <name>Ambidextrous</name> they may dual wield two handed weapons.
-        </Text>
-        <Quick>May wield two handed weapons as if they were one handed weapons.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Weapons: Ranged</Name>
-        <Synergy>Warrior</Synergy>
-        <Text>
-            This character knows how to wield ranged weapons such as bows and crossbows.
-        </Text>
-        <Quick>May wield bows and crossbows.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Were-Bear</Name>
-        <Require>Urgan Elite</Require>
-        <Text>
-            A were-bear can transform to and from bear form from warg form using a <name>Minor Action</name>. They can transform between bear form and either human form or wolf form with a <name>Major Action</name> or a <name>Minor Action</name> if they have the <name>Quick Changer</name> perk.
-        </Text>
-        <Quick>Allows bear form.</Quick>
-    </Ability>
-    
-    <Ability>
-        <Name>Woodsman</Name>
-        <Text>
-            A character with this Ability is skilled in any outdoor environment. They receive no penalties from natural environmental sources. They know where to find food and other resources in the wild.
-        </Text>
-        <Quick>Good at outdoor survival.</Quick>
-    </Ability>
-    
-    <Armour>
-        <Name>Cloth</Name>
-    </Armour>
-    
-    <Armour>
-        <Name>Leather</Name>
-        <Require><Str>6</Str></Require>
-        <Effect>
-            <DR>1</DR>
-            <Dex>-1</Dex>
-        </Effect>
-        <Quick>DR 1, Dex -1</Quick>
-    </Armour>
-    
-    <Armour>
-        <Name>Chain</Name>
-        <Require><Str>8</Str></Require>
-        <Effect>
-            <DR>2</DR>
-            <Dex>-2</Dex>
-        </Effect>
-        <Quick>DR 2, Dex -2</Quick>
-    </Armour>
-    
-    <Armour>
-        <Name>Plate</Name>
-        <Require><Str>10</Str></Require>
-        <Effect>
-            <DR>3</DR>
-            <Dex>-3</Dex>
-        </Effect>
-        <Quick>DR 3, Dex -3</Quick>
-    </Armour>
-
-    <Shield>
-        <Name>Buckler</Name>
-        <Effect><DR>1</DR></Effect>
-        <Quick>DR 1</Quick>
-    </Shield>
-    
-    <Shield>
-        <Name>Tower Shield</Name>
-        <Require><Str>8</Str><Dex>6</Dex></Require>
-        <Effect><DR>2</DR></Effect>
-        <Quick>DR 2</Quick>
-    </Shield>
-    
-    <Weapon>
-        <Name>Dagger</Name>
-        <Hands>1</Hands>
-        <Class>Small</Class>
-        <Damage>Piercing</Damage>
-        <Bonus>0</Bonus>
-    </Weapon>
-
-    <Weapon>
-        <Name>Short Sword</Name>
-        <Require><Str>6</Str></Require>
-        <Hands>1</Hands>
-        <Class>Medium</Class>
-        <Damage>Slashing</Damage>
-        <Bonus>2</Bonus>
-    </Weapon>
-        
-    <Weapon>
-        <Name>Claymore</Name>
-        <Require><Str>8</Str></Require>
-        <Hands>2</Hands>
-        <Class>Large</Class>
-        <Damage>Slashing</Damage>
-        <Bonus>3</Bonus>
-    </Weapon>
-    
-    <Weapon>
-        <Name>Battle Axe</Name>
-        <Require><Str>8</Str></Require>
-        <Hands>2</Hands>
-        <Class>Large</Class>
-        <Damage>Slashing</Damage>
-        <Bonus>3</Bonus>
-    </Weapon>
-    
-    <Weapon>
-        <Name>Mace</Name>
-        <Require><Str>6</Str></Require>
-        <Hands>1</Hands>
-        <Class>Medium</Class>
-        <Damage>Crushing</Damage>
-        <Bonus>1</Bonus>
-    </Weapon>
-    
-    <Weapon>
-        <Name>War Hammer</Name>
-        <Require><Str>8</Str></Require>
-        <Hands>2</Hands>
-        <Class>Large</Class>
-        <Damage>Crushing</Damage>
-        <Bonus>2</Bonus>
-    </Weapon>
-    
-    <Weapon>
-        <Name>Rapier</Name>
-        <Require><Dex>8</Dex></Require>
-        <Hands>2</Hands>
-        <Class>Medium</Class>
-        <Damage>Piercing</Damage>
-        <Bonus>2</Bonus>
-        <Effect>
-            <skill add="1">Dodge</skill>
-            <skill add="1">Deflect</skill>
-            <skill add="1">Counter</skill>
-        </Effect>
-        <Quick>+1 to Dodge, Deflect and Counter</Quick>
-    </Weapon>
-    
-    <Weapon>
-        <Name>Sling</Name>
-        <Hands>2</Hands>
-        <Class>Small</Class>
-        <Damage>Crushing</Damage>
-        <Bonus>0</Bonus>
-    </Weapon>
-    
-    <Weapon>
-        <Name>Long Bow</Name>
-        <Require><Dex>8</Dex></Require>
-        <Hands>2</Hands>
-        <Class>Ranged</Class>
-        <Damage>Piercing</Damage>
-        <Bonus>1</Bonus>
-        <Range>4</Range>
-    </Weapon>
-
-    <Weapon>
-        <Name>Short Bow</Name>
-        <Require><Dex>8</Dex></Require>
-        <Hands>2</Hands>
-        <Class>Ranged</Class>
-        <Damage>Piercing</Damage>
-        <Bonus>3</Bonus>
-        <Range>2</Range>
-    </Weapon>
-    
-    <Weapon>
-        <Name>Crossbow</Name>
-        <Require><Dex>6</Dex><Str>6</Str></Require>
-        <Hands>2</Hands>
-        <Class>Ranged</Class>
-        <Damage>Piercing</Damage>
-        <Bonus>5</Bonus>
-    </Weapon>
-    
 </Skills>

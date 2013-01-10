@@ -106,21 +106,21 @@ function roll(value, type)
 			result += Math.floor((Math.random()*type+1)/4);
 
 	if (result <= 0)
-		alert("Result: " + result + ' (Critical Failure)');
+		alert("Result: " + result + ' (Critical Failure: 0)');
 	else if (result <= 2)
-		alert("Result: " + result + ' (Failure)');
+		alert("Result: " + result + ' (Failure: 1)');
 	else if (result <= 5)
-		alert("Result: " + result + ' (Basic Pass)');
+		alert("Result: " + result + ' (Basic Pass: 2)');
 	else if (result <= 10)
-		alert("Result: " + result + ' (Pass)');
+		alert("Result: " + result + ' (Pass: 3)');
 	else if (result <= 17)
-		alert("Result: " + result + ' (Skillful Pass)');
+		alert("Result: " + result + ' (Skillful Pass: 4)');
 	else if (result <= 26)
-		alert("Result: " + result + ' (Prodigious Pass)');
+		alert("Result: " + result + ' (Prodigious Pass: 5)');
 	else if (result <= 37)
-		alert("Result: " + result + ' (Epic Pass)');
+		alert("Result: " + result + ' (Epic Pass: 6)');
 	else
-		alert("Result: " + result + ' (Godlike Pass)');
+		alert("Result: " + result + ' (Godlike Pass: 7)');
 }
 
 function add(elem_id, amount)

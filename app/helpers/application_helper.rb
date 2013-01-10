@@ -1,4 +1,5 @@
 require 'xml'
+require 'string'
 
 module ApplicationHelper
 
@@ -129,7 +130,7 @@ module ApplicationHelper
 	end
 
 	def check(skill_name, stat_name)
-		content_tag :span, "#{skill_name.capitalize}:#{stat_name.capitalize}".html_safe, class: 'label label-warning'
+		content_tag :span, "#{skill_name.titleise}:#{stat_name.titleise}".html_safe, class: 'label label-warning'
 	end
 
 	def parse_text_xml(xml_text, type=:full)
@@ -147,16 +148,16 @@ module ApplicationHelper
 					text << major_action
 				elsif node.content == 'Move Action'
 					text << move_action
-				elsif Skill.all.any? { |skill| skill.name == node.content } ||
-					Ability.all.any? { |ability| ability.name == node.content }
+				elsif Skill.every.any? { |skill| skill.name == node.content || skill.inv_name == node.content } ||
+					Ability.every.any? { |ability| ability.name == node.content }
 					text << skill(node.content)
 				else
 					text << content_tag(:b, node.content)
 				end
-			when 'str' then text << strength
-			when 'dex' then text << dexterity
-			when 'int' then text << intelligence
-			when 'fai' then text << faith
+			when 'str', 'strength' then text << strength
+			when 'dex', 'dexterity' then text << dexterity
+			when 'int', 'intelligence' then text << intelligence
+			when 'fai', 'faith' then text << faith
 			when 'hp' then text << hp(node.content)
 			when 'mp' then text << mp(node.content)
 			when 'xp' then text << content_tag(:span, 'XP', class: 'label')
@@ -164,7 +165,7 @@ module ApplicationHelper
 			when 'mpmax' then text << mp('max')
 			when 'emph' then text << content_tag(:em, node.content)
 			when 'check'
-				stat = node.attributes['type'] ? node.attributes['type'].capitalize : ""
+				stat = node.attributes['type'] ? node.attributes['type'].titleise : ""
 				skill = ""
 				node.each do |inner_node|
 					if inner_node.name == 'times'
@@ -179,7 +180,7 @@ module ApplicationHelper
 			end
 		end
 
-		return text.gsub(/<\/?p(\s.*)?>/, '') unless type == :full
+		return text.gsub(/<\/?p(\s[^>]*)?>/, '') unless type == :full
 		return text + '</p>'
 	end
 
@@ -212,4 +213,46 @@ module ApplicationHelper
 		else skill.name
 		end
 	end
+
+	@@raw_monsters = nil
+
+	class Monster
+		attr_accessor :name, :hp, :str, :dex, :int, :fai, :attack, :attack_type, :defend, :defend_skill, :text
+	end
+
+	def monsters
+		if @@raw_monsters.nil?
+			@@raw_monsters = []
+
+			XML::Parser.file('app/data/monsters.xml').parse.root.find('Monster').each do |monster_xml|
+				monster = Monster.new
+				monster.name = monster_xml.find_first('Name').content
+
+				monster.hp = monster_xml.find_first('HP').try :content
+				monster.str = monster_xml.find_first('Str') ? monster_xml.find_first('Str').content : 4
+				monster.dex = monster_xml.find_first('Dex') ? monster_xml.find_first('Dex').content : 4
+				monster.int = monster_xml.find_first('Int') ? monster_xml.find_first('Int').content : 4
+				monster.fai = monster_xml.find_first('Fai') ? monster_xml.find_first('Fai').content : 4
+
+				monster_xml.find('Attack').each do |attack_xml| # for now, ignore multiple attacks
+					monster.attack = attack_xml.content
+					monster.attack_type = attack_xml['type'] if attack_xml['type']
+				end
+
+				monster_xml.find('Defend').each do |defend_xml| # for now, ignore multiple defenses
+					monster.defend = defend_xml.content
+					monster.defend_skill = defend_xml['skill']
+				end
+
+				monster.text = parse_text_xml(monster_xml.find_first('Text'), :quick) if monster_xml.find_first('Text')
+
+				@@raw_monsters << monster
+			end
+
+			@@raw_monsters.sort_by! { |monster| monster.name }
+		end
+
+		return @@raw_monsters
+	end
+
 end

@@ -1,0 +1,434 @@
+<Abilities>
+
+    <Ability>
+        <Name>Actor</Name>
+        <Text>
+            This character is a skilled actor. They may make a <check type="int">Observation</check> to perform. This ability may be used to disguise the identity of the character or impersonate another character.
+        </Text>
+        <Quick>This character is good at acting, disguising and impersonating.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Acrobatic</Name>
+        <Synergy>Rogue</Synergy>
+        <Text>
+            This character is highly agile and dextrous. They may make a <check type="dex">Sprint</check> to perform an acrobatic action.
+            If appropriate an <name>Acrobatic</name> character may help another character perform an acrobatic action. If they do so it requires a <name>Major Action</name> for each turn that they assist. A <check type="dex">Sprint</check> is made with the <name>Sprint</name> skill of the assisting character and the <Dex/> of the assisted character.
+            Acrobatic characters have two <name>Minor Action</name>s each turn.
+        </Text>
+        <Quick>The character is unusually agile and has two Minor Actions each turn.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Ambidextrous</Name>
+        <Synergy>Rogue</Synergy>
+        <Text>
+            This character is just as able with their off hand. They may They may dual wield one handed weapons with the same <name>Damage Type</name>. When dual wielding a character adds the bonus from both weapons when making their <name>Attack</name> rolls.
+        </Text>
+        <Quick>The character is just as able with their off hand and may dual wield.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Atheist</Name>
+        <Text>
+            An Atheist has made the choice to divorce themselves from the gods. The character gains <name>Magical Resistance</name> of 1. An <name>Atheist</name> may not cast spells.
+            The presence of the Gods is irrefutable and so an Atheist believes not in the non-existence of Gods but that they should not be followed. This ability should affect how a character is role-played.
+        </Text>
+        <Quick>Magic Resistance +1. The character cannot cast spells.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Blacksmith</Name>
+        <Text>
+            The character is a skilled blacksmith and can forge their own weapons, armour and miscellanea given the right equipment and a forge.
+            When making items a <check type="int">Observation</check> is made which determines the <name>Quality</name> of the item made. A pass gives a normal <name>Quality</name> with each result range adding or subtracting 1 from the <name>Quality</name>
+        </Text>
+        <Quick>Make and Observation roll to make weapons and armour.</Quick>
+    </Ability>
+
+    <Ability>
+        <Name>Carpenter</Name>
+        <Text>
+            This character is skilled at carpentry and can build and analyse wooden structures.
+            They may make a <check type="dex">Sprint</check> to build a wooden structure. They may make a <check type="int">Observation</check> to analyse a wooden structure.
+        </Text>
+        <Quick>This character is skilled at carpentry.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Chef</Name>
+        <Text>
+            This character is skilled at preparing and cooking food.
+            They may <check type="int">Observation</check> to make or prepare food. This includes the ability to butcher animals and collect food in wilderness areas.
+        </Text>
+        <Quick>This character is skilled at cooking.</Quick>
+    </Ability>
+
+    <Ability>
+        <Name>Dancer</Name>
+        <Text>
+            This character moves with grace. They may make a <check type="dex">Sprint</check> to perform a dance.
+        </Text>
+        <Quick>This character is skilled at dancing.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Emote</Name>
+        <Synergy>Lore</Synergy>
+        <Text>
+            This character can win arguments through reassurance, flattery or other emotional means.
+            They can make a <check type="int">Sense</check> to start a <name>Debate</name>.
+        </Text>
+        <Quick>Emotional argument with Sense/Int check.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Equestrianism</Name>
+        <Text>
+            This character is a lover of horses and a skilled rider.
+            They can ride horses without checks. To attack from a horse a <check type="dex">Sprint</check> is made and the attack has strength of the minimum of this check and the attack roll. If a melee weapon was used and the horse charging add +5 to the result.
+        </Text>
+        <Quick>Can ride horses and attack from horseback.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Follower of Arthur</Name>
+        <Synergy>Battle Mage</Synergy>
+        <Require><XP type="Spell">50</XP></Require>
+        <Text>
+            This character is a devout follower of <name>Arthur</name> and has dedicated their life to the deity <name>Arthur</name>.
+            They gain +2 to all spells provided by <name>Arthur</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
+            A character cannot become a <name>Follower of Arthur</name> if they already follow another god.
+        </Text>
+        <Quick>+2 to Arthur spells -1 to others.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Follower of Innodi</Name>
+        <Synergy>Necromancer</Synergy>
+        <Require><XP type="Spell">50</XP></Require>
+        <Text>
+            This characer is a devout follower of <name>Innodi</name> and has dedicated their life to the deity <name>Innodi</name>.
+            They gain +2 to all spells provided by <name>Innodi</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
+            A character cannot become a <name>Follower of Innodi</name> if they already follow another god.
+        </Text>
+        <Quick>+2 to Innodi spells -1 to others.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Follower of Ird'ken</Name>
+        <Synergy>Channeller</Synergy>
+        <Require><XP type="Spell">50</XP></Require>
+        <Text>
+            This character is a devout follower of <name>Ird'ken</name> and has dedicated their life to the deity <name>Ird'ken</name>.
+            They gain +2 to all spells provided by <name>Ird'ken</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
+            A character cannot become a <name>Follower of Ird'ken</name> if they already follow another god.
+        </Text>
+        <Quick>+2 to Ird'ken spells -1 to others.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Follower of Loreanna</Name>
+        <Synergy>Trickster</Synergy>
+        <Require><XP type="Spell">50</XP></Require>
+        <Text>
+            This character is a devout follower of <name>Loreanna</name> and has dedicated their life to the deity <name>Loreanna</name>.
+            They gain +2 to all spells provided by <name>Loreanna</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
+            A character cannot become a <name>Follower of Loreanna</name> if they already follow another god.
+        </Text>
+        <Quick>+2 to Loreanna spells -1 to others.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Follower of Oxdoro</Name>
+        <Synergy>Mechanist</Synergy>
+        <Require><XP type="Spell">50</XP></Require>
+        <Text>
+            This character is a devout follower of <name>Oxdoro</name> and has dedicated their life to the deity <name>Oxdoro</name>. They gain +2 to all spells provided by <name>Oxdoro</name> but -1 to all spells provided by other gods. This choice of deity should affect character driven traits.
+            A character cannot become a <name>Follower of Oxdoro</name> if they already follow another god.
+        </Text>
+        <Quick>+2 to Oxdoro spells -1 to others.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Follower of Travaer</Name>
+        <Require><XP type="Spell">50</XP></Require>
+        <Text>
+            This character is a devout follower of <name>Travaer</name> and has dedicated their life to the deity <name>Travaer</name>.
+            They gain +1 to all invertible spells but -1 to all non-invertible spells. This choice of deity should affect character driven traits.
+            A character cannot become a <name>Follower of Travaer</name> if they already follow another god.
+        </Text>
+        <Quick>+1 to invertible spells. -1 to non-invertible spells.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Gadgeteer</Name>
+        <Synergy>Mechanist</Synergy>
+        <Text>
+            This character loves to tinker and experiment with mechanical devices.
+            Given the right tools this character knows how to build and repair small gadgets or any mechanical device with either a <check type="dex">Sprint</check> or <check type="int">Observation</check>.
+            This character receives a +2 to <name>Locks and Traps</name> which does not apply when forcing locks.
+        </Text>
+        <Quick>Skilled with gadgets.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Gambler</Name>
+        <Synergy>Trickster</Synergy>
+        <Text>
+            A <name>Gambler</name> knows how to twist the fates to their will and when to leave good enough alone.
+            They are able to make an <check type="int">Observation</check> to assess risks. They know all games of chance and have a greatly increased chance of winning.
+        </Text>
+        <Quick>Good as gambling. Can assess risks.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Imbue</Name>
+        <Require><Ability>Orb Crafter</Ability></Require>
+        <Text>
+            By calling on divine powers an item can be imbued with the magics of an Orb or an Orb can be created by removing the divine powers of a magical item.
+            When used to imbue an item with and Orb the power is <check type="fai">Sense<times/>2</check>. If the power of the skill is at least the power of the Orb then the item gains the properties of the Orb and the Orb is destroyed. If the power of the skill is less than the power of the Orb, the item already has magical properties, or the item is not compatible with the orb, then nothing happens. However if the power of the skill is zero then the Orb is destroyed.
+            When used to extract properties from an item the power of this ability is <check type="fai">Extract<times/>2</check>. If the power of the ability is at least as powerful as the item's magics then the item loses its magical properties and an Orb with the properties is created. If the power of the skill is less than the power of the item's magics then nothing happens. However if the power of the skill is zero then the item loses its magical properties but no Orb is produced.
+            Depending on the skill of the crafter these processes can take hours to perform. Note that while divine powers are called upon, this is not a spell.
+        </Text>
+        <Quick>Imbue or Extract Orbs from items.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Intimidate</Name>
+        <Synergy>Warrior</Synergy>
+        <Text>
+            This character can win arguments through intimidation and aggression.
+            They can make a <check type="int">Endurance</check> to start a <name>Debate</name>.
+        </Text>
+        <Quick>Intimidate using an Endurance/Int check.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Iron Will</Name>
+        <Synergy>Channeller</Synergy>
+        <Text>
+            A character with an <name>Iron Will</name> can focus their mental energies to provide a temporary bonus to any task they can perform.
+            They may use a <name>Minor Action</name> before they use a skill and spend <MP>X</MP> to increase their level in that skill by the power level of X for that usage. This perk may not be used with the will of a deity.
+        </Text>
+        <Quick>Spend X MP to gain the power level of X to a skill before using it.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Leader</Name>
+        <Require><XP>250</XP></Require>
+        <Text>
+            This character is a born leader. This <name>Ability</name> unlocks leadership skills.
+        </Text>
+        <Quick>Unlocks leadership skills.</Quick>
+    </Ability>
+
+    <Ability>
+    	<Name>Life Attuned</Name>
+    	<Synergy>Necromancer</Synergy>
+    	<Text>
+    		This character is attuned to the life forces around them. They may use <check type="fai">Sense</check> instead of <check type="int">Observation</check> to notice nearby characters and creatures. They may make a <check type="fai">Sense</check> to estimate the <HP/> and <MP/> of a character.
+    	</Text>
+    	<Quick>Observe characters/creatures with Sense and estime HP/MP with a Sense check.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Literate</Name>
+        <Synergy>Lore</Synergy>
+        <Text>
+            This character knows how to read and write.
+        </Text>
+        <Quick>Can read and write.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Mana Shield</Name>
+        <Synergy>Battle Mage</Synergy>
+        <Text>
+            A character with a mana shield may take all damage from one source to their <MP/> instead of <HP/>. If this would reduce their <MP/> below zero then it reduces their <MP/> to zero and the rest of the damage goes to their <HP/> instead. For the purposes of all skills and effects mana shield damage is considered <HP/> damage.
+        </Text>
+        <Quick>May take damage to MP instead of HP.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Mason</Name>
+        <Text>
+            This character is skilled at masonry. They may make a <check type="dex">Sprint</check> to mason a structure. They may make a <check type="int">Observation</check> to analyse masonry.
+        </Text>
+        <Quick>This character is skilled at masonry.</Quick>
+    </Ability>
+
+    <Ability>
+        <Name>Miner</Name>
+        <Text>
+            This character is skilled at mining and geology. They may make a <check type="int">Observation</check> to make geological identitfication and <check type="str">Endurance</check> to mine ore.
+        </Text>
+        <Quick>This character is skilled at mining and geology.</Quick>
+    </Ability>
+
+    <Ability>
+    	<Name>Oracle</Name>
+    	<Require><Ability>Follower of Loreanna</Ability></Require>
+    	<Synergy>Trickster</Synergy>
+    	<Text>
+    		By calling on the power of Loreanna an <name>Oracle</name> may read the destiny of a character with a <check type="fai">Sense</check>.
+    	</Text>
+    	<Quick>This character can read the destiny of characters.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Orb Crafter</Name>
+        <Text>
+            By calling on divine powers the caster can create a magical Orb.
+            When creating orbs the power of this ability is <check type="fai">Sense</check>. If the power of the ability is at least the required power for the type of Orb then an Orb is created of the desired type and power. Note that this is a spell with the deity dependent on the type of Orb.
+            When combining orbs the power of this ability is <check type="fai">Sense</check>. If the power of this ability is at least the sum of the component Orbs then a new Orb is created with the combined properties of the component Orbs and power equal to the sum of the component Orbs. If the power of the ability is less than the sum of the component Orbs then nothing happens. However if there is a critical failure then all the component Orbs are destroyed.
+            Note that while it is possible for the properties to cancel the resultant power is still the sum of the component Orbs. Creating an Orb is a spell and the deity depends on the Orb created.
+        </Text>
+        <Quick>Can craft orbs with magical properties.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Pocket Dimension</Name>
+        <Synergy>Mechanist</Synergy>
+        <Text>
+            A character with Pocket Dimension has enough swing with <name>Oxdoro</name> that they can warp space sufficiently to create a pocket to store small materials in. The pocket is a rectangular prism with a maximum volume of 8,000 cubic cm and no side less than 1cm. Note that a cube with 20cm sides gives 8,000 cubic cm.
+        </Text>
+        <Quick>Can make a pocket dimension of up to 20x20x20 cub. cm</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Poison Resistant</Name>
+        <Text>
+            A character who is resistant to poison suffers from being <name>Poison</name>ed for half the duration. While the power of most poisons decreases by one each turn when someone with this perk is poisoned the poison decreases by two each turn.
+        </Text>
+        <Quick>Doubles recovery rate from poisons.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Quick Changer</Name>
+        <Require><Race>Wolf</Race></Require>
+        <Text>
+            A wolf that can quickly change requires only a <name>Minor Action</name> to change between human form and wolf form. Changing to or from warg form for the first time in a turn does not require a <name>Minor Action</name>.
+        </Text>
+        <Quick>Change between wolf forms faster.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Sailor</Name>
+        <Text>
+            This character is born to ride the seas. They know what to watch for with sea weather and how to navigate and may make a <check type="int">Observation</check> to verify. They are also able to make minor seaworthy vessels with a <check type="dex">Sprint</check>.
+        </Text>
+        <Quick>The character is a skilled sailor</Quick>
+    </Ability>
+
+    <Ability>
+        <Name>Singer</Name>
+        <Text>
+            This character has a exceptional and powerful singing voice. They may make a <check type="int">Observation</check> to sing.
+        </Text>
+        <Quick>The character is a skilled singer</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Reason</Name>
+        <Synergy>Rogue</Synergy>
+        <Text>
+            This character can win arguments through intellectual debate.
+            They can make a <check type="int">Observation</check> to start a <name>Debate</name>.
+        </Text>
+        <Quick>Rational argument with Observation check.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Silent Speech</Name>
+        <Synergy>Channeller</Synergy>
+        <Text>
+            The character can reach into the minds of those around them to create a passage of communication for all those joined while providing protection from others to notice.
+            Anyone joined can communicate to anyone else in the union with any language that they understand and the listeners understand. This is independent of what form a character is in. For example two characters in Wolf Form can use Silent Speech to talk to each other in common however they can only use divine if both characters can understand it.
+            Minds can be joined if the parties are within 1km of the caster.
+        </Text>
+        <Quick>Can join minds to talk over short distances.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Streetwise</Name>
+        <Synergy>Rogue</Synergy>
+        <Text>
+            This character knows a guy who knows a guy. They may make a [Observation:Int] check to find information.
+        </Text>
+        <Quick>Make an Observation check to know information.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Swimmer</Name>
+        <Text>
+            This character can swim. They may make a <check type="dex">Sprint</check> to perform an aquatic action.
+            They may make a <check type="dex">Sprint</check> to hold their breath for an extended duration. A basic pass equates to 2 minutes, pass gives 5 minutes, prodigious pass gives 10 minutes and an epic pass gives 30 minutes.
+        </Text>
+        <Quick>Character is skilled at swimming and can hold their breath for extended periods.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Tough Fighter</Name>
+        <Synergy>Warrior</Synergy>
+        <Text>
+            A <name>Tough Fighter</name> is used to being knocked around in combat and so is stunned for one fewer turns whenever they are stunned.
+        </Text>
+        <Quick>Stun for one turn fewer.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Weapons: Small</Name>
+        <Synergy>Warrior</Synergy>
+        <Text>
+            This character knows how to effectively wield small weapons such as daggers. They gain +1 to <name>Attack</name> rolls and may use <Dex/> instead of <Str/>.
+        </Text>
+        <Quick>Wield daggers etc. with +1 and may use Dex instead of Str.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Weapons: Medium</Name>
+        <Synergy>Warrior</Synergy>
+        <Text>
+            This character knows how to wield medium and large sized weaponry. They are allowed to use single and double handed weapons.
+        </Text>
+        <Quick>May wield one and two handed melee weapons.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Weapons: Large</Name>
+        <Synergy>Warrior</Synergy>
+        <Require><Ability>Weapons: Medium</Ability></Require>
+        <Text>
+            This character knows how to wield large weapons and can wield any two handed weapons as a one handed weapon. If they are also <name>Ambidextrous</name> they may dual wield two handed weapons.
+        </Text>
+        <Quick>May wield two handed weapons as if they were one handed weapons.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Weapons: Ranged</Name>
+        <Synergy>Warrior</Synergy>
+        <Text>
+            This character knows how to wield ranged weapons such as bows and crossbows.
+        </Text>
+        <Quick>May wield bows and crossbows.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Were-Bear</Name>
+        <Require>Urgan Elite</Require>
+        <Text>
+            A were-bear can transform to and from bear form from warg form using a <name>Minor Action</name>. They can transform between bear form and either human form or wolf form with a <name>Major Action</name> or a <name>Minor Action</name> if they have the <name>Quick Changer</name> perk.
+        </Text>
+        <Quick>Allows bear form.</Quick>
+    </Ability>
+    
+    <Ability>
+        <Name>Woodsman</Name>
+        <Text>
+            A character with this Ability is skilled in any outdoor environment. They receive no penalties from natural environmental sources. They know where to find food and other resources in the wild.
+        </Text>
+        <Quick>Good at outdoor survival.</Quick>
+    </Ability>
+
+</Abilities>

@@ -159,6 +159,10 @@ class Skill < ActiveRecord::Base
 		return self.name
 	end
 
+	def inv_name
+		self.class.raw_data[self.name][:name_inv]
+	end
+
 	def has_synergy?
 		not synergy_name.nil?
 	end
@@ -209,7 +213,7 @@ class Skill < ActiveRecord::Base
 		when 'Fai' then icon_list << '/assets/fai.png'
 		end
 
-		icon_list << '/assets/dividible.png' if self.dividible?
+		icon_list << '/assets/divisible.png' if self.divisible?
 		icon_list << '/assets/invertible.png' if self.invertible?
 		icon_list << '/assets/defend.png' if self.defend?
 		icon_list << '/assets/attack.png' if self.attack? && self.melee?
@@ -238,8 +242,8 @@ class Skill < ActiveRecord::Base
 		self.class.raw_data[self.name][:invertible]
 	end
 
-	def dividible?
-		self.class.raw_data[self.name][:dividible]
+	def divisible?
+		self.class.raw_data[self.name][:divisible]
 	end
 	
 	private
@@ -273,7 +277,7 @@ class Skill < ActiveRecord::Base
 				end unless skill[:stat].nil? or BASE_SKILLS.include? skill[:name]
 
 				skill[:invertible] = !skill_xml.find_first('Invert').nil?
-				skill[:dividible] = !skill_xml.find_first('Divide').nil?
+				skill[:divisible] = !skill_xml.find_first('Divide').nil?
 
 				skill[:text] = skill_xml.find_first('Text')
 

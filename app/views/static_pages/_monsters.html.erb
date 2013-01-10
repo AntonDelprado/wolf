@@ -1,1 +1,41 @@
 <h2>Monsters</h2>
+
+<p>Below is a quick reference of monsters. When X appears in the table it refers to the level of the monster.</p>
+
+<table class='table table-bordered table-condensed skill-table'>
+	<col/>
+	<col class="small-col"/>
+	<col class="small-col"/>
+	<col class="small-col"/>
+	<col class="small-col"/>
+	<col class="small-col"/>
+	<thead>
+		<tr>
+			<th>Monster Name</th>
+			<th>HP</th>
+			<th>Str</th>
+			<th>Dex</th>
+			<th>Int</th>
+			<th>Fai</th>
+			<th>Attack</th>
+			<th>Defense</th>
+			<th>Damage Type</th>
+		<tr>
+	</thead>
+	<tbody>
+		<% monsters().each do |monster| %>
+			<tr>
+				<%= content_tag :td, monster.name, rowspan: (monster.text.nil? ? 1 : 2), class: 'bold' %>
+				<%= content_tag :td, monster.hp %>
+				<%= content_tag :td, monster.str %>
+				<%= content_tag :td, monster.dex %>
+				<%= content_tag :td, monster.int %>
+				<%= content_tag :td, monster.fai %>
+				<%= content_tag :td, monster.attack %>
+				<%= content_tag :td, monster.defend ? "#{monster.defend_skill}: #{monster.defend}" : "" %>
+				<%= content_tag :td, monster.attack_type %>
+			</tr>
+			<%= content_tag :tr, (content_tag :td, monster.text.html_safe, colspan: 8) if monster.text %>
+		<% end %>
+	</tbody>
+</table>

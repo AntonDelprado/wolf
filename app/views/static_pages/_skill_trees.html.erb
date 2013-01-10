@@ -17,7 +17,7 @@
 				<%= content_tag :td, class: (base_skill == skill ? '' : 'synergy-row'), rowspan: Skill.required_size(skill_name) do %>
 					<%= content_tag :div, class: "synergy span2 #{skill[:synergy_css]}", style: 'margin-bottom:0px;' do %>
 						<%= tag(:img, src: 'assets/attack.png', class: 'small-left') if skill[:attack] %>
-						<%= tag(:img, src: 'assets/attack.png', class: 'small-left') if skill[:defend] %>
+						<%= tag(:img, src: 'assets/defend.png', class: 'small-left') if skill[:defend] %>
 
 						<% if (skill[:name].length > 11 and skill[:spell] and skill[:attack]) or skill[:name].length > 14 %>
 							<%= content_tag :span, skill[:name], style: 'font-size:85%;' %>
@@ -27,7 +27,7 @@
 
 						<%= tag(:img, src: 'assets/arthur.png', class: 'small-right') if skill[:spell] == 'Arthur' %>
 						<%= tag(:img, src: 'assets/innodi.png', class: 'small-right') if skill[:spell] == 'Innodi' %>
-						<%= tag(:img, src: 'assets/irdken.png', class: 'small-right') if skill[:spell] == "Irdk'ken" %>
+						<%= tag(:img, src: 'assets/irdken.png', class: 'small-right') if skill[:spell] == "Ird'ken" %>
 						<%= tag(:img, src: 'assets/oxdoro.png', class: 'small-right') if skill[:spell] == 'Oxdoro' %>
 						<%= tag(:img, src: 'assets/loreanna.png', class: 'small-right') if skill[:spell] == 'Loreanna' %>
 						<%= tag(:img, src: 'assets/travaer.png', class: 'small-right') if skill[:spell] == 'Travaer' %>

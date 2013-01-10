@@ -70,7 +70,7 @@ class Ability < ActiveRecord::Base
 	def self.raw_data
 		if @@raw_data.nil?
 			@@raw_data = {}
-			XML::Parser.file('app/data/skills.xml').parse.root.find('Ability').each do |ability_xml|
+			XML::Parser.file('app/data/abilities.xml').parse.root.find('Ability').each do |ability_xml|
 				ability = {}
 
 				ability[:name] = ability_xml.find_first('Name').content

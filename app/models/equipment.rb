@@ -175,7 +175,7 @@ class Equipment < ActiveRecord::Base
 	def self.armour_data
 		unless @@armours
 			@@armours = {}
-			XML::Parser.file('app/data/skills.xml').parse.root.find('Armour').each do |armour_xml|
+			XML::Parser.file('app/data/equipment.xml').parse.root.find('Armour').each do |armour_xml|
 				armour = { name: armour_xml.find_first('Name').content }
 				armour[:require] = self.parse_require armour_xml.find_first('Require') if armour_xml.find_first('Require')
 				armour[:effect] = self.parse_effect armour_xml.find_first('Effect') if armour_xml.find_first('Effect')
@@ -192,7 +192,7 @@ class Equipment < ActiveRecord::Base
 	def self.weapon_data
 		unless @@weapons
 			@@weapons = {}
-			XML::Parser.file('app/data/skills.xml').parse.root.find('Weapon').each do |weapon_xml|
+			XML::Parser.file('app/data/equipment.xml').parse.root.find('Weapon').each do |weapon_xml|
 				weapon = {
 					name:  			weapon_xml.find_first('Name').content,
 					hands:  		weapon_xml.find_first('Hands').content.to_i,
@@ -217,7 +217,7 @@ class Equipment < ActiveRecord::Base
 	def self.shield_data
 		unless @@shields
 			@@shields = {}
-			XML::Parser.file('app/data/skills.xml').parse.root.find('Shield').each do |shield_xml|
+			XML::Parser.file('app/data/equipment.xml').parse.root.find('Shield').each do |shield_xml|
 				shield = { name: shield_xml.find_first('Name').content }
 				shield[:require] = self.parse_require shield_xml.find_first('Require') if shield_xml.find_first('Require')
 				shield[:effect] = self.parse_effect shield_xml.find_first('Effect') if shield_xml.find_first('Effect')
