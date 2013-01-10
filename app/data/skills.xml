@@ -65,11 +65,14 @@
             Each turn the character must make a regular attack with the die type increased by two against a target. The character must target a conscious target so long as one exists, conscious friends included. If there are no conscious targets they must target unconscious but alive characters, alive friend included. If there are no unconscious characters they must target an object or dead character.
         </Text>
         <Effect>
-            <Action type="melee">Attack</Action>
             <Mana>10</Mana>
-            <Power type="roll" die="2" weapon="1"><skill>Berserk</skill></Power>
-            <Duration type="roll"><skill>Berserk</skill></Duration>
-            <Quick>Must attack for Y turns. Each turn roll an attack for X.</Quick>
+            <Power type="roll"><skill>Berserk</skill></Power>
+            <Quick>Must attack for result level turns.</Quick>
+        </Effect>
+        <Effect>
+            <Action type="melee">Attack</Action>
+            <Power type="roll" times="2" weapon="1"><skill>Berserk</skill></Power>
+            <Quick>When Berserk attack for X.</Quick>
         </Effect>
     </Skill>
     
@@ -90,7 +93,6 @@
             <Action>Major</Action>
             <Mana>10</Mana>
             <Power type="roll"><skill>Black Hole</skill></Power>
-            <Duration>X</Duration>
             <Quick>Create a black hole radius X that sucks objects in.</Quick>
         </Effect>
     </Skill>
@@ -112,7 +114,6 @@
             <Action>Major</Action>
             <Mana>8</Mana>
             <Power type="roll"><skill>Bless</skill></Power>
-            <Duration>X</Duration>
             <Quick>Target gets +2 or -2 to all skills.</Quick>
         </Effect>
     </Skill>
@@ -705,7 +706,6 @@
             <Action>Major</Action>
             <Mana>8,2</Mana>
             <Power type="roll"><skill>Hold Person</skill></Power>
-            <Duration>X</Duration>
             <Quick>Target has no Major Action, or if they have no Major Action they now have one.</Quick>
         </Effect>
     </Skill>
@@ -765,7 +765,6 @@
             <Action>Major</Action>
             <Mana>7</Mana>
             <Power type="roll"><skill>Increase Size</skill></Power>
-            <Duration>X</Duration>
             <Quick>Target gains or loses a size class. Divide to add or lose an additional class.</Quick>
         </Effect>
     </Skill>
@@ -787,7 +786,6 @@
             <Action>Major</Action>
             <Mana>7</Mana>
             <Power type="roll"><skill>Increase Stat</skill></Power>
-            <Duration>X</Duration>
             <Quick>Target gains +1 or -1 to either Str, Dex, Int or Fai. Divide for an additional +1 or -1.</Quick>
         </Effect>
     </Skill>
@@ -810,7 +808,6 @@
             <Action>Major</Action>
             <Mana>10</Mana>
             <Power type="roll"><skill>Increase Stats</skill></Power>
-            <Duration>X</Duration>
             <Quick>Target gains +1 or -1 to all of Str, Dex, Int and Fai. Divide for an additional +1 or -1.</Quick>
         </Effect>
     </Skill>
@@ -1031,7 +1028,6 @@
         <Effect>
             <Action>Major</Action>
             <Power type="roll"><skill>Phase Shift</skill></Power>
-            <Duration>X</Duration>
             <Mana>5,2</Mana>
             <Quick>Become Ethereal.</Quick>
         </Effect>
@@ -1575,7 +1571,6 @@
             <Action>Major</Action>
             <Mana>15</Mana>
             <Power type="roll"><skill>Will of Arthur</skill></Power>
-            <Duration>X</Duration>
             <Quick>Add or remove X to all attack skills, defence skills or both.</Quick>
         </Effect>
     </Skill>
@@ -1617,7 +1612,6 @@
             <Action>Major</Action>
             <Mana>15</Mana>
             <Power type="roll"><skill>Will of Ird'ken</skill></Power>
-            <Duration>X</Duration>
             <Quick>Choose targets' Major Actions from a list numbering result level skills.</Quick>
         </Effect>
     </Skill>
@@ -1639,7 +1633,6 @@
             <Action>Major</Action>
             <Mana>15</Mana>
             <Power type="roll"><skill>Will of Loreanna</skill></Power>
-            <Duration>X</Duration>
             <Quick>Target gains +1 to abilties and reduces untrained penalties. Divide to increase number of targets.</Quick>
         </Effect>
     </Skill>
@@ -1681,7 +1674,6 @@
             <Action>Major</Action>
             <Mana>15</Mana>
             <Power type="roll"><skill>Will of Travaer</skill></Power>
-            <Duration>X</Duration>
             <Quick>Caster gets the chance to invert any invertible spell.</Quick>
         </Effect>
     </Skill>

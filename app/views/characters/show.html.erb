@@ -256,7 +256,6 @@
 	<col class="small-col dont-print"/>
 	<col class="small-col"/>
 	<col class="small-col"/>
-	<col class="small-col"/>
 	<thead>
 		<tr>
 			<th>Skill Name</th>
@@ -264,7 +263,6 @@
 			<th class='dont-print'>Cost</th>
 			<th>Mana</th>
 			<th>Power</th>
-			<th>Dur.</th>
 			<th>Effect</th>
 		</tr>
 	</thead>
@@ -287,7 +285,6 @@
 						<%= tag(:tr, nil, true) unless index.zero? %>
 							<td class="mp center"><%= effect[:mana] %></td>
 							<td class="power center"><%= @character.power(skill, effect) %></td>
-							<td class="power center"><%= @character.duration(skill, effect) %></td>
 							<td><%= parse_text_xml(effect[:quick], type: :quick).html_safe %></td>
 						</tr>
 					<% end %>

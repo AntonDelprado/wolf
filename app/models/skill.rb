@@ -288,7 +288,6 @@ class Skill < ActiveRecord::Base
 					effect[:quick] = effect_xml.find_first('Quick')
 					effect[:mana] = effect_xml.find_first('Mana').content.to_s if effect_xml.find_first('Mana')
 					effect[:power] = effect_xml.find_first('Power') if effect_xml.find_first('Power')
-					effect[:duration] = effect_xml.find_first('Duration') if effect_xml.find_first('Duration')
 
 					case effect_xml.find_first('Action').content.downcase
 					when 'major' then effect[:action] = :major_action
