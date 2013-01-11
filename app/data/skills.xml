@@ -223,7 +223,7 @@
         <Name>Confuse</Name>
         <Require>Fear</Require>
         <Invert/>
-        <Stat>Int</Stat>
+        <Stat>Fai</Stat>
         <Cost>4</Cost>
         <Spell>Ird'ken</Spell>
         <Synergy>Channeller</Synergy>
@@ -524,7 +524,7 @@
         <Name>Fear</Name>
         <Name>Anger</Name>
         <Invert/>
-        <Stat>Int</Stat>
+        <Stat>Fai</Stat>
         <Cost>4</Cost>
         <Spell>Ird'ken</Spell>
         <Synergy>Channeller</Synergy>
@@ -1263,7 +1263,7 @@
         <Name>Wake</Name>
         <Require>Fear</Require>
         <Invert/>
-        <Stat>Int</Stat>
+        <Stat>Fai</Stat>
         <Cost>2</Cost>
         <Spell>Ird'ken</Spell>
         <Synergy>Channeller</Synergy>
@@ -1533,7 +1533,7 @@
     <Skill>
         <Name>Void</Name>
         <Require>Counter-spell</Require>
-        <Stat>Int</Stat>
+        <Stat>Fai</Stat>
         <Cost>3</Cost>
         <Spell>Ird'ken</Spell>
         <Synergy>Channeller</Synergy>

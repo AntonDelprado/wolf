@@ -255,12 +255,12 @@ class Character < ActiveRecord::Base
 	end
 
 	def can_add_skill?(skill_name)
-		# cannot add skill twice
-		return false if self.has_skill? skill_name
-		# can only add 'will of' if 'follower of'
-		return self.has_ability?(skill_name.sub('Will of', 'Follower of')) if skill_name[0..7].eql? 'Will of'
-		# otherwise okay
-		return true
+		case
+		when self.has_skill?(skill_name) then false # cannot add a skill twice
+		when skill_name.start_with?('Will of') then self.has_ability?(skill_name.sub('Will of', 'Follower of')) # can only have 'will of' if 'follower of'
+		when skill_name == 'Devour' then self.race == 'Wolf' or self.race == 'Vampire' # only wolves and vampires can devour
+		else true # otherwise okay
+		end
 	end
 
 	def can_add_skills
@@ -271,7 +271,7 @@ class Character < ActiveRecord::Base
 		# cannot add ability twice
 		return false if self.has_ability? ability_name
 		# cannot follow two gods
-		return false if self.follower? and ability_name[0..8].eql? 'Follower'
+		return false if self.follower? and ability_name.start_with? 'Follower'
 		# otherwise needs to pass ability requirements
 		return self.pass_requirements? Ability.raw_data[ability_name][:requirements]
 	end
@@ -281,12 +281,12 @@ class Character < ActiveRecord::Base
 	end
 
 	def follower_of
-		self.abilities.each { |ability| return ability[:name].sub('Follower of ', '') if ability[:name][0..8] == 'Follower' }
+		self.abilities.each { |ability| return ability[:name].sub('Follower of ', '') if ability[:name].start_with? 'Follower' }
 		return nil
 	end
 
 	def follower?
-		not self.abilities.detect { |ability_name| ability_name[0..8] == 'Follower' }.nil?
+		self.abilities.detect { |ability| ability.name.start_with? 'Follower' } ? true : false
 	end
 
 	def primary
@@ -490,9 +490,9 @@ class Character < ActiveRecord::Base
 		parse_effect_xml(skill, effect[:power], raw) if effect[:power]
 	end
 
-	def duration(skill, effect, raw=false)
-		parse_effect_xml(skill, effect[:duration], raw) if effect[:duration]
-	end
+	# def duration(skill, effect, raw=false)
+	# 	parse_effect_xml(skill, effect[:duration], raw) if effect[:duration]
+	# end
 
 	def roll(skill_name)
 		skill = self.skills.find_by_name(skill_name)
@@ -640,10 +640,10 @@ class Character < ActiveRecord::Base
 
 			errors << "Invalid Stats" unless BASE_STATS[self.race].include? self.stats.sort.reverse
 
-			errors << "May Only Follow One God" if self.abilities.select{ |ability| ability[:name][0..8] == "Follower" }.count > 1
+			errors << "May Only Follow One God" if self.abilities.select{ |ability| ability[:name].start_with? "Follower" }.count > 1
 
 			self.skills.each do |skill|
-				if skill.name[0..7].eql? 'Will of' and self.follower_of != skill.name.sub('Will of','')
+				if skill.name.start_with?('Will of') and self.follower_of != skill.name.sub('Will of','')
 					errors << "Need to be a follower of '#{skill.name.sub('Will of','')}' to user '#{skill.name}'"
 				end
 			end
