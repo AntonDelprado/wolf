@@ -35,6 +35,10 @@ h1 {
 	float: right;
 }
 
+.left {
+	float: left;
+}
+
 .clear {
 	clear: both;
 }
@@ -301,7 +305,7 @@ table.stat-table td {
 
 table.skill-table td {
 	vertical-align: middle;
-	/* text-align: center; */
+	text-align: center; 
 }
 
 table.table-combat td {

@@ -265,7 +265,7 @@
 
 <!-- ########### Skills Table ########### !-->
 
-<table class='table table-bordered table-condensed skill-table item-table'>
+<table class='table table-bordered table-condensed skill-table'>
 	<col class="name-col"/>
 	<col class="level-col dont-print"/>
 	<col class="small-col dont-print"/>
@@ -285,7 +285,7 @@
 		<% @character.skills.sort_by{ |skill| skill.name }.each do |skill| %>
 			<tr>
 				<%= content_tag :td, class: skill.synergy_css('name-'), rowspan: skill.effects.count do %>
-					<%= content_tag :span, skill.full_name, rel: 'popover', 'data-content' => popover_content(skill), 'data-original-title' => popover_title(skill), class: 'skill-popover' %>
+					<%= content_tag :span, skill.full_name, rel: 'popover', 'data-content' => popover_content(skill), 'data-original-title' => popover_title(skill), class: 'skill-popover left' %>
 					<% skill.icons.each do |icon| %>
 						<%= content_tag :a, class: 'icon-tooltip right', rel: 'tooltip', title: icon[:name], style: 'width:20px' do %>
 							<%= tag :img, src: icon[:image], class: 'skill-icon' %>
@@ -304,7 +304,7 @@
 						<%= tag(:tr, nil, true) unless index.zero? %>
 							<td class="mp center"><%= effect[:mana] %></td>
 							<td class="power center"><%= @character.power(skill, effect) %></td>
-							<td><%= parse_text_xml(effect[:quick], type: :quick).html_safe %></td>
+							<td style='text-align:left;'><%= parse_text_xml(effect[:quick], type: :quick).html_safe %></td>
 						</tr>
 					<% end %>
 				<% else %>

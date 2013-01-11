@@ -286,7 +286,7 @@
             <Action type="melee">Attack</Action>
             <Mana>X+2</Mana>
             <Power type="roll" weapon="1"><skill>Combo</skill></Power>
-            <Quick>If last Major Action was a successful attack then attack for X+last result and costing 2+last MP.</Quick>
+            <Quick>If last Major Action was a successful attack then attack for 'X+last result' and costing '2+last MP'.</Quick>
         </Effect>
     </Skill>
     
