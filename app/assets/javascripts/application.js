@@ -80,6 +80,7 @@ $(document).ready(function() {
 
 	$('.synergy-tooltip').tooltip({ placement : 'left'});
 	$('.icon-tooltip').tooltip();
+	$('.result-tooltip').tooltip();
 
 	recalculate_xp();
 
