@@ -129,11 +129,11 @@ class Skill < ActiveRecord::Base
 		elsif self.level > level
 			changed = [self.name]
 			self.update_attribute(:level, level)
-			self.dependent_skills.each { |skill| changed.concat skill.set_level(level-1) }
+			self.dependent_skills.each { |skill| changed.concat skill.set_level(level-1) if skill.level >= level}
 		elsif self.level < level
 			changed = [self.name]
 			self.update_attribute(:level, level)
-			changed.concat(self.required_skill.set_level(level+1)) if self.required_skill
+			changed.concat(self.required_skill.set_level(level+1)) if self.required_skill and self.required_skill.level <= level
 		else
 			changed = []
 		end
