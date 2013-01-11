@@ -277,7 +277,11 @@
 			<tr>
 				<%= content_tag :td, class: skill.synergy_css('name-'), rowspan: skill.effects.count do %>
 					<%= content_tag :span, skill.full_name, rel: 'popover', 'data-content' => popover_content(skill), 'data-original-title' => popover_title(skill), class: 'skill-popover' %>
-					<%= skill.icons.collect { |src| tag(:img, src: src, class: 'skill-icons right') }.join.html_safe %>
+					<% skill.icons.each do |icon| %>
+						<%= content_tag :a, class: 'icon-tooltip right', rel: 'tooltip', title: icon[:name], style: 'width:20px' do %>
+							<%= tag :img, src: icon[:image], class: 'skill-icon' %>
+						<% end %>
+					<% end %>
 				<% end %>
 				<%= content_tag :td, class: 'center dont-print', rowspan: skill.effects.count do %>
 					<span class="skill-level"><%= skill.level %></span>

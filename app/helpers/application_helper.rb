@@ -1,5 +1,6 @@
 require 'xml'
 require 'string'
+require 'ostruct'
 
 module ApplicationHelper
 
@@ -216,19 +217,15 @@ module ApplicationHelper
 
 	@@raw_monsters = nil
 
-	class Monster
-		attr_accessor :name, :hp, :str, :dex, :int, :fai, :attack, :attack_type, :defend, :defend_skill, :text
-	end
-
 	def monsters
 		if @@raw_monsters.nil?
 			@@raw_monsters = []
 
 			XML::Parser.file('app/data/monsters.xml').parse.root.find('Monster').each do |monster_xml|
-				monster = Monster.new
+				monster = OpenStruct.new
 				monster.name = monster_xml.find_first('Name').content
 
-				monster.hp = monster_xml.find_first('HP').try :content
+				monster.HP = monster_xml.find_first('HP').try :content
 				monster.str = monster_xml.find_first('Str') ? monster_xml.find_first('Str').content : 4
 				monster.dex = monster_xml.find_first('Dex') ? monster_xml.find_first('Dex').content : 4
 				monster.int = monster_xml.find_first('Int') ? monster_xml.find_first('Int').content : 4

@@ -54,6 +54,16 @@
         </Text>
         <Quick>This character is skilled at carpentry.</Quick>
     </Ability>
+
+    <Ability>
+    	<Name>Cartographer</Name>
+    	<Synergy>Lore</Synergy>
+    	<Text>
+    		This character is skilled at cartography and navigation.
+    		The may make a <check type="int">Observation</check> to navigate using a map or to draw a map.
+    	</Text>
+    	<Quick>This character is skilled at navigation and cartography.</Quick>
+    </Ability>
     
     <Ability>
         <Name>Chef</Name>

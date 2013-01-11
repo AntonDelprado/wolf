@@ -26,7 +26,7 @@
 		<% monsters().each do |monster| %>
 			<tr>
 				<%= content_tag :td, monster.name, rowspan: (monster.text.nil? ? 1 : 2), class: 'bold' %>
-				<%= content_tag :td, monster.hp %>
+				<%= content_tag :td, monster.HP %>
 				<%= content_tag :td, monster.str %>
 				<%= content_tag :td, monster.dex %>
 				<%= content_tag :td, monster.int %>
@@ -35,7 +35,7 @@
 				<%= content_tag :td, monster.defend ? "#{monster.defend_skill}: #{monster.defend}" : "" %>
 				<%= content_tag :td, monster.attack_type %>
 			</tr>
-			<%= content_tag :tr, (content_tag :td, monster.text.html_safe, colspan: 8) if monster.text %>
+			<%= content_tag :tr, (content_tag :td, (monster.text.html_safe), colspan: 8) if (monster.text) %>
 		<% end %>
 	</tbody>
 </table>
