@@ -43,7 +43,6 @@ class Skill < ActiveRecord::Base
 	}
 
 	before_validation(on: :create) do
-		# raise "raw = #{raw_data.count}"
 		self.level = case name
 		when 'Endurance' then self.character.str/2
 		when 'Sprint' then self.character.dex/2
@@ -52,8 +51,6 @@ class Skill < ActiveRecord::Base
 		else 1
 		end
 
-		# raise self.class.raw_data.keys.join ":"
-		# raise "#{self.name}: #{self.class.raw_data[self.name][:required_skill]}"
 		required_name = self.class.raw_data[self.name][:required_skill]
 		if required_name and required_name[0..7] != 'Follower'
 			self.required_skill = self.character.skill(required_name)

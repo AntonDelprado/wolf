@@ -42,7 +42,10 @@
 		<div class="well center span5">
 			<h1><%= @character.name %></h1>
 			<% unless current_user_owns? @character %>
-				<h2>Player: <%= link_to User.find(@character.user_id).handle, user_path(@character.user_id) %></h2>
+				<h2>Player:
+					<%= link_to @character.user.handle, user_path(@character.user_id), class: 'dont-print' %>
+					<%= content_tag :span, @character.user.handle, class: 'hidden print' %>
+				</h2>
 			<% end %>
 			<% if @character.in_campaign? %>
 				<h2>Campaign:
@@ -154,7 +157,10 @@
 				<tbody>
 					<% @character.synergies.each do |synergy_name, synergy| %>
 						<tr>
-							<%= content_tag(:td, synergy_name, class: synergy[:css_class]) %>
+							<td>
+								<%= content_tag :a, synergy_name, id: 'hint', class: "synergy-tooltip #{synergy[:css_class]}", href: '#', rel: 'tooltip', title: "Levels: #{synergy[:raw]}" unless synergy_name == 'No Class' %>
+								<%= content_tag :span, synergy_name, class: synergy[:css_class] if synergy_name == 'No Class' %>
+							</td>
 							<td><%= "+#{synergy[:level]}" unless synergy_name == 'No Class' %></td>
 							<td><%= synergy[:spent] %></td>
 							<td><%= synergy[:remaining] %><%= " Total" if synergy_name == 'No Class' %></td>

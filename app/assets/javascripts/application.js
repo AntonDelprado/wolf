@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
+//= require bootstrap-tooltip
 //= require_tree .
 
 $(document).ready(function() {
@@ -76,6 +77,9 @@ $(document).ready(function() {
 			});
 		}
 	});
+
+	$('.synergy-tooltip').tooltip({ placement : 'left'});
+	$('.icon-tooltip').tooltip();
 
 	recalculate_xp();
 

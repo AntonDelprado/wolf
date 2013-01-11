@@ -126,7 +126,7 @@ class Character < ActiveRecord::Base
 			skills_node = XML::Node.new('Skills')
 			self.skills.each do |skill|
 				skill_node = XML::Node.new('Skill')
-				skill_node.attributes['level'] = skill.level
+				skill_node.attributes['level'] = skill.level.to_s
 				skill_node << XML::Node.new_text(skill.name)
 				skills_node << skill_node
 			end
@@ -382,17 +382,16 @@ class Character < ActiveRecord::Base
 		if @synergies.nil?
 			bonus_remaining = true
 			synergies = {}
-			Skill.synergy_names.each { |name| synergies[name] = { level: 0, spent: 0, css_class: "name-#{Skill.synergy_css_for name}" } }
+			Skill.synergy_names.each { |name| synergies[name] = { level: 0, spent: 0, raw: 0, css_class: "name-#{Skill.synergy_css_for name}" } }
 
 			self.skills.each do |skill|
 				synergies[skill.synergy_name][:level] += skill.level if skill.has_synergy?
 				synergies['Lore'][:level] += skill.level if skill.spell
 			end
 
-			if race == 'Goblin'
-				synergies.each { |synergy_name, synergy| synergy[:level] /= 6 }
-			else
-				synergies.each { |synergy_name, synergy| synergy[:level] /= 10 }
+			synergies.each do |synergy_name, synergy|
+				synergy[:raw] = synergy[:level]
+				synergy[:level] /= (race == 'Goblin') ? 6 : 10
 			end
 
 			self.abilities.each do |ability|
