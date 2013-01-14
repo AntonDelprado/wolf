@@ -1164,33 +1164,6 @@
     </Skill>
     
     <Skill>
-        <Name>Random Fate</Name>
-        <Require>Bless</Require>
-        <Stat>Fai</Stat>
-        <Cost>1</Cost>
-        <Spell>Loreanna</Spell>
-        <Synergy>Trickster</Synergy>
-        <Text>
-            The caster puts the fate of a character in the hands of <name>Loreanna</name>
-            The power of the attack is <check type="fai">Chaos Bolt</check>. The fate of the character is given to <name>Loreanna</name> who decides their fate dependant on the result level of this skill after defense is calculated.
-            0: +1 to all skills for 1 turn.
-            1: Nothing happens.
-            2: Knocked Prone.
-            3: -1 die type to all skills for 2 turns.
-            4: -1 to Speed for 6 turns.
-            5: Stunned for 5 turns.
-            6: The target dies.
-            7: The caster decides their fate.
-        </Text>
-        <Effect>
-            <Action type="ranged">Attack</Action>
-            <Mana>5</Mana>
-            <Power type="roll"><skill>Chaos Bolt</skill></Power>
-            <Quick>Randomly determine a character's fate.</Quick>
-        </Effect>
-    </Skill>
-    
-    <Skill>
         <Name>Redirect</Name>
         <Require>Divine Arrow</Require>
         <Stat>Fai</Stat>
@@ -1199,8 +1172,8 @@
         <Synergy>Battle Mage</Synergy>
         <Text>
             By calling on the power of <name>Arthur</name> the character is able to take a projectile and fire it back to its origin.
-            The power of this skill is <check type="fai">Redirect</check>. If the power of the projectile attack is equal to or less than this power then the attack targets the attacker instead.
-            This skill may be used to redirect a projectile targeting another character. The effect is the same however a <name>Minor Action</name> is required if used in this way.
+            The power of this skill is <check type="fai">Redirect</check>. If the power of the projectile attack is equal to or less than this power then the attack targets the attacker instead. The attacker then can choose to defend against the attack.
+            This skill may be used to redirect a projectile targeting another character. The effect is the same and a <name>Minor Action</name> is required if used in this way.
             This skill may only be used on projectile attacks.
         </Text>
         <Effect>
