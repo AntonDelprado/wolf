@@ -51,8 +51,9 @@ class Skill < ActiveRecord::Base
 		else 1
 		end
 
+		raise self.name if self.class.raw_data[self.name].nil?
 		required_name = self.class.raw_data[self.name][:required_skill]
-		if required_name and required_name.start_with? 'Follower'
+		if required_name and not required_name.start_with?('Follower')
 			self.required_skill = self.character.skill(required_name)
 			self.required_skill ||= self.character.skills.create(name: required_name)
 			self.required_skill.set_level(self.level+1) unless self.required_skill.level > self.level
