@@ -175,7 +175,7 @@
             <Action type="melee">Attack</Action>
             <Mana>2</Mana>
             <Power type="roll" weapon="1"><skill>Bloodlust</skill></Power>
-            <Quick>Attack for X. Gain 1 HP for each 2 damage done.</Quick>
+            <Quick>Attack for X. Gain the result level in HP.</Quick>
         </Effect>
     </Skill>
     
@@ -1388,7 +1388,7 @@
         <Synergy>Necromancer</Synergy>
         <Text>
             By calling on the power of <name>Innodi</name> the character is able to call on small creatures to attack their foes.
-            The power of this skill is <check type="fai">Swarm of Rats</check>. The first turn nothing happens. Before the characters next turn a number of rats is summoned equal to the result level of this skill. Each rat has <HP>1</HP> and attacks for 2 slashing damage each turn. This damage ignores shields. This skill costs <MP>1</MP> to sustain for each result level of rats remaining, including the first turn. For example: if there are 7 rats left the skill costs <MP>3</MP>. Casting requires a <name>Major Action</name>.
+            The power of this skill is <check type="fai">Swarm of Rats</check>. The first turn nothing happens. Before the characters next turn a number of rats is summoned equal to twice the result level of this skill. Each rat has <HP>1</HP> and attacks for 2 slashing damage each turn. This damage ignores shields. This skill costs <MP>1</MP> to sustain for each result level of rats remaining, including the first turn. For example: if there are 7 rats left the skill costs <MP>3</MP>. Casting requires a <name>Major Action</name>.
             The entire swarm is controlled with a single simple command such as to attack a particular character or to congregate in a particular area. If the sustain cost is not paid then the results are unpredictable. Most animals will disperse but some may attack random targets.
             In urban environments rats are exclusively summoned. In other environments many other small species may instead appear. Such as other small mammals, lizards, snakes or even small birds. Their stats remain the same no matter what small animals are summoned.
         </Text>
@@ -1396,7 +1396,7 @@
             <Action>Major</Action>
             <Mana>5,X</Mana>
             <Power type="roll"><skill>Swarm of Rats</skill></Power>
-            <Quick>Summon X rats. Each rat has <HP>1</HP> and attacks for 2 damages ignoring shields.</Quick>
+            <Quick>Summon twice result level rats. Each rat has <HP>1</HP> and attacks for 2 damages ignoring shields.</Quick>
         </Effect>
     </Skill>
     

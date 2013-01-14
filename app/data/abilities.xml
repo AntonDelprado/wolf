@@ -87,9 +87,9 @@
         <Synergy>Lore</Synergy>
         <Text>
             This character can win arguments through reassurance, flattery or other emotional means.
-            They can make a <check type="int">Sense</check> to start a <name>Debate</name>.
+            They can make a <check type="fai">Sense</check> to start a <name>Debate</name>.
         </Text>
-        <Quick>Emotional argument with Sense/Int check.</Quick>
+        <Quick>Emotional argument with Sense check.</Quick>
     </Ability>
     
     <Ability>
