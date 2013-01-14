@@ -643,7 +643,7 @@ class Character < ActiveRecord::Base
 			errors << "May Only Follow One God" if self.abilities.select{ |ability| ability[:name].start_with? "Follower" }.count > 1
 
 			self.skills.each do |skill|
-				if skill.name.start_with?('Will of') and self.follower_of != skill.name.sub('Will of','')
+				if skill.name.start_with?('Will of') and self.follower_of != skill.name.sub('Will of ','')
 					errors << "Need to be a follower of '#{skill.name.sub('Will of','')}' to user '#{skill.name}'"
 				end
 			end
